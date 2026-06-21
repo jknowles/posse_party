@@ -1,13 +1,19 @@
 class Platforms::Bsky::AttachesWebCard
   def attach!(crosspost_config, record_manager)
+    external = {
+      "uri" => crosspost_config.url,
+      "title" => crosspost_config.og_title.presence || crosspost_config.title,
+      # Bluesky's app.bsky.embed.external#external lexicon requires the
+      # "description" key to be present. An empty string is valid, but a missing
+      # key is rejected by the PDS, so always send it (never nil).
+      "description" => (crosspost_config.og_description.presence || crosspost_config.summary).to_s,
+      # thumb is genuinely optional in the lexicon, so it stays conditional.
+      "thumb" => upload_thumbnail!(crosspost_config.og_image, record_manager)
+    }.compact
+
     {
       "$type" => "app.bsky.embed.external",
-      "external" => {
-        "uri" => crosspost_config.url,
-        "title" => crosspost_config.og_title.presence || crosspost_config.title,
-        "description" => crosspost_config.og_description.presence || crosspost_config.summary,
-        "thumb" => upload_thumbnail!(crosspost_config.og_image, record_manager)
-      }.compact
+      "external" => external
     }
   end
 
