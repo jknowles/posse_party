@@ -7,7 +7,7 @@ class DeletesPostTest < ActiveSupport::TestCase
 
   def test_deletes_post_when_no_wip_crossposts
     post_record = posts(:admin_post)
-    assert_equal 2, post_record.crossposts.count
+    assert_equal 3, post_record.crossposts.count
 
     outcome = @subject.delete(post_record)
 

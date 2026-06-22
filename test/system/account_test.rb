@@ -143,6 +143,12 @@ class AccountTest < ApplicationSystemTestCase
     assert_field "User ID"
     assert_field "Access Token"
 
+    select "Pixelfed", from: "Platform"
+    assert_text "Credentials for Pixelfed"
+    assert_link "Setup instructions"
+    assert_field "Base URL"
+    assert_field "Access Token"
+
     # Go back and test delete (open edit directly)
     visit edit_account_path(@account)
 

@@ -2,6 +2,7 @@ class DocsController < ApplicationController
   BASE_URL = "https://github.com/searlsco/posse_party/blob/main/docs/"
   DOC_PATHS = {
     "mastodon-account-setup" => "account_setup/mastodon",
+    "pixelfed-account-setup" => "account_setup/pixelfed",
     "bsky-account-setup" => "account_setup/bsky",
     "x-account-setup" => "account_setup/x",
     "linkedin-account-setup" => "account_setup/linkedin",

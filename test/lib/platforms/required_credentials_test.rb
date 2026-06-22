@@ -6,6 +6,7 @@ class RequiredCredentialsTest < ActiveSupport::TestCase
       Platforms::Bsky,
       Platforms::X,
       Platforms::Mastodon,
+      Platforms::Pixelfed,
       Platforms::Threads,
       Platforms::Instagram,
       Platforms::Facebook,
@@ -36,6 +37,11 @@ class RequiredCredentialsTest < ActiveSupport::TestCase
 
   test "mastodon required credentials" do
     platform = Platforms::Mastodon.new
+    assert_equal %w[base_url access_token], platform.required_credentials
+  end
+
+  test "pixelfed required credentials" do
+    platform = Platforms::Pixelfed.new
     assert_equal %w[base_url access_token], platform.required_credentials
   end
 

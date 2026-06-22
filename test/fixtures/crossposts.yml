@@ -9,3 +9,9 @@ admin_mastodon_crosspost:
   account: admin_mastodon_account
   status: ready
   content: "This is the admin's first post content."
+
+admin_pixelfed_crosspost:
+  post: admin_post
+  account: admin_pixelfed_account
+  status: ready
+  content: "This is the admin's first post content."

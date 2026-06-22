@@ -16,6 +16,15 @@ admin_mastodon_account:
     access_token: "test_mastodon_token"
     instance_url: "https://mastodon.social"
     
+admin_pixelfed_account:
+  user: admin
+  platform_tag: pixelfed
+  active: true
+  label: "Pixelfed Test"
+  credentials:
+    base_url: "https://pixelfed.social"
+    access_token: "test_pixelfed_token"
+
 admin_x_account:
   user: admin
   platform_tag: x

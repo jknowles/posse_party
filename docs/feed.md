@@ -90,6 +90,9 @@ POSSE Party reads per-entry syndication settings from a namespaced Atom element.
     "mastodon": {
       "append_url": true
     },
+    "pixelfed": {
+      "append_url": true
+    },
     "threads": {
       "attach_link": true,
       "append_url": false
@@ -116,6 +119,7 @@ POSSE Party reads per-entry syndication settings from a namespaced Atom element.
 - Bluesky (`bsky`)
 - X (Twitter) (`x`)
 - Mastodon (`mastodon`)
+- Pixelfed (`pixelfed`)
 - Threads (`threads`)
 - Instagram (`instagram`)
 - Facebook (`facebook`)

@@ -4,6 +4,7 @@ class PublishesCrosspost
       Platforms::Bsky,
       Platforms::X,
       Platforms::Mastodon,
+      Platforms::Pixelfed,
       Platforms::Threads,
       Platforms::Instagram,
       Platforms::Facebook,
