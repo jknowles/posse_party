@@ -36,6 +36,7 @@ Rails.application.routes.draw do
     member do
       patch :publish
       patch :skip
+      patch :mark_published
     end
   end
   resources :logs, only: [:index, :show, :destroy] do
@@ -56,6 +57,8 @@ Rails.application.routes.draw do
 
   namespace :api do
     get "crossposts", to: "crossposts#index"
+    get "crossposts/pending", to: "crossposts#pending", as: :pending_crossposts
+    patch "crossposts/:id", to: "crossposts#update", as: :crosspost
   end
 
   # Credential renewal callbacks

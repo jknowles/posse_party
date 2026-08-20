@@ -33,6 +33,10 @@ module Platforms
       @syndicates_x_post.syndicate!(crosspost, crosspost_content.string)
     end
 
+    def manual_compose_url(crosspost_content)
+      "https://x.com/intent/tweet?text=#{CGI.escape(crosspost_content)}"
+    end
+
     def embed_html(crosspost)
       return nil unless crosspost.status == "published" && crosspost.url.present?
 

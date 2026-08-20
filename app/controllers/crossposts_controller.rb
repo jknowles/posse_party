@@ -3,7 +3,7 @@ class CrosspostsController < MembersController
 
   def show
     @crosspost = current_user.crossposts.includes(:feed, :post, :account).find(params[:id])
-    @content_preview = compose_content_preview(@crosspost)
+    @preview = ComposesCrosspostPreview.new.compose(@crosspost)
     default_crosspost_options = PublishesCrosspost::MatchesPlatformApi.new.match(@crosspost.account).default_crosspost_options
     @config = PublishesCrosspost::MungesConfig.new.munge(@crosspost, default_crosspost_options)
     @provenance = DeterminesProvenanceOfCrosspostConfig.new.determine(@crosspost, default_crosspost_options)
@@ -18,6 +18,13 @@ class CrosspostsController < MembersController
     else
       redirect_to crosspost_path(@crosspost), alert: outcome.error
     end
+  end
+
+  def mark_published
+    @crosspost = current_user.crossposts.find(params[:id])
+    outcome = MarksCrosspostPublished.new.mark(@crosspost, params[:url])
+
+    redirect_to crosspost_path(@crosspost), outcome.flash_type => outcome.message
   end
 
   def skip
@@ -40,24 +47,5 @@ class CrosspostsController < MembersController
     else
       redirect_to crosspost_path(@crosspost), alert: outcome.message
     end
-  end
-
-  private
-
-  def compose_content_preview(crosspost)
-    matches_platform_api = PublishesCrosspost::MatchesPlatformApi.new
-    munges_config = PublishesCrosspost::MungesConfig.new
-    composes_crosspost_content = PublishesCrosspost::ComposesCrosspostContent.new
-
-    api = matches_platform_api.match(crosspost.account)
-    crosspost_config = munges_config.munge(crosspost, api.default_crosspost_options)
-
-    if crosspost_config.syndicate
-      composes_crosspost_content.compose(crosspost_config, api.post_constraints).string
-    else
-      "[Would be skipped - syndication disabled]"
-    end
-  rescue => e
-    "[Error generating preview: #{e.message}]\n\n#{e.backtrace.join("\n")}"
   end
 end
