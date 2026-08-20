@@ -293,4 +293,77 @@ class Api::CrosspostsControllerTest < ActionDispatch::IntegrationTest
     item = response_data.find { |i| i["platform"] == "bsky" }
     assert_equal "Boom", item["error"]
   end
+
+  test "pending lists crossposts whose platform offers a compose url" do
+    user = users(:admin)
+    posts(:admin_post).crossposts.create!(account: accounts(:admin_x_account), status: "ready")
+
+    get api_pending_crossposts_path, headers: {"Authorization" => "Bearer #{user.api_key}"}
+
+    assert_response :success
+    crossposts = JSON.parse(response.body)["crossposts"]
+    assert_equal ["x"], crossposts.pluck("platform")
+  end
+
+  test "pending includes the composed content and compose url" do
+    user = users(:admin)
+    posts(:admin_post).crossposts.create!(account: accounts(:admin_x_account), status: "ready")
+
+    get api_pending_crossposts_path, headers: {"Authorization" => "Bearer #{user.api_key}"}
+
+    crosspost = JSON.parse(response.body)["crossposts"].first
+    assert_equal "Admin's First Post https://admin.example.com/posts/1", crosspost["content"]
+    assert crosspost["compose_url"].start_with?("https://x.com/intent/tweet?text=")
+  end
+
+  test "pending omits crossposts that are already published" do
+    user = users(:admin)
+    posts(:admin_post).crossposts.create!(account: accounts(:admin_x_account), status: "published", url: "https://x.com/searls/status/1")
+
+    get api_pending_crossposts_path, headers: {"Authorization" => "Bearer #{user.api_key}"}
+
+    assert_empty JSON.parse(response.body)["crossposts"]
+  end
+
+  test "pending requires authentication" do
+    get api_pending_crossposts_path
+
+    assert_response :unauthorized
+  end
+
+  test "update marks a crosspost published with the given url" do
+    user = users(:admin)
+    crosspost = posts(:admin_post).crossposts.create!(account: accounts(:admin_x_account), status: "ready")
+
+    patch api_crosspost_path(crosspost),
+      params: {url: "https://x.com/searls/status/123"},
+      headers: {"Authorization" => "Bearer #{user.api_key}"}
+
+    assert_response :success
+    assert_equal "published", crosspost.reload.status
+    assert_equal "https://x.com/searls/status/123", crosspost.url
+  end
+
+  test "update rejects an invalid url" do
+    user = users(:admin)
+    crosspost = posts(:admin_post).crossposts.create!(account: accounts(:admin_x_account), status: "ready")
+
+    patch api_crosspost_path(crosspost),
+      params: {url: "nope"},
+      headers: {"Authorization" => "Bearer #{user.api_key}"}
+
+    assert_response :unprocessable_content
+    assert_equal "ready", crosspost.reload.status
+  end
+
+  test "update refuses a crosspost belonging to another user" do
+    crosspost = posts(:admin_post).crossposts.create!(account: accounts(:admin_x_account), status: "ready")
+
+    patch api_crosspost_path(crosspost),
+      params: {url: "https://x.com/searls/status/123"},
+      headers: {"Authorization" => "Bearer #{users(:user).api_key}"}
+
+    assert_response :not_found
+    assert_equal "ready", crosspost.reload.status
+  end
 end
