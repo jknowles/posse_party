@@ -118,17 +118,10 @@ class PostsSearchTest < ApplicationSystemTestCase
     assert_selector "h2", text: "Test Post 0"
     assert_selector "turbo-frame[loading='lazy']"
 
-    # Scroll to trigger infinite loading
+    # Scroll to trigger the lazy frame's intersection observer, then let Turbo load
+    # it. Forcing an extra reload() races Turbo's own request, and the loser of that
+    # race can leave the frame empty.
     page.execute_script "window.scrollTo(0, document.body.scrollHeight)"
-
-    # Force lazy frame to load
-    page.execute_script <<~JS
-      const lazyFrame = document.querySelector('turbo-frame[loading="lazy"]');
-      if (lazyFrame) {
-        lazyFrame.loading = 'eager';
-        lazyFrame.reload();
-      }
-    JS
 
     # Should load more posts: final sentinel is visible
     assert_selector "h2", text: "Test Post 30"

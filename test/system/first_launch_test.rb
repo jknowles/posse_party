@@ -105,6 +105,7 @@ class FirstLaunchTest < ApplicationSystemTestCase
 
     # Wait for credential fields to load via Turbo
     assert_text "Credentials for Bluesky"
+    wait_for_turbo_frames
 
     # Fill in credentials
     fill_in "Email", with: "test@bsky.social"
