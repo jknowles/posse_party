@@ -38,7 +38,7 @@ class Platforms::Linkedin
         credentials: account.credentials.merge(
           "access_token" => token_response["access_token"],
           "expires_at" => calculate_expires_at(token_response["expires_in"])
-        ).except("renewal_oauth_state", "renewal_reminder_sent_at"),
+        ).except("renewal_oauth_state", "renewal_oauth_state_issued_at", "renewal_reminder_sent_at"),
         credentials_renewed_at: Now.time
       )
     end
