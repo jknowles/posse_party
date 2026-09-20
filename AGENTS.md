@@ -8,13 +8,17 @@
 
 ## Running tests
 
+Use the smallest meaningful check and reuse valid evidence for unchanged inputs.
+Broaden only for changed risk, an unresolved failure, or a required release/CI gate.
+Documentation-only edits need a diff and consistency check, not builds or tests.
+
 - please always run with CI=true so that system tests run headlessly (unless trying to get screenshots or to debug a visual issue)
 - full suite: ./script/test
 - individual test: bin/rails test <testpath>[:linenbr]
 
 # On this team, we've all agreed to ALWAYS do this:
 
-If you struggle to do any of these, pause and ask for help.
+Follow these conventions using existing examples. Investigate and resolve ordinary implementation difficulties without pausing the task.
 
 - Always return a Struct when multiple values are needed by the caller
 - Always use Struct `Result` (app/lib/result.rb) when there is a return value but success/failure info may be needed
@@ -29,9 +33,9 @@ If you struggle to do any of these, pause and ask for help.
 - Always use VCR (as opposed to Webmock or Mocktail) for tests of third-party servers. (We record VCR cassettes, then scrub secrets, then commit the sanitized cassette playback test.)
 
 
-# On this team, we've all agreed to NEVER do these without checking with our pair first:
+# Avoid these patterns:
 
-If you find yourself wanting to do any of these, pause what you're doing and ask for approval.
+Choose an implementation that follows these conventions. If the requested behavior requires a narrow exception, explain it and proceed within the authorized scope. Ask only when a missing product decision or authority blocks progress.
 
 - Never add business logic to a Rails model or controller
 - Never add attr_reader/attr_accessor/attr_writer
@@ -73,3 +77,11 @@ def validate_registration(user, params, errors)
   # errors
 end
 ```
+
+## Follow-through
+
+Continue the authorized task through implementation and appropriate verification.
+A user question or status request during work is steering: answer it briefly and
+resume the original task in the same turn unless the user explicitly stops,
+pauses, cancels, or replaces it. Resolve routine implementation choices yourself;
+ask only for a missing decision or authority that actually blocks progress.
