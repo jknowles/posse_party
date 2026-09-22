@@ -85,3 +85,7 @@ A user question or status request during work is steering: answer it briefly and
 resume the original task in the same turn unless the user explicitly stops,
 pauses, cancels, or replaces it. Resolve routine implementation choices yourself;
 ask only for a missing decision or authority that actually blocks progress.
+
+## Multi-machine sync
+
+This repository is edited from more than one Mac. Before starting work, fetch and integrate `origin/main` (fast-forward when possible). After finishing, commit everything uncommitted, including changes that are not yours unless another agent is actively working in this checkout, then fetch, integrate `origin/main`, and push. The full rule is in the global agent instructions (`~/icloud-drive/dotfiles/AGENTS.md`).
