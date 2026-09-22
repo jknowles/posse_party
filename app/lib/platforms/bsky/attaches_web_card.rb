@@ -5,7 +5,7 @@ class Platforms::Bsky::AttachesWebCard
       "external" => {
         "uri" => crosspost_config.url,
         "title" => crosspost_config.og_title.presence || crosspost_config.title,
-        "description" => crosspost_config.og_description.presence || crosspost_config.summary,
+        "description" => crosspost_config.og_description.presence || crosspost_config.summary.presence || crosspost_config.title.presence || "",
         "thumb" => upload_thumbnail!(crosspost_config.og_image, record_manager)
       }.compact
     }
