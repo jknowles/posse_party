@@ -2,7 +2,8 @@
 
 **Status:** Step 1 done 2026-09-28 (#5 closed). Docs and a regression test are on
 `docs/platform-defaults`, not yet merged anywhere. civilytics.com #128 is open but not blocking.
-Steps 2 to 10 not started.
+Step 3 built 2026-09-28 on `fix/bsky-fit-thumbnail`, not yet deployed. Steps 2 and 4 to 10 not
+started.
 **Branch:** this plan lives on `docs/media-plan`; update its status there. Code goes on one branch
 per step, off `main` (see "Branches").
 
@@ -116,6 +117,15 @@ Gemfile. libvips is already in the Docker image; `LetterboxesImageWithVips` is t
 downscales to about 1200 px wide, re-encodes JPEG, steps quality down until under the limit, and
 returns `Result` with failure when it cannot. `AttachesWebCard#upload_thumbnail!` uses it and omits
 `thumb` on failure rather than failing the post. Step 5 reuses it for Bluesky image embeds.
+
+**Built 2026-09-28** (`fix/bsky-fit-thumbnail`, `4c2c81f` and `0cac4a7`) as `FitsImageWithinByteLimit`.
+It decodes with `Vips::Image.thumbnail_buffer`, which shrinks while decoding, so a huge image is
+never held at full size. It tries JPEG at quality 85, 75, 65 and 50. A failed decode or a missing
+libvips leaves the card without a thumbnail. Known gaps: an image narrower than 1200 px that is
+still over the limit at quality 50 loses its thumbnail rather than being shrunk further; and no
+test exercises `AttachesWebCard`'s fallback, because that would need a recorded Bluesky session
+(VCR). The recorded `bsky_shot` cassette confirms that thumbnails under the limit upload
+byte-for-byte unchanged.
 
 ## Steps 4 to 7: Mastodon and Bluesky media (#1)
 
