@@ -2,8 +2,10 @@
 
 **Status:** Step 1 done 2026-09-28 (#5 closed). Docs and a regression test are on
 `docs/platform-defaults`, not yet merged anywhere. civilytics.com #128 is open but not blocking.
-Steps 2 and 3 built 2026-09-28 (`fix/linkedin-one-url`, `fix/bsky-fit-thumbnail`) and merged
-into `test/deploy-20260928`, not yet deployed. Steps 4 to 10 not started.
+Steps 2 and 3 built 2026-09-28 (`fix/linkedin-one-url`, `fix/bsky-fit-thumbnail`) and deployed
+to maxwell the same day in `posse_party:media-20260928` (`test/deploy-20260928`, `0c1624f`). #4 and
+#6 close once a live post shows each working. Steps 4 to 10 not started. Upstream PR candidates are
+tracked in #10.
 **Branch:** this plan lives on `docs/media-plan`; update its status there. Code goes on one branch
 per step, off `main` (see "Branches").
 
