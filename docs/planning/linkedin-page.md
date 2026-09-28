@@ -1,6 +1,7 @@
 # Plan: LinkedIn Company Page as a syndication target
 
-**Status:** Deferred — blocked on LinkedIn API approval (see "Blocker" below). No code written yet.
+**Status:** Deferred — Community Management API access request **submitted 2026-09-16**, awaiting
+LinkedIn's decision (see "TODO when resuming" below). No code written yet.
 **Branch:** `feat/linkedin-page` (build the feature here on top of this plan).
 **Decided:** 2026-06-21.
 
@@ -28,23 +29,51 @@ coexist and route independently.
 Company Page posting requires LinkedIn's Community Management API, which is approval-gated and
 restricted to **registered legal organizations / commercial use cases**.
 
-Steps to unblock:
+**Correction (2026-09-16):** LinkedIn will not add this product to an app that already has other
+products (the request is grayed out), so the request was made on a **new developer app** tied to
+the Civilytics Company Page — not on the existing personal-profile app. Once approved, the access
+can be transferred to the existing app by re-submitting the form there with the approved app's
+client ID, or the new app can simply be used for the Page target.
 
-1. On the **existing** LinkedIn developer app, request the
-   [Community Management API](https://developer.linkedin.com/product-catalog/marketing/community-management-api)
-   product (no second app needed).
-2. Complete LinkedIn's access form: legal org name, registered address, business email, website,
-   use-case description. Must read as a legitimate org/commercial use.
-3. Development Tier is granted first (limited volume — enough to build & verify). Standard Tier needs
-   a further upgrade request (possibly a screen-recording walkthrough).
-4. Approval grants the `w_organization_social` scope — that is the green light to ship.
+**Done so far (2026-09-16):**
+
+- [x] Created a new developer app associated with the Civilytics Consulting LLC Company Page.
+- [x] Page super admin verified the app.
+- [x] Requested the Community Management API product and submitted the Development Tier access
+      form (legal org name, registered address, website, privacy policy, business email).
+
+## TODO when resuming
+
+1. **Check the decision.** Developer Portal → My Apps → the new app → Products. Also check the
+   business email (and its spam/promotions folders) for the verification and decision mail.
+   - If **rejected**: LinkedIn does not allow re-applying on the same app. Read the rejection
+     reason, create another new app, and submit a fresh Development Tier form.
+   - If **approved**: continue below. Development Tier (500 requests per app) should be enough
+     for one Page; Standard Tier needs a narrated screencast and is only worth it if the quota
+     binds.
+2. **Confirm the scope.** On the approved app's Auth tab, verify `w_organization_social` is
+   listed. Record the app's client ID and secret in the deploy `.env` (never in the repo).
+3. **Get the Organization URN.** Page admin URL contains the numeric id
+   (`linkedin.com/company/<id>/admin/`); the URN is `urn:li:organization:<id>`. This is the
+   credential the user pastes (see Design).
+4. **Decide which app the Page target uses.** Either point `Platforms::LinkedinPage` at the new
+   app's credentials, or transfer Community Management access to the existing app (form on the
+   existing app, enter the new app's client ID). Using the new app is fewer steps.
+5. **Build it.** `git checkout feat/linkedin-page`, then work the implementation checklist
+   below, TDD: `required_credentials` and syndication tests first, API stubbed.
+6. **Verify end to end** on the live instance: connect a "LinkedIn Page" account, publish one
+   post with an image, confirm it lands on the Company Page and not the personal feed.
+7. **Ship.** CHANGELOG entry, account-setup doc with screenshots, then decide fork-only vs.
+   upstream PR.
 
 Reference: <https://learn.microsoft.com/en-us/linkedin/marketing/community-management/community-management-overview>
+and <https://learn.microsoft.com/en-us/linkedin/marketing/community-management-app-review>.
 
 ## Design (decided)
 
 - New platform class **`Platforms::LinkedinPage`**, `TAG = "linkedin_page"`, `LABEL = "LinkedIn Page"`.
-- **Reuse the existing LinkedIn developer app** (just add the Community Management API product).
+- **Developer app:** the new app created for the Community Management request (see Blocker
+  above); reusing the existing app requires an access transfer after approval.
 - **Page selection:** user **pastes the Organization URN** (`urn:li:organization:123`) as a required
   credential — mirrors how the current `person_urn` works. (Chosen over auto-discovery via
   `organizationAcls` to keep surface area small.)
@@ -90,5 +119,4 @@ Tests / fixtures:
 
 ## How to resume
 
-When LinkedIn approval is in hand: `git checkout feat/linkedin-page`, then implement per the
-checklist above (TDD: write the `required_credentials` + syndication tests first, stub the API).
+See "TODO when resuming" above.
