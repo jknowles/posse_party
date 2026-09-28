@@ -1,7 +1,8 @@
 # Plan: native media and link handling across publishers
 
-**Status:** Planned 2026-09-28. Step 1 docs committed on `docs/platform-defaults`; nothing else
-started.
+**Status:** Step 1 done 2026-09-28 (#5 closed). Docs and a regression test are on
+`docs/platform-defaults`, not yet merged anywhere. civilytics.com #128 is open but not blocking.
+Steps 2 to 10 not started.
 **Branch:** this plan lives on `docs/media-plan`; update its status there. Code goes on one branch
 per step, off `main` (see "Branches").
 
@@ -79,7 +80,13 @@ correct; the defaults were undocumented.
 - civilytics.com #128: top-level `"append_url": false`, and the Mastodon override on every
   newsletter entry, not only those with a `mastodon.md` sidecar.
 
-Close #5 once jaredknowles.com #65 ships and a short shot posts to Mastodon without the permalink.
+**Done 2026-09-28.** jaredknowles.com `211c17e` sends `append_url: false` on takes, shots and posts,
+and keeps the permalink on Mastodon for shots and posts through
+`platform_overrides.mastodon.append_url: true`. Mastodon shots are text only until step 4, so the
+permalink is their only link to the photo. `composes_crosspost_content_test.rb` pins the behavior.
+
+**Carry into steps 4 and 6:** once Mastodon posts shot media, remove the Mastodon override from
+the shot profiles in jaredknowles.com, and update its `tests/verify-posse-config.sh` to match.
 
 ## Step 2: one URL per LinkedIn post (#6)
 
