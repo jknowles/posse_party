@@ -6,7 +6,7 @@ class FitsImageWithinByteLimitTest < ActiveSupport::TestCase
     @subject = FitsImageWithinByteLimit.new
     # Noise compresses poorly, so this PNG is several megabytes; the alpha band
     # makes it one JPEG cannot carry as-is.
-    @oversized_png = Vips::Image.gaussnoise(2400, 1600, mean: 128, sigma: 60)
+    @oversized_png = Vips::Image.gaussnoise(1600, 2400, mean: 128, sigma: 60)
       .cast(:uchar)
       .bandjoin(255)
       .write_to_buffer(".png")
@@ -32,7 +32,7 @@ class FitsImageWithinByteLimitTest < ActiveSupport::TestCase
     assert_equal "image/jpeg", result.data.content_type
     assert_operator result.data.bytes.bytesize, :<=, 1_000_000
     assert_equal 1200, output_image.width
-    assert_equal 800, output_image.height
+    assert_equal 1800, output_image.height
     assert_equal false, output_image.has_alpha?
   end
 
