@@ -2,8 +2,8 @@
 
 **Status:** Step 1 done 2026-09-28 (#5 closed). Docs and a regression test are on
 `docs/platform-defaults`, not yet merged anywhere. civilytics.com #128 is open but not blocking.
-Step 3 built 2026-09-28 on `fix/bsky-fit-thumbnail`, not yet deployed. Steps 2 and 4 to 10 not
-started.
+Steps 2 and 3 built 2026-09-28 (`fix/linkedin-one-url`, `fix/bsky-fit-thumbnail`) and merged
+into `test/deploy-20260928`, not yet deployed. Steps 4 to 10 not started.
 **Branch:** this plan lives on `docs/media-plan`; update its status there. Code goes on one branch
 per step, off `main` (see "Branches").
 
@@ -106,6 +106,10 @@ contains a URL.
 - Test: URL mid-text → text unchanged, card for that URL.
 - Test: no URL in text → card for the entry `url`.
 - Test: text URL plus `append_url: true` → nothing appended.
+
+**Built 2026-09-28** (`fix/linkedin-one-url`, `20b1c72`) as `Platforms::Linkedin::LimitsToOneUrl`.
+The URL stays in the text as written, including at the end. Only `http(s)://` links count. Known
+limit: the card's title and description still come from the entry, not the linked page.
 
 **Consequence for civilytics.com:** a URL in a newsletter's LinkedIn text would move the card off
 the post. #128 adds a feed check that keeps that text URL-free.
