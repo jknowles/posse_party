@@ -32,6 +32,30 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     assert_match(/\A[a-f0-9]{32}\z/, reloaded_account.credentials["renewal_oauth_state"])
   end
 
+  def test_renew_credentials_twice_in_a_row_keeps_one_state_that_matches_the_redirect
+    user = users(:user)
+    login_as(user)
+    account = accounts(:user_linkedin_account)
+
+    get renew_credentials_account_path(account)
+    first_state = Rack::Utils.parse_query(URI.parse(response.location).query)["state"]
+    get renew_credentials_account_path(account)
+    second_state = Rack::Utils.parse_query(URI.parse(response.location).query)["state"]
+
+    assert_equal first_state, second_state
+    assert_equal second_state, account.reload.credentials["renewal_oauth_state"]
+  end
+
+  def test_renew_credentials_when_logged_out_sends_the_user_to_login_and_back
+    account = accounts(:user_linkedin_account)
+
+    get renew_credentials_account_path(account)
+
+    assert_response :see_other
+    assert_includes response.location, "/auth/login"
+    assert_includes CGI.unescape(response.location), renew_credentials_account_path(account)
+  end
+
   def test_renew_credentials_rejects_nonrenewable_account
     user = users(:user)
     login_as(user)

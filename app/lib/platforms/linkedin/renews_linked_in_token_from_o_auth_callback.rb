@@ -4,10 +4,11 @@ class Platforms::Linkedin
 
     def initialize
       @exchanges_short_lived_linkedin_token = ExchangesShortLivedLinkedinToken.new
+      @finds_account_by_oauth_state = FindsAccountByOauthState.new
     end
 
     def renew(code:, state:)
-      if (account = find_account_by_state(state))
+      if (account = @finds_account_by_oauth_state.find(state))
         if (token_result = @exchanges_short_lived_linkedin_token.exchange(account, code)).success?
           Result.new(success?: true, account: account)
         else
@@ -16,13 +17,6 @@ class Platforms::Linkedin
       else
         Result.new(success?: false, message: "Invalid state parameter")
       end
-    end
-
-    private
-
-    def find_account_by_state(state)
-      return if state.blank?
-      Account.where("credentials ->> 'renewal_oauth_state' = ?", state).first
     end
   end
 end

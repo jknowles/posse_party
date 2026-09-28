@@ -1,7 +1,7 @@
 class Platforms::Linkedin
   class SyndicatesLinkedinPost
     def initialize
-      @splits_content_from_organic_url = SplitsContentFromOrganicUrl.new
+      @limits_to_one_url = LimitsToOneUrl.new
       @scrapes_og_image = ScrapesOgImage.new
       @initiates_image_upload = InitiatesImageUpload.new
       @uploads_image = UploadsImage.new
@@ -12,7 +12,7 @@ class Platforms::Linkedin
       return PublishesCrosspost::Result.new(success?: false, message: "Missing access token") if (access_token = crosspost.account.credentials["access_token"]).blank?
       return PublishesCrosspost::Result.new(success?: false, message: "Missing person URN") if (person_urn = crosspost.account.credentials["person_urn"]).blank?
 
-      content, url = @splits_content_from_organic_url.split(crosspost_config, crosspost_content)
+      content, url = @limits_to_one_url.limit(crosspost_config, crosspost_content).to_a
       og_image = (url == crosspost_config.url) ? crosspost_config.og_image : @scrapes_og_image.scrape(url)
       image_urn = if url.present? &&
           og_image.present? &&

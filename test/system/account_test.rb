@@ -28,13 +28,15 @@ class AccountTest < ApplicationSystemTestCase
 
     # Wait for credentials fields to load dynamically via Turbo
     assert_text "Credentials for Bluesky"
+    wait_for_turbo_frames
+    wait_for_turbo_frames
 
-    assert_equal "password", find_field("Email")[:type]
-    assert_equal "password", find_field("App Password")[:type]
+    assert_field "Email", type: "password"
+    assert_field "App Password", type: "password"
     click_aria "Show Email"
-    assert_equal "text", find_field("Email")[:type]
+    assert_field "Email", type: "text"
     click_aria "Hide Email"
-    assert_equal "password", find_field("Email")[:type]
+    assert_field "Email", type: "password"
 
     # Fill in credentials
     fill_in "Email", with: "test@example.com"
@@ -106,6 +108,7 @@ class AccountTest < ApplicationSystemTestCase
     # Test X (Twitter) credentials
     select "X (Twitter)", from: "Platform"
     assert_text "Credentials for X"
+    wait_for_turbo_frames
     assert_link "Setup instructions"
     assert_field "API Key"
     assert_field "Access Token"
@@ -115,6 +118,7 @@ class AccountTest < ApplicationSystemTestCase
     # Switch to LinkedIn - should show different fields
     select "LinkedIn", from: "Platform"
     assert_text "Credentials for LinkedIn"
+    wait_for_turbo_frames
     assert_link "Setup instructions"
     assert_field "Client ID"
     assert_field "Access Token"
@@ -126,17 +130,20 @@ class AccountTest < ApplicationSystemTestCase
     # Switch back to X to prove it works both ways
     select "X (Twitter)", from: "Platform"
     assert_text "Credentials for X"
+    wait_for_turbo_frames
     assert_link "Setup instructions"
     assert_field "API Key"
     assert_field "API Key Secret"
 
     select "Threads", from: "Platform"
     assert_text "Credentials for Threads"
+    wait_for_turbo_frames
     assert_link "Setup instructions"
     assert_field "Access Token"
 
     select "Instagram", from: "Platform"
     assert_text "Credentials for Instagram"
+    wait_for_turbo_frames
     assert_link "Setup instructions"
     assert_field "App ID"
     assert_field "App Secret"

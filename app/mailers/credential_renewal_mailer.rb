@@ -15,11 +15,11 @@ class CredentialRenewalMailer < ApplicationMailer
 
   private
 
+  # Links to the app rather than to the platform's OAuth URL: the app mints the
+  # OAuth state when the link is clicked, so a link can never carry a stale one.
   def send_renewal(account:, subject:)
     @account = account
-    result = GeneratesPlatformRenewalUrl.new.generate(@account)
-    raise result.error if result.failure?
-    @oauth_url = result.data
+    @renewal_url = renew_credentials_account_url(@account)
 
     mail(to: @account.user.email, subject:)
   end

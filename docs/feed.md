@@ -147,11 +147,11 @@ POSSE Party reads per-entry syndication settings from a namespaced Atom element.
 | `format_string` | string | Template for composed text, e.g., `"{{title}}"`, `"{{content}}"`. |
 | `truncate` | boolean | Truncate to platform limits using platform-specific counters. |
 | `append_url` | boolean | Always append `url` (or labeled link) to composed text. |
-| `append_url_if_truncated` | boolean | Append only when truncation occurs and `append_url` is false. |
+| `append_url_if_truncated` | boolean | Append only when truncation occurs and `append_url` is false. Mastodon, X and Instagram default `append_url` to true; see [Platform defaults](#platform-defaults). |
 | `append_url_spacer` | string | Spacer inserted before appended URL/label (e.g., `" "`, `"\n\n"`). |
 | `append_url_label` | string | Label used when platforms support hyperlink labels (e.g., `"🔗"`). Supported on Bluesky. |
-| `attach_link` | boolean | Attach an OpenGraph/website card when supported (Bluesky, Threads, Facebook, LinkedIn). |
-| `og_image` | string (URL) | Card image URL (supported on Bluesky). |
+| `attach_link` | boolean | Attach an OpenGraph/website card when supported (Bluesky, Threads, Facebook, LinkedIn). A LinkedIn post carries at most one URL: when its text contains an `http(s)://` link, nothing is appended and the card points at that link. |
+| `og_image` | string (URL) | Card image URL (supported on Bluesky). Bluesky rejects images over 1 MB, so larger ones are scaled to 1200 px wide and re-encoded as JPEG; if that fails, the card posts without an image. |
 | `og_title` | string | Card title override (Bluesky). Defaults to `title` if omitted. |
 | `og_description` | string | Card description override (Bluesky). Defaults to `summary` if omitted. |
 | `media` | array<object> | Media attachments used by certain platforms (Instagram requires images/video; YouTube requires exactly one video). When present, `media.poster_url` is used by platforms that support custom covers/thumbnails (such as Instagram Reels and YouTube). |
@@ -169,6 +169,30 @@ POSSE Party reads per-entry syndication settings from a namespaced Atom element.
 ## Precedence
 
 - Platform defaults → Account settings → Entry properties → `platform_overrides[platform]`.
+
+### Platform defaults
+
+A property the feed leaves out takes the value set on the account in the dashboard, and failing
+that, the platform's default:
+
+| Platform | `append_url` | `append_url_if_truncated` | `attach_link` | Also differs from the base defaults |
+| --- | --- | --- | --- | --- |
+| Bluesky (`bsky`) | `false` | `false` | `true` | `append_url_label` `"🔗"`; truncation marker `"..."` |
+| Mastodon (`mastodon`) | **`true`** | `true` | not supported | |
+| X (`x`) | **`true`** | `true` | not supported | |
+| Threads (`threads`) | `false` | `false` | `true` | |
+| Instagram (`instagram`) | **`true`** | `true` | not supported | `format_string` `"{{content}}"`; `append_url_spacer` `"\n\nSee the full post at:\n"` |
+| Facebook (`facebook`) | `false` | `false` | `true` | |
+| LinkedIn (`linkedin`) | `false` | `false` | `true` | |
+| YouTube (`youtube`) | `false` | `false` | not supported | `append_url_spacer` `"\n\n"` |
+
+Mastodon, X and Instagram append the URL to every post by default, so on those platforms
+`append_url_if_truncated` alone changes nothing. To append the URL only when the text is truncated,
+send `"append_url": false` with it:
+
+```json
+{"truncate": true, "append_url": false, "append_url_if_truncated": true}
+```
 
 ## Notes
 

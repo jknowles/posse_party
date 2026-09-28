@@ -9,9 +9,11 @@ class AccountOverridesConfigTest < ApplicationSystemTestCase
 
     select "Bluesky", from: "Platform"
     assert_text "Credentials for Bluesky"
+    wait_for_turbo_frames
     assert_text "Configuration Overrides"
     assert_field "Format String"
     assert_text "Credentials for Bluesky"
+    wait_for_turbo_frames
     assert_text "Configuration Overrides"
 
     assert_selector "[rel='format_string_default']", text: /Default:.*\{\{title\}\}/
@@ -24,10 +26,12 @@ class AccountOverridesConfigTest < ApplicationSystemTestCase
     fill_in "Format String", with: "FMT"
     select "LinkedIn", from: "Platform"
     assert_text "Credentials for LinkedIn"
+    wait_for_turbo_frames
     assert_field "Format String", with: "FMT"
     # Switch back to Bluesky to continue with credentials used below
     select "Bluesky", from: "Platform"
     assert_text "Credentials for Bluesky"
+    wait_for_turbo_frames
     # Clear the temporary value so overrides remain unspecified for this flow
     fill_in "Format String", with: ""
 
@@ -143,6 +147,7 @@ class AccountOverridesConfigTest < ApplicationSystemTestCase
     visit new_account_path
     select "Bluesky", from: "Platform"
     assert_text "Configuration Overrides"
+    wait_for_turbo_frames
     fill_in "Label", with: "Switch Test"
     check "Active"
     fill_in "Email", with: "t2@example.com"
@@ -152,6 +157,7 @@ class AccountOverridesConfigTest < ApplicationSystemTestCase
     fill_in "OpenGraph Image URL", with: "https://img.example.com/a.png"
     select "Threads", from: "Platform"
     assert_text "Credentials for Threads"
+    wait_for_turbo_frames
     assert_no_text "Appended URL Label"
     assert_no_text "OpenGraph Image URL"
     fill_in "account_credentials_access_token", with: "token-1"

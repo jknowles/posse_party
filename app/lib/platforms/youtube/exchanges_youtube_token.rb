@@ -2,8 +2,12 @@ class Platforms::Youtube
   class ExchangesYoutubeToken
     Result = Struct.new(:success?, :message, :account, :error, keyword_init: true)
 
+    def initialize
+      @finds_account_by_oauth_state = FindsAccountByOauthState.new
+    end
+
     def exchange(authorization_code, state)
-      account = find_account_by_state(state)
+      account = @finds_account_by_oauth_state.find(state)
       return Result.new(success?: false, message: "Invalid state parameter") unless account
 
       response = make_token_request(account, authorization_code)
@@ -17,7 +21,7 @@ class Platforms::Youtube
               "refresh_token" => token_response[:refresh_token],
               "access_token_expires_at" => token_response[:expires_in]&.then { |exp| (Now.time + exp.seconds).iso8601 },
               "refresh_token_expires_at" => token_response[:refresh_token_expires_in]&.then { |exp| (Now.time + exp.seconds).iso8601 }
-            ).except("renewal_oauth_state", "renewal_reminder_sent_at"),
+            ).except("renewal_oauth_state", "renewal_oauth_state_issued_at", "renewal_reminder_sent_at"),
             credentials_renewed_at: Now.time
           )
           Result.new(success?: true, account: account)
@@ -45,14 +49,6 @@ class Platforms::Youtube
     end
 
     private
-
-    def find_account_by_state(state)
-      return nil if state.blank?
-
-      Account.find_by(
-        "credentials->>'renewal_oauth_state' = ?", state
-      )
-    end
 
     def make_token_request(account, authorization_code)
       HTTParty.post(

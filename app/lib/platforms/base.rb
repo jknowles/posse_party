@@ -60,6 +60,10 @@ module Platforms
       nil
     end
 
+    def manual_compose_url(_crosspost_content)
+      nil
+    end
+
     def supports_channel?(channel)
       fetch_constant(:SUPPORTED_CHANNELS, %w[feed]).include?(channel.to_s)
     end

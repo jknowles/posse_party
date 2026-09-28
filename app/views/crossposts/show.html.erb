@@ -110,13 +110,40 @@
         <%= render "icons/chat_bubble_left_right", class: "size-5" %>
         Content Preview
       </h2>
-      <pre class="p-4 overflow-x-auto text-sm whitespace-pre-wrap border rounded-lg bg-tertiary border-primary/10"><%= @content_preview %></pre>
+      <pre class="p-4 overflow-x-auto text-sm whitespace-pre-wrap border rounded-lg bg-tertiary border-primary/10"><%= crosspost_preview_text(@preview) %></pre>
     <% end %>
   </div>
 </div>
 
-<!-- Platform Embed -->
+<!-- Manual Compose -->
 <% platform = PublishesCrosspost::MatchesPlatformApi.new.match(@crosspost.account) %>
+<% if !@crosspost.published? && @preview.data.present? && (manual_compose_url = platform.manual_compose_url(@preview.data)) %>
+  <div class="mt-6">
+    <%= render "shared/card", padding_class: "p-6" do %>
+      <h2 class="<%= section_heading_classes %>">
+        <%= render "icons/arrow_top_right_on_square", class: "size-5" %>
+        Compose Manually
+      </h2>
+      <p class="mb-4 text-sm text-secondary">
+        Opens <%= @crosspost.account.platform_label %> with this crosspost's content already filled in, so you can publish it
+        without spending API credits. Once you've posted, paste the URL below to record it here.
+      </p>
+      <%= link_to "Compose on #{@crosspost.account.platform_label}",
+          manual_compose_url,
+          target: "_blank",
+          rel: "noopener",
+          class: "#{button_class_pack(:info)} block text-center" %>
+
+      <%= form_with url: mark_published_crosspost_path(@crosspost), method: :patch, class: "mt-4 space-y-2" do |f| %>
+        <%= f.label :url, "URL of the published post", class: "block text-sm font-medium text-primary" %>
+        <%= f.url_field :url, placeholder: "https://x.com/searls/status/...", class: input_classes %>
+        <%= f.submit "Mark as published", class: "#{button_class_pack(:success)} block w-full text-center cursor-pointer" %>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>
+
+<!-- Platform Embed -->
 <% if platform.embed_support? && (embed_html = platform.embed_html(@crosspost)) %>
   <div class="mt-6">
     <%= render "shared/card", padding_class: "p-6" do %>

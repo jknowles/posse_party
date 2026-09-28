@@ -41,6 +41,8 @@ class UserManagementTest < ApplicationSystemTestCase
     assert_text "That current password doesn't match our records."
     assert @admin_user.reload.authenticate(original_password)
 
+    # Don't type until the re-rendered (blank) form has landed, or the swap eats the values
+    assert_field "Current password", with: ""
     fill_in "Current password", with: original_password
     fill_in "New password", with: new_password
     fill_in "Confirm new password", with: new_password
