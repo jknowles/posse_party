@@ -161,6 +161,13 @@ POSSE Party reads per-entry syndication settings from a namespaced Atom element.
 | `type` | string | `"image"` or `"video"`. |
 | `url` | string (URL) | Direct URL to the media asset. |
 | `poster_url` | string (URL) | Optional cover/thumbnail image used by platforms that support custom posters (for example Instagram Reels covers and YouTube thumbnails). |
+| `alt` | string | Alt text describing the image or video. |
+| `presentation` | string | `"gif"` marks a short silent video meant to loop like a GIF. |
+| `mime` | string | The file's media type, such as `image/gif` or `video/mp4`. Used in place of the `Content-Type` the file's server sends. |
+| `width`, `height` | integer | Pixel dimensions, for platforms that need an aspect ratio. Optional. |
+| `bytes` | integer | File size, so a platform can skip a file over its limit without downloading it. |
+
+`media` can also be set inside `platform_overrides.<tag>`. The override replaces the top-level list on that platform, so one entry can send Instagram a JPEG still and LinkedIn the animated GIF. YouTube reads only the top-level list.
 
 ## Precedence
 
