@@ -33,4 +33,11 @@ class Platforms::Linkedin::UploadsImageTest < ActiveSupport::TestCase
 
     assert_match(/\AFailed to upload image to LinkedIn: /, outcome.message)
   end
+
+  def test_an_error_building_the_upload_does_not_repeat_the_access_token
+    outcome = @subject.upload_bytes("GIF89a", content_type: "image/gif", upload_url: UPLOAD_URL, access_token: "a warning\nSECRET-TOKEN-123")
+
+    assert_match(/\AFailed to upload image to LinkedIn: /, outcome.message)
+    assert_not_includes outcome.message, "SECRET-TOKEN-123"
+  end
 end

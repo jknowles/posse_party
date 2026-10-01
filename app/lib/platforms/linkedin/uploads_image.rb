@@ -1,5 +1,9 @@
 class Platforms::Linkedin
   class UploadsImage
+    def initialize
+      @redacts_bearer_token = RedactsBearerToken.new
+    end
+
     def upload(image_url, upload_url, access_token:)
       return Outcome.failure("Image URL is required") if image_url.blank?
       return Outcome.failure("Upload URL is required") if upload_url.blank?
@@ -27,7 +31,7 @@ class Platforms::Linkedin
         Outcome.failure("Failed to upload image to LinkedIn. Response: #{response.parsed_response || response.body}")
       end
     rescue => e
-      Outcome.failure("Failed to upload image to LinkedIn: #{e.message}")
+      Outcome.failure("Failed to upload image to LinkedIn: #{@redacts_bearer_token.redact(e.message)}")
     end
 
     private
