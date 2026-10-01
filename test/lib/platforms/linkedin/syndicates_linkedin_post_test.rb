@@ -12,19 +12,22 @@ class Platforms::Linkedin::SyndicatesLinkedinPostTest < ActiveSupport::TestCase
     @config = CrosspostConfig.new(url: URL)
   end
 
-  def test_posts_uploaded_images_with_the_composed_text_and_no_card
+  def test_posts_uploaded_images_with_one_url_in_the_text_and_no_card
     media = [Platforms::Linkedin::UploadsMedia::Uploaded.new(urn: "urn:li:image:1", alt: "A loop")]
     stubs { @uploads_media.upload(@crosspost, @config, access_token: "linkedin-access-token", person_urn: "urn:li:person:TEST123") }.with { media }
+    stubs { @limits_to_one_url.limit_with_media(@config, "A map at https://maps.example.com/ (2024)\n\n#{URL}") }.with {
+      Platforms::Linkedin::LimitsToOneUrl::Post.new(content: "A map at https://maps.example.com/ (2024)", card_url: nil)
+    }
     stubs {
-      @publishes_post.publish("A map \\(2024\\)\n\n#{URL}", @config, access_token: "linkedin-access-token", person_urn: "urn:li:person:TEST123", image_urn: nil, url: nil, media:)
+      @publishes_post.publish("A map at https://maps.example.com/ \\(2024\\)", @config, access_token: "linkedin-access-token", person_urn: "urn:li:person:TEST123", image_urn: nil, url: nil, media:)
     }.with { published("urn:li:share:1") }
 
-    result = @subject.syndicate!(@crosspost, @config, "A map (2024)\n\n#{URL}")
+    result = @subject.syndicate!(@crosspost, @config, "A map at https://maps.example.com/ (2024)\n\n#{URL}")
 
     assert result.success?
     assert_equal "published", @crosspost.reload.status
     assert_equal "urn:li:share:1", @crosspost.remote_id
-    assert_equal "A map (2024)\n\n#{URL}", @crosspost.content
+    assert_equal "A map at https://maps.example.com/ (2024)", @crosspost.content
     verify_never_called { @limits_to_one_url.limit }
   end
 

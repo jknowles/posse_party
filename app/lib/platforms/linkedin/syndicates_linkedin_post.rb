@@ -13,9 +13,13 @@ class Platforms::Linkedin
       return PublishesCrosspost::Result.new(success?: false, message: "Missing access token") if (access_token = crosspost.account.credentials["access_token"]).blank?
       return PublishesCrosspost::Result.new(success?: false, message: "Missing person URN") if (person_urn = crosspost.account.credentials["person_urn"]).blank?
 
-      # With media there is no card: the composed text, appended URL included, is the commentary
+      # With media there is no card: the post's one URL stays in the commentary
       media = @uploads_media.upload(crosspost, crosspost_config, access_token:, person_urn:)
-      content, url = media.any? ? [crosspost_content, nil] : @limits_to_one_url.limit(crosspost_config, crosspost_content).to_a
+      content, url = if media.any?
+        @limits_to_one_url.limit_with_media(crosspost_config, crosspost_content).to_a
+      else
+        @limits_to_one_url.limit(crosspost_config, crosspost_content).to_a
+      end
       image_urn = card_thumbnail(url, crosspost_config, access_token:, person_urn:) if url.present?
 
       # Escape special characters that LinkedIn API has issues with

@@ -13,11 +13,8 @@ class Platforms::Linkedin
     end
 
     def limit(crosspost_config, crosspost_content)
-      unappended_content = @composes_crosspost_content.compose(
-        CrosspostConfig.new(**crosspost_config.to_h, append_url: false, append_url_if_truncated: false),
-        Platforms::Linkedin::POST_CONSTRAINTS
-      ).string
-      text_url = unappended_content.scan(Patterns::URL).find { |url| url.match?(SCHEMED_URL) }
+      unappended_content = compose(crosspost_config, append_url: false, append_url_if_truncated: false)
+      text_url = url_in_text(unappended_content)
 
       if text_url && crosspost_config.attach_link
         Post.new(content: unappended_content, card_url: text_url)
@@ -25,6 +22,34 @@ class Platforms::Linkedin
         content, card_url = @splits_content_from_organic_url.split(crosspost_config, text_url ? unappended_content : crosspost_content)
         Post.new(content: content, card_url: card_url)
       end
+    end
+
+    # A post with media has no card, so its one URL stays in the text: the text's own link when it
+    # has one, otherwise the appended URL. A card that was asked for and cannot be attached is
+    # appended as its URL, so the post still links to the entry.
+    def limit_with_media(crosspost_config, crosspost_content)
+      unappended_content = compose(crosspost_config, append_url: false, append_url_if_truncated: false)
+      content = if url_in_text(unappended_content)
+        unappended_content
+      elsif crosspost_config.attach_link
+        compose(crosspost_config, append_url: true)
+      else
+        crosspost_content
+      end
+      Post.new(content:, card_url: nil)
+    end
+
+    private
+
+    def compose(crosspost_config, **overrides)
+      @composes_crosspost_content.compose(
+        CrosspostConfig.new(**crosspost_config.to_h, **overrides),
+        Platforms::Linkedin::POST_CONSTRAINTS
+      ).string
+    end
+
+    def url_in_text(content)
+      content.scan(Patterns::URL).find { |url| url.match?(SCHEMED_URL) }
     end
   end
 end
