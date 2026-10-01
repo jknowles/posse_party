@@ -6,6 +6,7 @@ Steps 2 and 3 built 2026-09-28 (`fix/linkedin-one-url`, `fix/bsky-fit-thumbnail`
 to maxwell the same day in `posse_party:media-20260928` (`test/deploy-20260928`, `0c1624f`). #4 and
 #6 close once a live post shows each working. Steps 4 to 10 not started. Upstream PR candidates are
 tracked in #10.
+**Steps 4–9 designed 2026-10-01** in [`media-steps-4-9-design.md`](media-steps-4-9-design.md), which amends this plan: step 8 also posts GIFs (the Images API takes them, up to 250 frames) and sends each file's real `Content-Type`; step 9 is native video, with the recording checking whether LinkedIn repeats a loop; Bluesky's image limit is 2,000,000 bytes; Bluesky video takes the simple `uploadBlob` route; Instagram reads `crosspost_config.media`; slow processing finishes later through `finish!`. Built in three waves (8; 4 and 5; 7, 6 and 9).
 **Branch:** this plan lives on `docs/media-plan`; update its status there. Code goes on one branch
 per step, off `main` (see "Branches").
 
