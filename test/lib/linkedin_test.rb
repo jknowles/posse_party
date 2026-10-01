@@ -62,7 +62,8 @@ class LinkedinTest < ActiveSupport::TestCase
     assert_equal "Anybody else have a recent MacBook Pro (M4 Pro in my case) for which the keyboard suddenly became really squeaky? Every time I hit the space bar, it's like nails on a chalkboard.", crosspost.content
   end
 
-  MEDIA_BASE = "https://raw.githubusercontent.com/jknowles/posse_party/feat/media-foundation/test/fixtures/files/media"
+  # A commit, not a branch, so a re-recording fetches the same bytes these cassettes hold
+  MEDIA_BASE = "https://raw.githubusercontent.com/jknowles/posse_party/914ff8332cb956c77ac45a0dd182dc8a47f862a7/test/fixtures/files/media"
 
   def test_linkedin_posts_one_image_with_its_alt_text
     crosspost = linkedin_crosspost_with_media("https://example.com/social/still/", [
@@ -74,6 +75,8 @@ class LinkedinTest < ActiveSupport::TestCase
     end
 
     assert_published_with_media crosspost
+    assert_linkedin_post("https://example.com/social/still/") { |content| content in {media: {id: /\Aurn:li:image:/, altText: "An orange square"}} }
+    assert_requested(:put, /dms-uploads/, headers: {"Content-Type" => "image/jpeg"})
   end
 
   def test_linkedin_posts_several_images_as_a_multi_image
@@ -87,6 +90,11 @@ class LinkedinTest < ActiveSupport::TestCase
     end
 
     assert_published_with_media crosspost
+    assert_linkedin_post("https://example.com/social/stills/") { |content|
+      content in {multiImage: {images: [{id: /\Aurn:li:image:/, altText: "An orange square"}, {id: /\Aurn:li:image:/, altText: "A navy square"}]}}
+    }
+    assert_requested(:put, /dms-uploads/, headers: {"Content-Type" => "image/jpeg"})
+    assert_requested(:put, /dms-uploads/, headers: {"Content-Type" => "image/png"})
   end
 
   def test_linkedin_posts_a_gif_from_its_platform_override
@@ -101,6 +109,9 @@ class LinkedinTest < ActiveSupport::TestCase
     end
 
     assert_published_with_media crosspost
+    assert_linkedin_post("https://example.com/social/loop/") { |content| content in {media: {id: /\Aurn:li:image:/, altText: "Orange, navy and paper squares in turn"}} }
+    assert_requested(:put, /dms-uploads/, headers: {"Content-Type" => "image/gif"})
+    assert_not_requested(:get, "#{MEDIA_BASE}/loop.mp4")
   end
 
   private
@@ -146,5 +157,13 @@ class LinkedinTest < ActiveSupport::TestCase
     assert_equal "published", crosspost.status
     assert_match(/\Aurn:li:(share|ugcPost):/, crosspost.remote_id)
     assert_nil crosspost.metadata["media_fallback"]
+  end
+
+  # The post carries its media and, as its only link, the entry's URL appended to the text
+  def assert_linkedin_post(post_url, &content_matches)
+    assert_requested(:post, "https://api.linkedin.com/rest/posts") { |request|
+      body = JSON.parse(request.body, symbolize_names: true)
+      body[:commentary] == "PosseParty media test \\(deleted after recording\\)\n\n#{post_url}" && content_matches.call(body[:content])
+    }
   end
 end
