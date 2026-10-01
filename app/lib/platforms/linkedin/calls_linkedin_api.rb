@@ -31,7 +31,7 @@ class Platforms::Linkedin
           Request:
           URL: #{url}
           Method: #{method.upcase}
-          Headers: #{options[:headers].inspect}
+          Headers: #{options[:headers].except("Authorization").inspect}
         MSG
       end
     rescue => e
