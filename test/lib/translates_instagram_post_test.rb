@@ -23,7 +23,7 @@ class TranslatesInstagramPostTest < ActiveSupport::TestCase
       content: "Some caption"
     )
 
-    instagram_post = translator.from_crosspost(crosspost)
+    instagram_post = translator.from_crosspost(crosspost, post.media)
 
     assert_equal "REELS", instagram_post.media_type
     assert_equal "https://example.com/post", instagram_post.url

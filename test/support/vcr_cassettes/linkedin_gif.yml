@@ -1,0 +1,302 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://raw.githubusercontent.com/jknowles/posse_party/914ff8332cb956c77ac45a0dd182dc8a47f862a7/test/fixtures/files/media/loop.gif
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1089'
+      Cache-Control:
+      - max-age=300
+      Content-Security-Policy:
+      - default-src 'none'; style-src 'unsafe-inline'; sandbox
+      Content-Type:
+      - image/gif
+      Etag:
+      - W/"f76cf54455bbb58e304c08f7d2ea83e77dc78c087d951e5408fcc490fc0721a1"
+      Strict-Transport-Security:
+      - max-age=31536000
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - deny
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Github-Request-Id:
+      - 1552:2F028E:3C565:54513:6ABEAC13
+      X-Github-Edge-Region:
+      - iad
+      Accept-Ranges:
+      - bytes
+      Date:
+      - Thu, 01 Oct 2026 18:59:10 GMT
+      Via:
+      - 1.1 varnish
+      X-Served-By:
+      - cache-bos-kbos510037-BOS
+      X-Cache:
+      - HIT
+      X-Cache-Hits:
+      - '0'
+      X-Timer:
+      - S1790881150.120259,VS0,VE54
+      Vary:
+      - Authorization,Accept-Encoding
+      Access-Control-Allow-Origin:
+      - "*"
+      Cross-Origin-Resource-Policy:
+      - cross-origin
+      X-Fastly-Request-Id:
+      - 4b2471a282901b375d4dfa901b0b7a1940329920
+      Expires:
+      - Thu, 01 Oct 2026 19:04:10 GMT
+      Source-Age:
+      - '0'
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        R0lGODlh8ADwAIAAAEdwTMJTESH/C05FVFNDQVBFMi4wAwEAAAAh+QQFMgAAACwAAAAA8ADwAAAC/4yPqcvtD6OctNqLs968+w+G4kiW5omm6sq27gvH8kzX9o3n+s73/g8MCofEovGITCqXzKbzCY1Kp9Sq9YrNarfcrvcLDovH5LL5jE6r1+y2+w2Py+f0uv2Oz+v3/L7/DxgoOEhYaHiImKi4yNjo+AgZKTlJWWl5iZmpucnZ6fkJGio6SlpqeoqaqrrK2ur6ChsrO0tba3uLm6u7y9vr+wscLDxMXGx8jJysvMzc7PwMHS09TV1tfY2drb3N3e39DR4uPk5ebn6Onq6+zt7u/g4fLz9PX29/j5+vv8/f7/8PMKDAgQQLGjyIMKHChQwbOnwIMaLEiRQrWryIMaPGjUUcO3r8CDKkyJEkS5o8iTKlypUsW7p8CTOmzJk0a9q8iTOnzp08e/r8CTSo0KFEixo9ijSp0qVMmzp9CjWq1KlUq1rNWQAAIfkEBTIAAAAsAAAAAPAA8ACAR3BMIkBqAv+Mj6nL7Q+jnLTai7PevPsPhuJIluaJpurKtu4Lx/JM1/aN5/rO9/4PDAqHxKLxiEwql8ym8wmNSqfUqvWKzWq33K73Cw6Lx+Sy+YxOq9fstvsNj8vn9Lr9js/r9/y+/w8YKDhIWGh4iJiouMjY6PgIGSk5SVlpeYmZqbnJ2en5CRoqOkpaanqKmqq6ytrq+gobKztLW2t7i5uru8vb6/sLHCw8TFxsfIycrLzM3Oz8DB0tPU1dbX2Nna29zd3t/Q0eLj5OXm5+jp6uvs7e7v4OHy8/T19vf4+fr7/P3+//DzCgwIEECxo8iDChwoUMGzp8CDGixIkUK1q8iDGjxo1FHDt6/AgypMiRJEuaPIkypcqVLFu6fAkzpsyZNGvavIkzp86dPHv6/Ak0qNChRIsaPYo0qdKlTJs6fQo1qtSpVKtazVkAACH5BAUyAAAALAAAAADwAPAAgEdwTPr38gL/jI+py+0Po5y02ouz3rz7D4biSJbmiabqyrbuC8fyTNf2jef6zvf+DwwKh8Si8YhMKpfMpvMJjUqn1Kr1is1qt9yu9wsOi8fksvmMTqvX7Lb7DY/L5/S6/Y7P6/f8vv8PGCg4SFhoeIiYqLjI2Oj4CBkpOUlZaXmJmam5ydnp+QkaKjpKWmp6ipqqusra6voKGys7S1tre4ubq7vL2+v7CxwsPExcbHyMnKy8zNzs/AwdLT1NXW19jZ2tvc3d7f0NHi4+Tl5ufo6err7O3u7+Dh8vP09fb3+Pn6+/z9/v/w8woMCBBAsaPIgwocKFDBs6fAgxosSJFCtavIgxo8aNRRw7evwIMqTIkSRLmjyJMqXKlSxbunwJM6bMmTRr2ryJM6fOnTx7+vwJNKjQoUSLGj2KNKnSpUybOn0KNarUqVSrWs1ZAAA7
+  recorded_at: Thu, 01 Oct 2026 18:59:10 GMT
+- request:
+    method: post
+    uri: https://api.linkedin.com/rest/images?action=initializeUpload
+    body:
+      encoding: UTF-8
+      string: '{"initializeUploadRequest":{"owner":"{{person_urn}}"}}'
+    headers:
+      Authorization:
+      - Bearer {{access_token}}
+      Linkedin-Version:
+      - '202605'
+      X-Restli-Protocol-Version:
+      - 2.0.0
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 01 Oct 2026 18:59:10 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      X-Restli-Protocol-Version:
+      - 2.0.0
+      X-Li-Fabric:
+      - prod-lor1
+      Set-Cookie:
+      - __cf_bm=Cpp7M9uDwQYM3LDjnRst.eO5Ok6Wu9epRevBFIfNZiQ-1790881150.2022312-1.0.1.1-BEGc7LRj5suIk42V.WCiq9Vb9feDB9RiC84z3qE4T8vXGKZwnZCaO_LJPOv8Z.8bNZKcfw923KePedMEwnk23wQX39g5WWWRSfxvOuzjyWjRpq6SPEjb87PNBTtH1FIm;
+        HttpOnly; SameSite=None; Secure; Path=/; Domain=linkedin.com; Expires=Thu,
+        01 Oct 2026 19:29:10 GMT
+      - bcookie="v=2&6383839b-35cf-4f12-89b0-5b083a97138e"; domain=.linkedin.com;
+        Path=/; Secure; Expires=Fri, 01-Oct-2027 18:59:10 GMT; SameSite=None
+      - lidc="b=OB26:s=O:r=O:a=O:p=O:g=6632:u=1328:x=1:i=1790881150:t=1790966287:v=2:sig=AQHx-EOcZWTvDf5HtrLKoPvZ1Fe3iX-a"
+      X-Li-Source-Fabric:
+      - prod-lva1
+      X-Li-Pop:
+      - cf-prod-lva1-x
+      X-Li-Proto:
+      - http/1.1
+      X-Li-Uuid:
+      - AAZczALLMubAaVHcSRwk/Q==
+      X-Content-Type-Options:
+      - nosniff
+      X-Li-Route-Key:
+      - '"b=OB26:s=O:r=O:a=O:p=O:g=6632:u=1328:x=1:i=1790881150:t=1790966287:v=2:sig=AQHx-EOcZWTvDf5HtrLKoPvZ1Fe3iX-a"'
+      Cf-Cache-Status:
+      - DYNAMIC
+      Strict-Transport-Security:
+      - max-age=31536000
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - a43db3f4cbc664a4-BOS
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: '{"value":{"uploadUrlExpiresAt":1790967550351,"uploadUrl":"https://www.linkedin.com/dms-uploads/sp/v2/D5610AQFVT0RdWZnIUg/uploaded-image/B56aD41bWCHYAE-/0?ca=vector_ads&cn=uploads&iri=B01-86&sync=0&v=beta&ut=1W_4lJkUrjsss1","image":"urn:li:image:D5610AQFVT0RdWZnIUg"}}'
+  recorded_at: Thu, 01 Oct 2026 18:59:10 GMT
+- request:
+    method: put
+    uri: https://www.linkedin.com/dms-uploads/sp/v2/D5610AQFVT0RdWZnIUg/uploaded-image/B56aD41bWCHYAE-/0?ca=vector_ads&cn=uploads&iri=B01-86&sync=0&ut=1W_4lJkUrjsss1&v=beta
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        R0lGODlh8ADwAIAAAEdwTMJTESH/C05FVFNDQVBFMi4wAwEAAAAh+QQFMgAAACwAAAAA8ADwAAAC/4yPqcvtD6OctNqLs968+w+G4kiW5omm6sq27gvH8kzX9o3n+s73/g8MCofEovGITCqXzKbzCY1Kp9Sq9YrNarfcrvcLDovH5LL5jE6r1+y2+w2Py+f0uv2Oz+v3/L7/DxgoOEhYaHiImKi4yNjo+AgZKTlJWWl5iZmpucnZ6fkJGio6SlpqeoqaqrrK2ur6ChsrO0tba3uLm6u7y9vr+wscLDxMXGx8jJysvMzc7PwMHS09TV1tfY2drb3N3e39DR4uPk5ebn6Onq6+zt7u/g4fLz9PX29/j5+vv8/f7/8PMKDAgQQLGjyIMKHChQwbOnwIMaLEiRQrWryIMaPGjUUcO3r8CDKkyJEkS5o8iTKlypUsW7p8CTOmzJk0a9q8iTOnzp08e/r8CTSo0KFEixo9ijSp0qVMmzp9CjWq1KlUq1rNWQAAIfkEBTIAAAAsAAAAAPAA8ACAR3BMIkBqAv+Mj6nL7Q+jnLTai7PevPsPhuJIluaJpurKtu4Lx/JM1/aN5/rO9/4PDAqHxKLxiEwql8ym8wmNSqfUqvWKzWq33K73Cw6Lx+Sy+YxOq9fstvsNj8vn9Lr9js/r9/y+/w8YKDhIWGh4iJiouMjY6PgIGSk5SVlpeYmZqbnJ2en5CRoqOkpaanqKmqq6ytrq+gobKztLW2t7i5uru8vb6/sLHCw8TFxsfIycrLzM3Oz8DB0tPU1dbX2Nna29zd3t/Q0eLj5OXm5+jp6uvs7e7v4OHy8/T19vf4+fr7/P3+//DzCgwIEECxo8iDChwoUMGzp8CDGixIkUK1q8iDGjxo1FHDt6/AgypMiRJEuaPIkypcqVLFu6fAkzpsyZNGvavIkzp86dPHv6/Ak0qNChRIsaPYo0qdKlTJs6fQo1qtSpVKtazVkAACH5BAUyAAAALAAAAADwAPAAgEdwTPr38gL/jI+py+0Po5y02ouz3rz7D4biSJbmiabqyrbuC8fyTNf2jef6zvf+DwwKh8Si8YhMKpfMpvMJjUqn1Kr1is1qt9yu9wsOi8fksvmMTqvX7Lb7DY/L5/S6/Y7P6/f8vv8PGCg4SFhoeIiYqLjI2Oj4CBkpOUlZaXmJmam5ydnp+QkaKjpKWmp6ipqqusra6voKGys7S1tre4ubq7vL2+v7CxwsPExcbHyMnKy8zNzs/AwdLT1NXW19jZ2tvc3d7f0NHi4+Tl5ufo6err7O3u7+Dh8vP09fb3+Pn6+/z9/v/w8woMCBBAsaPIgwocKFDBs6fAgxosSJFCtavIgxo8aNRRw7evwIMqTIkSRLmjyJMqXKlSxbunwJM6bMmTRr2ryJM6fOnTx7+vwJNKjQoUSLGj2KNKnSpUybOn0KNarUqVSrWs1ZAAA7
+    headers:
+      Authorization:
+      - Bearer {{access_token}}
+      Content-Type:
+      - image/gif
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Date:
+      - Thu, 01 Oct 2026 18:59:10 GMT
+      Content-Length:
+      - '0'
+      Connection:
+      - keep-alive
+      Server:
+      - cloudflare
+      X-Ambry-Creation-Time:
+      - Thu Oct 01 18:59:10 UTC 2026
+      Access-Control-Allow-Origin:
+      - https://www.linkedin.com
+      Strict-Transport-Security:
+      - max-age=31536000
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - sameorigin
+      Content-Security-Policy:
+      - frame-ancestors 'self'
+      X-Li-Fabric:
+      - prod-lor1
+      Pragma:
+      - no-cache
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Cache-Control:
+      - no-cache, no-store, no-transform
+      X-Li-Pop:
+      - cf-prod-lor1-x
+      X-Li-Proto:
+      - http/1.1
+      X-Li-Uuid:
+      - AAZczALPaKEn8GGR8ADLPw==
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=L8H_mwPtXsDfRw2JTT7r78cifJBybvFVwPDLRBKeeFo-1790881150.4239538-1.0.1.1-I2kAfEgYEFrginDN7ZZ0JZcBUxd6pNVpNAZDJaJcc1vvKofY2c8n_x0q3l1M01GNyiaJYiLHw0DvLSj6bw.iiSQX9uzyviiJADw_dHhLbWZzThikivXglhFNIhn2a5ag;
+        HttpOnly; SameSite=None; Secure; Path=/; Domain=linkedin.com; Expires=Thu,
+        01 Oct 2026 19:29:10 GMT
+      - bcookie="v=2&c924bb7e-7f52-41c0-8eb9-74b9d9151273"; domain=.linkedin.com;
+        Path=/; Secure; Expires=Fri, 01-Oct-2027 18:59:10 GMT; SameSite=None
+      - bscookie="v=1&2026100118591001a050a9-4cee-4f0e-8b14-fc0ad25e0757AQEvr5LKjx-wJGFPJxZGfEfEORHv_GlY";
+        domain=.www.linkedin.com; Path=/; Secure; Expires=Fri, 01-Oct-2027 18:59:10
+        GMT; HttpOnly; SameSite=None
+      - lang=v=2&lang=en-us; SameSite=None; Path=/; Domain=linkedin.com; Secure
+      - lidc="b=OGST05:s=O:r=O:a=O:p=O:g=3680:u=1:x=1:i=1790881150:t=1790967550:v=2:sig=AQGt34d8pbde13n7b7ue_zmfHcANYFRS";
+        Expires=Fri, 02 Oct 2026 18:59:10 GMT; domain=.linkedin.com; Path=/; SameSite=None;
+        Secure
+      Cf-Ray:
+      - a43db3f62d3c8fc6-BOS
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: UTF-8
+      string: ''
+  recorded_at: Thu, 01 Oct 2026 18:59:10 GMT
+- request:
+    method: post
+    uri: https://api.linkedin.com/rest/posts
+    body:
+      encoding: UTF-8
+      string: '{"author":"{{person_urn}}","commentary":"PosseParty media test \\(deleted
+        after recording\\)\n\nhttps://example.com/social/loop/","visibility":"PUBLIC","distribution":{"feedDistribution":"MAIN_FEED","targetEntities":[],"thirdPartyDistributionChannels":[]},"lifecycleState":"PUBLISHED","content":{"media":{"id":"urn:li:image:D5610AQFVT0RdWZnIUg","altText":"Orange,
+        navy and paper squares in turn"}}}'
+    headers:
+      Authorization:
+      - Bearer {{access_token}}
+      Linkedin-Version:
+      - '202605'
+      X-Restli-Protocol-Version:
+      - 2.0.0
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Date:
+      - Thu, 01 Oct 2026 18:59:11 GMT
+      Content-Length:
+      - '0'
+      Connection:
+      - keep-alive
+      Location:
+      - "/posts/urn%3Ali%3Ashare%3A7511499974757584896"
+      X-Restli-Id:
+      - urn:li:share:7511499974757584896
+      X-Restli-Protocol-Version:
+      - 2.0.0
+      X-Li-Fabric:
+      - prod-lor1
+      X-Li-Source-Fabric:
+      - prod-lva1
+      X-Li-Pop:
+      - cf-prod-lva1-x
+      X-Li-Proto:
+      - http/1.1
+      X-Li-Uuid:
+      - AAZczALSHf3eVgh9O/7rcQ==
+      X-Content-Type-Options:
+      - nosniff
+      X-Li-Route-Key:
+      - '"b=OB26:s=O:r=O:a=O:p=O:g=6632:u=1328:x=1:i=1790881150:t=1790966287:v=2:sig=AQHx-EOcZWTvDf5HtrLKoPvZ1Fe3iX-a"'
+      Cf-Cache-Status:
+      - DYNAMIC
+      Strict-Transport-Security:
+      - max-age=31536000
+      Set-Cookie:
+      - __cf_bm=6md0Geyxe62bPS.xH2KSD1NtKxLxxq82go1VjcSt_ho-1790881150.6590257-1.0.1.1-sRJWoSHeldw9ckp2jN7LnUrhWKg9EcWqcIOkDEHnfoW.YUyeF9Qo6Fag_oLGBh2MilUs69RZEvMJew4GFyAlWfJnT9dwvocj86UkgQAUndKJyMpn4hoqIskw0pVnRn77;
+        HttpOnly; SameSite=None; Secure; Path=/; Domain=linkedin.com; Expires=Thu,
+        01 Oct 2026 19:29:11 GMT
+      - bcookie="v=2&4c0ec8c7-0c58-467f-8d98-95591d29fcc3"; domain=.linkedin.com;
+        Path=/; Secure; Expires=Fri, 01-Oct-2027 18:59:11 GMT; SameSite=None
+      - lidc="b=OB26:s=O:r=O:a=O:p=O:g=6632:u=1328:x=1:i=1790881150:t=1790966287:v=2:sig=AQHx-EOcZWTvDf5HtrLKoPvZ1Fe3iX-a"
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - a43db3f79fd43430-BOS
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: UTF-8
+      string: ''
+  recorded_at: Thu, 01 Oct 2026 18:59:11 GMT
+recorded_with: VCR 6.4.0

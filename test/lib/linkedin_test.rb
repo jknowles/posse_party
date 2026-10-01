@@ -61,4 +61,109 @@ class LinkedinTest < ActiveSupport::TestCase
     # The key assertion: verify the content with parentheses was saved correctly
     assert_equal "Anybody else have a recent MacBook Pro (M4 Pro in my case) for which the keyboard suddenly became really squeaky? Every time I hit the space bar, it's like nails on a chalkboard.", crosspost.content
   end
+
+  # A commit, not a branch, so a re-recording fetches the same bytes these cassettes hold
+  MEDIA_BASE = "https://raw.githubusercontent.com/jknowles/posse_party/914ff8332cb956c77ac45a0dd182dc8a47f862a7/test/fixtures/files/media"
+
+  def test_linkedin_posts_one_image_with_its_alt_text
+    crosspost = linkedin_crosspost_with_media("https://example.com/social/still/", [
+      {"type" => "image", "url" => "#{MEDIA_BASE}/still.jpg", "alt" => "An orange square", "mime" => "image/jpeg"}
+    ])
+
+    perfect_vcr_match("linkedin_image") do
+      PublishesCrosspost.new.publish(crosspost.id)
+    end
+
+    assert_published_with_media crosspost
+    assert_linkedin_post("https://example.com/social/still/") { |content| content in {media: {id: /\Aurn:li:image:/, altText: "An orange square"}} }
+    assert_requested(:put, /dms-uploads/, headers: {"Content-Type" => "image/jpeg"})
+  end
+
+  def test_linkedin_posts_several_images_as_a_multi_image
+    crosspost = linkedin_crosspost_with_media("https://example.com/social/stills/", [
+      {"type" => "image", "url" => "#{MEDIA_BASE}/still.jpg", "alt" => "An orange square", "mime" => "image/jpeg"},
+      {"type" => "image", "url" => "#{MEDIA_BASE}/still.png", "alt" => "A navy square", "mime" => "image/png"}
+    ])
+
+    perfect_vcr_match("linkedin_multi_image") do
+      PublishesCrosspost.new.publish(crosspost.id)
+    end
+
+    assert_published_with_media crosspost
+    assert_linkedin_post("https://example.com/social/stills/") { |content|
+      content in {multiImage: {images: [{id: /\Aurn:li:image:/, altText: "An orange square"}, {id: /\Aurn:li:image:/, altText: "A navy square"}]}}
+    }
+    assert_requested(:put, /dms-uploads/, headers: {"Content-Type" => "image/jpeg"})
+    assert_requested(:put, /dms-uploads/, headers: {"Content-Type" => "image/png"})
+  end
+
+  def test_linkedin_posts_a_gif_from_its_platform_override
+    crosspost = linkedin_crosspost_with_media("https://example.com/social/loop/", [
+      {"type" => "video", "url" => "#{MEDIA_BASE}/loop.mp4", "presentation" => "gif"}
+    ], linkedin_media: [
+      {"type" => "image", "url" => "#{MEDIA_BASE}/loop.gif", "alt" => "Orange, navy and paper squares in turn", "mime" => "image/gif"}
+    ])
+
+    perfect_vcr_match("linkedin_gif") do
+      PublishesCrosspost.new.publish(crosspost.id)
+    end
+
+    assert_published_with_media crosspost
+    assert_linkedin_post("https://example.com/social/loop/") { |content| content in {media: {id: /\Aurn:li:image:/, altText: "Orange, navy and paper squares in turn"}} }
+    assert_requested(:put, /dms-uploads/, headers: {"Content-Type" => "image/gif"})
+    assert_not_requested(:get, "#{MEDIA_BASE}/loop.mp4")
+  end
+
+  private
+
+  def linkedin_crosspost_with_media(post_url, media, linkedin_media: media)
+    user = New.create(User, email: "user@example.com")
+    user.accounts.create!(platform_tag: "linkedin", label: "LinkedIn", credentials: vcr_secrets({
+      "client_id" => nil,
+      "client_secret" => nil,
+      "access_token" => ENV["LINKEDIN_ACCESS_TOKEN"],
+      "person_urn" => ENV["LINKEDIN_PERSON_URN"]
+    }))
+    posse = {
+      syndicate: true,
+      format_string: "{{content}}",
+      content: "PosseParty media test (deleted after recording)",
+      media:,
+      platform_overrides: {linkedin: {media: linkedin_media, append_url: true, append_url_spacer: "\n\n", attach_link: false}}
+    }
+    stub_request(:get, feed_url).to_return(status: 200, body: <<~XML)
+      <?xml version="1.0" encoding="utf-8"?>
+      <feed xmlns="http://www.w3.org/2005/Atom" xmlns:posse="https://posseparty.com/2024/Feed">
+        <title>Test Feed</title>
+        <id>#{feed_url}</id>
+        <updated>2026-10-01T00:00:00Z</updated>
+        <entry>
+          <title>Media test</title>
+          <id>#{post_url}</id>
+          <published>2026-10-01T00:00:00Z</published>
+          <updated>2026-10-01T00:00:00Z</updated>
+          <link rel="alternate" href="#{post_url}"/>
+          <posse:post><![CDATA[#{posse.to_json}]]></posse:post>
+        </entry>
+      </feed>
+    XML
+    FetchesFeed.new.fetch!(user.feeds.create!(url: feed_url, label: "media test"), cache: false)
+    Crosspost.find_by!(post: Post.find_by!(remote_id: post_url)).tap { |crosspost| crosspost.update!(status: "wip") }
+  end
+
+  def assert_published_with_media(crosspost)
+    crosspost.reload
+    assert_empty crosspost.failures
+    assert_equal "published", crosspost.status
+    assert_match(/\Aurn:li:(share|ugcPost):/, crosspost.remote_id)
+    assert_nil crosspost.metadata["media_fallback"]
+  end
+
+  # The post carries its media and, as its only link, the entry's URL appended to the text
+  def assert_linkedin_post(post_url, &content_matches)
+    assert_requested(:post, "https://api.linkedin.com/rest/posts") { |request|
+      body = JSON.parse(request.body, symbolize_names: true)
+      body[:commentary] == "PosseParty media test \\(deleted after recording\\)\n\n#{post_url}" && content_matches.call(body[:content])
+    }
+  end
 end

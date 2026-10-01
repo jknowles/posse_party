@@ -52,6 +52,41 @@ class Platforms::Linkedin::LimitsToOneUrlTest < ActiveSupport::TestCase
     assert_nil post.card_url
   end
 
+  def test_with_media_a_url_in_the_text_is_the_only_url
+    crosspost_config = config(summary: "The explorer at https://cog-demo.civilytics.org/ covers 56 years.", attach_link: false, append_url: true, append_url_spacer: "\n\n")
+
+    post = @subject.limit_with_media(crosspost_config, compose(crosspost_config))
+
+    assert_equal "The explorer at https://cog-demo.civilytics.org/ covers 56 years.", post.content
+    assert_nil post.card_url
+  end
+
+  def test_with_media_the_appended_url_stays_in_the_text
+    crosspost_config = config(summary: "A short caption", attach_link: false, append_url: true, append_url_spacer: "\n\n")
+
+    post = @subject.limit_with_media(crosspost_config, compose(crosspost_config))
+
+    assert_equal "A short caption\n\n#{PERMALINK}", post.content
+    assert_nil post.card_url
+  end
+
+  def test_with_media_a_card_that_cannot_be_attached_becomes_an_appended_url
+    crosspost_config = config(summary: "A short caption", append_url_spacer: "\n\n")
+
+    post = @subject.limit_with_media(crosspost_config, compose(crosspost_config))
+
+    assert_equal "A short caption\n\n#{PERMALINK}", post.content
+    assert_nil post.card_url
+  end
+
+  def test_with_media_and_no_link_asked_for_the_text_has_no_url
+    crosspost_config = config(summary: "A short caption", attach_link: false)
+
+    post = @subject.limit_with_media(crosspost_config, compose(crosspost_config))
+
+    assert_equal "A short caption", post.content
+  end
+
   private
 
   def config(**overrides)
