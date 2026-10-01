@@ -5,23 +5,29 @@ class Platforms::Linkedin
       return Outcome.failure("Upload URL is required") if upload_url.blank?
 
       if (image_data = download_image(image_url)).present?
-        response = HTTParty.put(
-          upload_url,
-          headers: {
-            "Authorization" => "Bearer #{access_token}",
-            "Content-Type" => "image/jpeg"
-          },
-          body: image_data
-        )
-
-        if response.success?
-          Outcome.success
-        else
-          Outcome.failure("Failed to upload image to LinkedIn. Response: #{response.parsed_response || response.body}")
-        end
+        upload_bytes(image_data, content_type: "image/jpeg", upload_url:, access_token:)
       else
         Outcome.failure("Failed to download image from #{image_url}")
       end
+    end
+
+    def upload_bytes(bytes, content_type:, upload_url:, access_token:)
+      response = HTTParty.put(
+        upload_url,
+        headers: {
+          "Authorization" => "Bearer #{access_token}",
+          "Content-Type" => content_type
+        },
+        body: bytes
+      )
+
+      if response.success?
+        Outcome.success
+      else
+        Outcome.failure("Failed to upload image to LinkedIn. Response: #{response.parsed_response || response.body}")
+      end
+    rescue => e
+      Outcome.failure("Failed to upload image to LinkedIn: #{e.message}")
     end
 
     private
