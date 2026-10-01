@@ -40,6 +40,16 @@ class Platforms::Bsky::KeepsLinkWithMediaTest < ActiveSupport::TestCase
     assert_equal [], post.facets
   end
 
+  def test_keeps_text_that_has_no_room_for_the_link_when_truncation_is_off
+    content = "a" * 299
+    crosspost_config = CrosspostConfig.new(**Platforms::Bsky::DEFAULT_CROSSPOST_OPTIONS, url: URL, content:, format_string: "{{content}}", attach_link: true, truncate: false)
+
+    post = @subject.keep(crosspost_config, content, [])
+
+    assert_equal content, post.text
+    assert_equal [], post.facets
+  end
+
   private
 
   def config(content:, attach_link:)

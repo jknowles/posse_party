@@ -16,6 +16,10 @@ class Platforms::Bsky
       else
         Post.new(text:, facets:)
       end
+    rescue PublishesCrosspost::UnretriableError => e
+      # The feed turned truncation off and the text has no room for the link, so the images go without it
+      Rails.logger.warn("Posting Bsky images without the card's link #{crosspost_config.url}: #{e.message}")
+      Post.new(text:, facets:)
     end
 
     private
