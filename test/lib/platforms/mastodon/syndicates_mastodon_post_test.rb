@@ -24,6 +24,7 @@ class Platforms::Mastodon::SyndicatesMastodonPostTest < ActiveSupport::TestCase
     assert_equal "900", @crosspost.remote_id
     assert_equal "https://mastodon.example/@test/900", @crosspost.url
     assert_equal "A map", @crosspost.content
+    assert_requested(:post, STATUSES_URL, headers: {"Idempotency-Key" => @crosspost.metadata["mastodon_idempotency_key"]})
   end
 
   def test_without_media_posts_the_text_alone
@@ -89,15 +90,40 @@ class Platforms::Mastodon::SyndicatesMastodonPostTest < ActiveSupport::TestCase
     assert_not_includes result.error.message, "SECRET-TOKEN-123"
   end
 
+  def test_a_retry_sends_the_idempotency_key_its_publish_already_kept
+    @crosspost.update!(metadata: {"mastodon_idempotency_key" => "posse-party-crosspost-1-kept"})
+    stubs { @uploads_mastodon_media.upload(@crosspost, @config) }.with { Platforms::Mastodon::UploadsMastodonMedia::NONE }
+    status = stub_status({status: "A map"}, id: "903", key: "posse-party-crosspost-1-kept")
+
+    result = @subject.syndicate!(@crosspost, @config, "A map")
+
+    assert result.success?
+    assert_requested status
+  end
+
+  def test_a_new_publish_cycle_gets_a_new_idempotency_key
+    stubs { @uploads_mastodon_media.upload(@crosspost, @config) }.with { Platforms::Mastodon::UploadsMastodonMedia::NONE }
+    stub_status({status: "A map"}, id: "904")
+    @subject.syndicate!(@crosspost, @config, "A map")
+    first_key = @crosspost.reload.metadata["mastodon_idempotency_key"]
+    # A manual re-publish clears the metadata, as ManuallyPublishesCrosspost does
+    @crosspost.update!(metadata: {})
+
+    @subject.syndicate!(@crosspost, @config, "A map")
+
+    assert_match(/\Aposse-party-crosspost-#{@crosspost.id}-\h{8}-/, first_key)
+    assert_not_equal first_key, @crosspost.reload.metadata["mastodon_idempotency_key"]
+  end
+
   private
 
   def media(ids, ready:)
     Platforms::Mastodon::UploadsMastodonMedia::Media.new(ids:, ready?: ready)
   end
 
-  def stub_status(body, id:)
+  def stub_status(body, id:, key: /\Aposse-party-crosspost-#{@crosspost.id}-\h{8}-\h{4}-\h{4}-\h{4}-\h{12}\z/)
     stub_request(:post, STATUSES_URL)
-      .with(body: body.to_json, headers: {"Authorization" => "Bearer token", "Idempotency-Key" => "posse-party-crosspost-#{@crosspost.id}"})
+      .with(body: body.to_json, headers: {"Authorization" => "Bearer token", "Idempotency-Key" => key})
       .to_return(status: 200, body: {id:, url: "https://mastodon.example/@test/#{id}"}.to_json, headers: {"Content-Type" => "application/json"})
   end
 end

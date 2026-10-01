@@ -126,14 +126,14 @@ class MastodonTest < ActiveSupport::TestCase
   end
 
   # The status carries the uploaded media, the entry's URL appended to the text, and the
-  # crosspost's idempotency key
+  # idempotency key this publish kept
   def assert_published_with_media(crosspost, post_url, media_count:)
     crosspost.reload
     assert_empty crosspost.failures
     assert_equal "published", crosspost.status
     assert_nil crosspost.metadata["media_fallback"]
     assert_match %r{\A#{Regexp.escape(BASE_URL)}/@\w+/\d+\z}o, crosspost.url
-    assert_requested(:post, "#{BASE_URL}/api/v1/statuses", headers: {"Idempotency-Key" => "posse-party-crosspost-#{crosspost.id}"}) { |request|
+    assert_requested(:post, "#{BASE_URL}/api/v1/statuses", headers: {"Idempotency-Key" => crosspost.metadata["mastodon_idempotency_key"]}) { |request|
       body = JSON.parse(request.body)
       body["status"] == "PosseParty media test (deleted after recording)\n\n#{post_url}" && body["media_ids"].size == media_count
     }

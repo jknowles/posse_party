@@ -38,8 +38,7 @@ class Platforms::Mastodon
         headers: {
           "Authorization" => "Bearer #{crosspost.account.credentials["access_token"]}",
           "Content-Type" => "application/json",
-          # Mastodon returns the status it already made for a key it has seen in the last hour
-          "Idempotency-Key" => "posse-party-crosspost-#{crosspost.id}"
+          "Idempotency-Key" => idempotency_key!(crosspost)
         },
         body: {status:, media_ids: media_ids.presence}.compact.to_json
       )
@@ -59,6 +58,15 @@ class Platforms::Mastodon
           message: "Failed to create Mastodon post (HTTP #{response.code}). Response: #{response.body}"
         )
       end
+    end
+
+    # Mastodon returns the status it already made for a key it has seen in the last hour, or a 404 when
+    # that status has since been deleted. One key per publish: its retries reuse it, and a manual
+    # re-publish, which clears the metadata, gets a new one.
+    def idempotency_key!(crosspost)
+      crosspost.metadata["mastodon_idempotency_key"].presence || "posse-party-crosspost-#{crosspost.id}-#{SecureRandom.uuid}".tap { |key|
+        crosspost.update!(metadata: crosspost.metadata.merge("mastodon_idempotency_key" => key))
+      }
     end
 
     def failure(error)
