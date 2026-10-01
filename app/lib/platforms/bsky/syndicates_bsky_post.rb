@@ -3,7 +3,7 @@ class Platforms::Bsky
     PDS_URL = "https://bsky.social"
 
     def initialize
-      @attaches_web_card = AttachesWebCard.new
+      @composes_post_record = ComposesPostRecord.new
     end
 
     def syndicate!(crosspost, crosspost_config, crosspost_content, rich_text_facets)
@@ -13,7 +13,9 @@ class Platforms::Bsky
           crosspost.account.credentials["password"]
         ), PDS_URL
       )
-      uri = post!(crosspost_config, crosspost_content, rich_text_facets, session)
+      record_manager = Bskyrb::RecordManager.new(session)
+      composed = @composes_post_record.compose(crosspost, crosspost_config, text: crosspost_content, facets: rich_text_facets, record_manager:)
+      uri = post!(composed.record, record_manager)
       if uri.nil?
         PublishesCrosspost::Result.new(success?: false, message: "Failed to create Bsky post")
       else
@@ -21,7 +23,7 @@ class Platforms::Bsky
         crosspost.update!(
           remote_id: uri,
           url: url,
-          content: crosspost_content,
+          content: composed.text,
           status: "published",
           published_at: Now.time
         )
@@ -35,21 +37,7 @@ class Platforms::Bsky
 
     private
 
-    def post!(crosspost_config, crosspost_content, rich_text_facets, session)
-      record_manager = Bskyrb::RecordManager.new(session)
-      embed = @attaches_web_card.attach!(crosspost_config, record_manager) if crosspost_config.attach_link
-      record = {
-        "collection" => "app.bsky.feed.post",
-        "$type" => "app.bsky.feed.post",
-        "repo" => session.did,
-        "record" => {
-          "$type" => "app.bsky.feed.post",
-          "createdAt" => Now.time.iso8601(3),
-          "text" => crosspost_content,
-          "facets" => rich_text_facets,
-          "embed" => embed
-        }.compact
-      }.compact
+    def post!(record, record_manager)
       result = record_manager.create_record(record)
       if result["error"].present?
         raise "Failed to create Bsky post: #{result["error"]} - #{result["message"]}. Record we sent follows: #{record.inspect}"
