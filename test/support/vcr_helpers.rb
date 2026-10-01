@@ -2,12 +2,18 @@ VCR.configure do |config|
   config.cassette_library_dir = "test/support/vcr_cassettes"
   config.allow_http_connections_when_no_cassette = true
   config.hook_into :webmock
+  # Mastodon's Idempotency-Key names the crosspost, whose ID differs from one test run to the next
+  config.register_request_matcher(:headers_but_idempotency_key) { |recorded, made|
+    recorded.headers.except("Idempotency-Key") == made.headers.except("Idempotency-Key")
+  }
 end
 
 module VcrHelpers
+  MATCHERS = {method: :method, uri: :uri, body: :body, headers: :headers_but_idempotency_key}.freeze
+
   def perfect_vcr_match(cassette, record: false, time: nil, except: [], &blk)
     FileUtils.rm_f("test/support/vcr_cassettes/#{cassette}.yml") if record
-    VCR.use_cassette(cassette, record: (record ? :all : :none), match_requests_on: [:method, :uri, :body, :headers] - except, allow_playback_repeats: false) do
+    VCR.use_cassette(cassette, record: (record ? :all : :none), match_requests_on: MATCHERS.except(*except).values, allow_playback_repeats: false) do
       puts_sql_changes(enabled: record) do
         if time.present?
           fake_time!(time, freeze: true, &blk)

@@ -29,7 +29,15 @@ module Platforms
     end
 
     def publish!(crosspost, crosspost_config, crosspost_content)
-      @syndicates_mastodon_post.syndicate!(crosspost, crosspost_content.string)
+      @syndicates_mastodon_post.syndicate!(crosspost, crosspost_config, crosspost_content.string)
+    end
+
+    def finishable?
+      true
+    end
+
+    def finish!(crosspost)
+      @syndicates_mastodon_post.finish!(crosspost)
     end
 
     def embed_html(crosspost)
