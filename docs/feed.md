@@ -146,7 +146,7 @@ POSSE Party reads per-entry syndication settings from a namespaced Atom element.
 | `append_url_if_truncated` | boolean | Append only when truncation occurs and `append_url` is false. |
 | `append_url_spacer` | string | Spacer inserted before appended URL/label (e.g., `" "`, `"\n\n"`). |
 | `append_url_label` | string | Label used when platforms support hyperlink labels (e.g., `"🔗"`). Supported on Bluesky. |
-| `attach_link` | boolean | Attach an OpenGraph/website card when supported (Bluesky, Threads, Facebook, LinkedIn). |
+| `attach_link` | boolean | Attach an OpenGraph/website card when supported (Bluesky, Threads, Facebook, LinkedIn). A LinkedIn post carries at most one URL: when its text contains an `http(s)://` link, nothing is appended and the card points at that link. |
 | `og_image` | string (URL) | Card image URL (supported on Bluesky). |
 | `og_title` | string | Card title override (Bluesky). Defaults to `title` if omitted. |
 | `og_description` | string | Card description override (Bluesky). Defaults to `summary` if omitted. |
