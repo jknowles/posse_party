@@ -176,4 +176,91 @@ class Platforms::Linkedin::PublishesPostTest < ActiveSupport::TestCase
       )
     }
   end
+
+  def test_posts_one_image_as_media_with_its_alt_text
+    api = Mocktail.of_next(Platforms::Linkedin::CallsLinkedinApi)
+    subject = Platforms::Linkedin::PublishesPost.new
+    stubs {
+      api.call(method: :post, path: "rest/posts", access_token: "token", body: post_body(
+        content: {media: {id: "urn:li:image:1", altText: "A loop"}}
+      ))
+    }.with {
+      Platforms::Linkedin::CallsLinkedinApi::Result.new(success?: true, headers: {"x-restli-id" => "urn:li:share:1"})
+    }
+
+    result = subject.publish("A map", CrosspostConfig.new(url: "https://example.com/social/map/"),
+      access_token: "token", person_urn: "urn:li:person:abc123",
+      media: [Platforms::Linkedin::UploadsMedia::Uploaded.new(urn: "urn:li:image:1", alt: "A loop")])
+
+    assert_equal "urn:li:share:1", result.post_urn
+  end
+
+  def test_posts_several_images_as_a_multi_image_and_omits_blank_alt_text
+    api = Mocktail.of_next(Platforms::Linkedin::CallsLinkedinApi)
+    subject = Platforms::Linkedin::PublishesPost.new
+    stubs {
+      api.call(method: :post, path: "rest/posts", access_token: "token", body: post_body(
+        content: {multiImage: {images: [{id: "urn:li:image:1", altText: "A loop"}, {id: "urn:li:image:2"}]}}
+      ))
+    }.with {
+      Platforms::Linkedin::CallsLinkedinApi::Result.new(success?: true, headers: {"x-restli-id" => "urn:li:share:2"})
+    }
+
+    result = subject.publish("A map", CrosspostConfig.new(url: "https://example.com/social/map/"),
+      access_token: "token", person_urn: "urn:li:person:abc123",
+      media: [
+        Platforms::Linkedin::UploadsMedia::Uploaded.new(urn: "urn:li:image:1", alt: "A loop"),
+        Platforms::Linkedin::UploadsMedia::Uploaded.new(urn: "urn:li:image:2", alt: "")
+      ])
+
+    assert_equal "urn:li:share:2", result.post_urn
+  end
+
+  def test_truncates_alt_text_to_linkedins_limit
+    api = Mocktail.of_next(Platforms::Linkedin::CallsLinkedinApi)
+    subject = Platforms::Linkedin::PublishesPost.new
+    stubs {
+      api.call(method: :post, path: "rest/posts", access_token: "token", body: post_body(
+        content: {media: {id: "urn:li:image:1", altText: ("a" * 4100).truncate(4086)}}
+      ))
+    }.with {
+      Platforms::Linkedin::CallsLinkedinApi::Result.new(success?: true, headers: {"x-restli-id" => "urn:li:share:3"})
+    }
+
+    result = subject.publish("A map", CrosspostConfig.new(url: "https://example.com/social/map/"),
+      access_token: "token", person_urn: "urn:li:person:abc123",
+      media: [Platforms::Linkedin::UploadsMedia::Uploaded.new(urn: "urn:li:image:1", alt: "a" * 4100)])
+
+    assert_equal "urn:li:share:3", result.post_urn
+  end
+
+  def test_a_card_without_a_summary_has_no_description
+    api = Mocktail.of_next(Platforms::Linkedin::CallsLinkedinApi)
+    subject = Platforms::Linkedin::PublishesPost.new
+    stubs {
+      api.call(method: :post, path: "rest/posts", access_token: "token", body: post_body(
+        content: {article: {source: "https://example.com/social/map/", title: "A map"}}
+      ))
+    }.with {
+      Platforms::Linkedin::CallsLinkedinApi::Result.new(success?: true, headers: {"x-restli-id" => "urn:li:share:4"})
+    }
+
+    result = subject.publish("A map", CrosspostConfig.new(url: "https://example.com/social/map/", title: "A map", summary: nil),
+      access_token: "token", person_urn: "urn:li:person:abc123", url: "https://example.com/social/map/")
+
+    assert_equal "urn:li:share:4", result.post_urn
+  end
+
+  private
+
+  def post_body(content:)
+    {
+      author: "urn:li:person:abc123",
+      commentary: "A map",
+      visibility: "PUBLIC",
+      distribution: {feedDistribution: "MAIN_FEED", targetEntities: [], thirdPartyDistributionChannels: []},
+      lifecycleState: "PUBLISHED",
+      content:
+    }
+  end
 end
