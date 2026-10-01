@@ -166,6 +166,76 @@ class InstagramTest < ActiveJob::TestCase
     verify { calls_instagram_api.call(method: :post, path: "SOME_USER_ID/media", query: expected_query) }
   end
 
+  def test_instagram_posts_the_media_its_platform_override_names
+    webp_url = "https://example.com/media/map.webp"
+    jpg_url = "https://example.com/media/map.jpg"
+    post_url = "https://example.com/posts/map"
+    stub_request(:get, feed_url)
+      .to_return(body: <<~XML, status: 200)
+        <?xml version="1.0" encoding="utf-8"?>
+        <feed xmlns="http://www.w3.org/2005/Atom" xmlns:posse="https://posseparty.com/2024/Feed">
+          <title>Test Feed</title>
+          <id>#{feed_url}</id>
+          <updated>2026-10-01T00:00:00Z</updated>
+          <entry>
+            <title>Map</title>
+            <id>#{post_url}</id>
+            <published>2026-10-01T00:00:00Z</published>
+            <updated>2026-10-01T00:00:00Z</updated>
+            <link rel="alternate" href="#{post_url}"/>
+            <posse:post><![CDATA[{"syndicate":true,"content":"A map","media":[{"type":"image","url":"#{webp_url}"}],"platform_overrides":{"instagram":{"media":[{"type":"image","url":"#{jpg_url}"}]}}}]]></posse:post>
+          </entry>
+        </feed>
+      XML
+    feed = @user.feeds.create!(url: feed_url, label: "civilytics.com social - test")
+    FetchesFeed.new.fetch!(feed, cache: false)
+    crosspost = Crosspost.includes(:account).find_by!(post: Post.find_by!(remote_id: post_url))
+    crosspost.update!(status: "wip")
+    calls_instagram_api = Mocktail.of_next(Platforms::Instagram::CallsInstagramApi)
+    stubs { |m| calls_instagram_api.call(method: :post, path: "SOME_USER_ID/media", query: m.that { |query| query[:image_url] == jpg_url }) }.with {
+      Platforms::Instagram::CallsInstagramApi::Result.new(
+        success?: false,
+        data: {error: {code: 352, error_subcode: "2207008", type: "OAuthException", fbtrace_id: "fbtrace"}},
+        message: "Waiting for Instagram container to exist"
+      )
+    }
+
+    result = PublishesCrosspost.new.publish(crosspost.id)
+
+    assert result.needs_to_finish?
+    verify { |m| calls_instagram_api.call(method: :post, path: "SOME_USER_ID/media", query: m.that { |query| query[:image_url] == jpg_url }) }
+  end
+
+  def test_instagram_skips_a_post_whose_override_empties_the_media
+    post_url = "https://example.com/posts/text-only"
+    stub_request(:get, feed_url)
+      .to_return(body: <<~XML, status: 200)
+        <?xml version="1.0" encoding="utf-8"?>
+        <feed xmlns="http://www.w3.org/2005/Atom" xmlns:posse="https://posseparty.com/2024/Feed">
+          <title>Test Feed</title>
+          <id>#{feed_url}</id>
+          <updated>2026-10-01T00:00:00Z</updated>
+          <entry>
+            <title>Text only</title>
+            <id>#{post_url}</id>
+            <published>2026-10-01T00:00:00Z</published>
+            <updated>2026-10-01T00:00:00Z</updated>
+            <link rel="alternate" href="#{post_url}"/>
+            <posse:post><![CDATA[{"syndicate":true,"media":[{"type":"image","url":"https://example.com/media/map.webp"}],"platform_overrides":{"instagram":{"media":[]}}}]]></posse:post>
+          </entry>
+        </feed>
+      XML
+    feed = @user.feeds.create!(url: feed_url, label: "civilytics.com social - test")
+    FetchesFeed.new.fetch!(feed, cache: false)
+    crosspost = Crosspost.find_by!(post: Post.find_by!(remote_id: post_url))
+    crosspost.update!(status: "wip")
+
+    result = PublishesCrosspost.new.publish(crosspost.id)
+
+    assert result.success?
+    assert_equal "skipped", crosspost.reload.status
+  end
+
   def test_instagram_story_video
     feed = fake_feed_from(@user, "2025-10-12-justin.searls.co-hand-edited.atom.xml")
     FetchesFeed.new.fetch!(feed, cache: false)
