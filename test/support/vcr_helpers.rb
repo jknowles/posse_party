@@ -65,3 +65,18 @@ module VcrHelpers
     end
   end
 end
+
+# Bluesky issues its session tokens in createSession's response, so no environment variable names
+# them in advance; later requests carry the access token as a Bearer header. Registered once here,
+# and the filters touch only Bluesky's /xrpc/ calls, so they cannot rewrite another platform's
+# recording.
+VCR.configure do |config|
+  config.filter_sensitive_data("ACCESS_JWT_PLACEHOLDER") { |interaction|
+    if interaction.request.uri.include?("/xrpc/")
+      interaction.response.body.to_s.b[/"accessJwt":"([^"]+)"/, 1] || interaction.request.headers["Authorization"]&.first&.delete_prefix("Bearer ")
+    end
+  }
+  config.filter_sensitive_data("REFRESH_JWT_PLACEHOLDER") { |interaction|
+    interaction.response.body.to_s.b[/"refreshJwt":"([^"]+)"/, 1] if interaction.request.uri.include?("/xrpc/")
+  }
+end
