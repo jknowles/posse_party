@@ -147,7 +147,7 @@ POSSE Party reads per-entry syndication settings from a namespaced Atom element.
 | `append_url_spacer` | string | Spacer inserted before appended URL/label (e.g., `" "`, `"\n\n"`). |
 | `append_url_label` | string | Label used when platforms support hyperlink labels (e.g., `"🔗"`). Supported on Bluesky. |
 | `attach_link` | boolean | Attach an OpenGraph/website card when supported (Bluesky, Threads, Facebook, LinkedIn). |
-| `og_image` | string (URL) | Card image URL (supported on Bluesky). Bluesky rejects images over 1 MB, so larger ones are scaled to 1200 px wide and re-encoded as JPEG; if that fails, the card posts without an image. |
+| `og_image` | string (URL) | Card image URL (supported on Bluesky). Bluesky rejects images over 1 MB, so larger ones are scaled to 1200 px wide and re-encoded as JPEG; if the image cannot be downloaded (or is over 20 MB) or brought under 1 MB, the card posts without it. |
 | `og_title` | string | Card title override (Bluesky). Defaults to `title` if omitted. |
 | `og_description` | string | Card description override (Bluesky). Defaults to `summary` if omitted. |
 | `media` | array<object> | Media attachments used by certain platforms (Instagram requires images/video; YouTube requires exactly one video; Bluesky posts up to 4 JPEG, PNG, WebP or GIF images in place of the link card, scaling any over 2 MB, and does not post video yet; a link card that was asked for becomes the appended link). When present, `media.poster_url` is used by platforms that support custom covers/thumbnails (such as Instagram Reels and YouTube). When Bluesky cannot post an image, the post goes out with its link card and the reason is recorded in the crosspost's metadata. |

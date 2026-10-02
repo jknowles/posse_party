@@ -54,6 +54,27 @@ class Platforms::Bsky::AttachesWebCardTest < ActiveSupport::TestCase
     assert_equal blob, result["external"]["thumb"]
   end
 
+  def test_an_og_image_too_large_to_download_leaves_the_card_without_a_thumb
+    uploads_bsky_blob = Mocktail.of_next(Platforms::Bsky::UploadsBskyBlob)
+    subject = Platforms::Bsky::AttachesWebCard.new
+    stub_request(:get, "https://example.com/og.png").to_return(status: 200, body: "x", headers: {"Content-Length" => (21 * 1024 * 1024).to_s})
+
+    result = subject.attach!(CrosspostConfig.new(url: "https://example.com/posts/123", title: "A title", og_image: "https://example.com/og.png"), :record_manager)
+
+    assert_equal({"uri" => "https://example.com/posts/123", "title" => "A title", "description" => "A title"}, result["external"])
+    verify_never_called { uploads_bsky_blob.upload }
+  end
+
+  def test_an_og_image_that_cannot_be_downloaded_leaves_the_card_without_a_thumb
+    Mocktail.of_next(Platforms::Bsky::UploadsBskyBlob)
+    subject = Platforms::Bsky::AttachesWebCard.new
+    stub_request(:get, "https://example.com/og.png").to_return(status: 404, body: "Not Found")
+
+    result = subject.attach!(CrosspostConfig.new(url: "https://example.com/posts/123", title: "A title", og_image: "https://example.com/og.png"), :record_manager)
+
+    assert_nil result["external"]["thumb"]
+  end
+
   def test_a_thumb_bluesky_refuses_fails_the_post_as_before
     uploads_bsky_blob = Mocktail.of_next(Platforms::Bsky::UploadsBskyBlob)
     subject = Platforms::Bsky::AttachesWebCard.new

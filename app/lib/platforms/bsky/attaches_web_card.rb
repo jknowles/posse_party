@@ -28,7 +28,10 @@ class Platforms::Bsky::AttachesWebCard
     return if image_url.blank?
 
     download = @downloads_media.download(MediaItem.new(type: "image", url: image_url), max_bytes: MAX_DOWNLOAD_BYTES)
-    raise "Failed to download og_image: #{image_url}. #{download.error}" if download.failure?
+    if download.failure?
+      Rails.logger.warn("Posting Bsky web card without a thumbnail for og_image #{image_url}: #{download.error}")
+      return
+    end
 
     fit_result = @fits_image_within_byte_limit.fit(download.data.bytes, download.data.content_type, max_bytes: THUMB_MAX_BYTES)
     if fit_result.failure?
