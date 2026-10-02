@@ -22,7 +22,7 @@ This guide walks through connecting your Mastodon account to POSSE Party so it c
 
 ![Mastodon application details form](../images/mastodon-3.png)
 
-3. Scroll to **Scopes** and—leaving `profile` checked—check `write:statuses` as well. Click **Submit**
+3. Scroll to **Scopes** and—leaving `profile` checked—check `write:statuses` and `write:media` as well. Click **Submit**. Without `write:media`, POSSE Party cannot upload a post's images, and the post goes out as text. To add it to an application you already use, check it, save, and copy the access token again: Mastodon issues a new one when the scopes change.
 
 ![Mastodon application scopes with write:statuses selected](../images/mastodon-4.png)
 
