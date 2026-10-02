@@ -1,0 +1,387 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://raw.githubusercontent.com/jknowles/posse_party/914ff8332cb956c77ac45a0dd182dc8a47f862a7/test/fixtures/files/media/loop.gif
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1089'
+      Cache-Control:
+      - max-age=300
+      Content-Security-Policy:
+      - default-src 'none'; style-src 'unsafe-inline'; sandbox
+      Content-Type:
+      - image/gif
+      Etag:
+      - W/"f76cf54455bbb58e304c08f7d2ea83e77dc78c087d951e5408fcc490fc0721a1"
+      Strict-Transport-Security:
+      - max-age=31536000
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - deny
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Github-Request-Id:
+      - 3BF0:1C525C:1A0AC4:2724E0:6ABEF637
+      X-Github-Edge-Region:
+      - iad
+      Accept-Ranges:
+      - bytes
+      Date:
+      - Fri, 02 Oct 2026 00:40:56 GMT
+      Via:
+      - 1.1 varnish
+      X-Served-By:
+      - cache-bos-kbos510056-BOS
+      X-Cache:
+      - HIT
+      X-Cache-Hits:
+      - '1'
+      X-Timer:
+      - S1790901656.362615,VS0,VE1
+      Vary:
+      - Authorization,Accept-Encoding
+      Access-Control-Allow-Origin:
+      - "*"
+      Cross-Origin-Resource-Policy:
+      - cross-origin
+      X-Fastly-Request-Id:
+      - ac428f01bde0303d37323d73027af4875b8a2724
+      Expires:
+      - Fri, 02 Oct 2026 00:45:56 GMT
+      Source-Age:
+      - '108'
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        R0lGODlh8ADwAIAAAEdwTMJTESH/C05FVFNDQVBFMi4wAwEAAAAh+QQFMgAAACwAAAAA8ADwAAAC/4yPqcvtD6OctNqLs968+w+G4kiW5omm6sq27gvH8kzX9o3n+s73/g8MCofEovGITCqXzKbzCY1Kp9Sq9YrNarfcrvcLDovH5LL5jE6r1+y2+w2Py+f0uv2Oz+v3/L7/DxgoOEhYaHiImKi4yNjo+AgZKTlJWWl5iZmpucnZ6fkJGio6SlpqeoqaqrrK2ur6ChsrO0tba3uLm6u7y9vr+wscLDxMXGx8jJysvMzc7PwMHS09TV1tfY2drb3N3e39DR4uPk5ebn6Onq6+zt7u/g4fLz9PX29/j5+vv8/f7/8PMKDAgQQLGjyIMKHChQwbOnwIMaLEiRQrWryIMaPGjUUcO3r8CDKkyJEkS5o8iTKlypUsW7p8CTOmzJk0a9q8iTOnzp08e/r8CTSo0KFEixo9ijSp0qVMmzp9CjWq1KlUq1rNWQAAIfkEBTIAAAAsAAAAAPAA8ACAR3BMIkBqAv+Mj6nL7Q+jnLTai7PevPsPhuJIluaJpurKtu4Lx/JM1/aN5/rO9/4PDAqHxKLxiEwql8ym8wmNSqfUqvWKzWq33K73Cw6Lx+Sy+YxOq9fstvsNj8vn9Lr9js/r9/y+/w8YKDhIWGh4iJiouMjY6PgIGSk5SVlpeYmZqbnJ2en5CRoqOkpaanqKmqq6ytrq+gobKztLW2t7i5uru8vb6/sLHCw8TFxsfIycrLzM3Oz8DB0tPU1dbX2Nna29zd3t/Q0eLj5OXm5+jp6uvs7e7v4OHy8/T19vf4+fr7/P3+//DzCgwIEECxo8iDChwoUMGzp8CDGixIkUK1q8iDGjxo1FHDt6/AgypMiRJEuaPIkypcqVLFu6fAkzpsyZNGvavIkzp86dPHv6/Ak0qNChRIsaPYo0qdKlTJs6fQo1qtSpVKtazVkAACH5BAUyAAAALAAAAADwAPAAgEdwTPr38gL/jI+py+0Po5y02ouz3rz7D4biSJbmiabqyrbuC8fyTNf2jef6zvf+DwwKh8Si8YhMKpfMpvMJjUqn1Kr1is1qt9yu9wsOi8fksvmMTqvX7Lb7DY/L5/S6/Y7P6/f8vv8PGCg4SFhoeIiYqLjI2Oj4CBkpOUlZaXmJmam5ydnp+QkaKjpKWmp6ipqqusra6voKGys7S1tre4ubq7vL2+v7CxwsPExcbHyMnKy8zNzs/AwdLT1NXW19jZ2tvc3d7f0NHi4+Tl5ufo6err7O3u7+Dh8vP09fb3+Pn6+/z9/v/w8woMCBBAsaPIgwocKFDBs6fAgxosSJFCtavIgxo8aNRRw7evwIMqTIkSRLmjyJMqXKlSxbunwJM6bMmTRr2ryJM6fOnTx7+vwJNKjQoUSLGj2KNKnSpUybOn0KNarUqVSrWs1ZAAA7
+  recorded_at: Fri, 02 Oct 2026 00:40:56 GMT
+- request:
+    method: post
+    uri: "{{base_url}}/api/v2/media"
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS1ob3BKRk5Sc25KQzBUVzBuDQpDb250ZW50LURpc3Bvc2l0aW9uOiBmb3JtLWRhdGE7IG5hbWU9ImZpbGUiOyBmaWxlbmFtZT0ibWVkaWEyMDI2MTAwMi03LXdzOW9sMy5naWYiDQpDb250ZW50LVR5cGU6IGltYWdlL2dpZg0KDQpHSUY4OWHwAPAAgAAAR3BMwlMRIf8LTkVUU0NBUEUyLjADAQAAACH5BAUyAAAALAAAAADwAPAAAAL/jI+py+0Po5y02ouz3rz7D4biSJbmiabqyrbuC8fyTNf2jef6zvf+DwwKh8Si8YhMKpfMpvMJjUqn1Kr1is1qt9yu9wsOi8fksvmMTqvX7Lb7DY/L5/S6/Y7P6/f8vv8PGCg4SFhoeIiYqLjI2Oj4CBkpOUlZaXmJmam5ydnp+QkaKjpKWmp6ipqqusra6voKGys7S1tre4ubq7vL2+v7CxwsPExcbHyMnKy8zNzs/AwdLT1NXW19jZ2tvc3d7f0NHi4+Tl5ufo6err7O3u7+Dh8vP09fb3+Pn6+/z9/v/w8woMCBBAsaPIgwocKFDBs6fAgxosSJFCtavIgxo8aNRRw7evwIMqTIkSRLmjyJMqXKlSxbunwJM6bMmTRr2ryJM6fOnTx7+vwJNKjQoUSLGj2KNKnSpUybOn0KNarUqVSrWs1ZAAAh+QQFMgAAACwAAAAA8ADwAIBHcEwiQGoC/4yPqcvtD6OctNqLs968+w+G4kiW5omm6sq27gvH8kzX9o3n+s73/g8MCofEovGITCqXzKbzCY1Kp9Sq9YrNarfcrvcLDovH5LL5jE6r1+y2+w2Py+f0uv2Oz+v3/L7/DxgoOEhYaHiImKi4yNjo+AgZKTlJWWl5iZmpucnZ6fkJGio6SlpqeoqaqrrK2ur6ChsrO0tba3uLm6u7y9vr+wscLDxMXGx8jJysvMzc7PwMHS09TV1tfY2drb3N3e39DR4uPk5ebn6Onq6+zt7u/g4fLz9PX29/j5+vv8/f7/8PMKDAgQQLGjyIMKHChQwbOnwIMaLEiRQrWryIMaPGjUUcO3r8CDKkyJEkS5o8iTKlypUsW7p8CTOmzJk0a9q8iTOnzp08e/r8CTSo0KFEixo9ijSp0qVMmzp9CjWq1KlUq1rNWQAAIfkEBTIAAAAsAAAAAPAA8ACAR3BM+vfyAv+Mj6nL7Q+jnLTai7PevPsPhuJIluaJpurKtu4Lx/JM1/aN5/rO9/4PDAqHxKLxiEwql8ym8wmNSqfUqvWKzWq33K73Cw6Lx+Sy+YxOq9fstvsNj8vn9Lr9js/r9/y+/w8YKDhIWGh4iJiouMjY6PgIGSk5SVlpeYmZqbnJ2en5CRoqOkpaanqKmqq6ytrq+gobKztLW2t7i5uru8vb6/sLHCw8TFxsfIycrLzM3Oz8DB0tPU1dbX2Nna29zd3t/Q0eLj5OXm5+jp6uvs7e7v4OHy8/T19vf4+fr7/P3+//DzCgwIEECxo8iDChwoUMGzp8CDGixIkUK1q8iDGjxo1FHDt6/AgypMiRJEuaPIkypcqVLFu6fAkzpsyZNGvavIkzp86dPHv6/Ak0qNChRIsaPYo0qdKlTJs6fQo1qtSpVKtazVkAADsNCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0taG9wSkZOUnNuSkMwVFcwbg0KQ29udGVudC1EaXNwb3NpdGlvbjogZm9ybS1kYXRhOyBuYW1lPSJkZXNjcmlwdGlvbiINCg0KT3JhbmdlLCBuYXZ5IGFuZCBwYXBlciBzcXVhcmVzIGluIHR1cm4NCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0taG9wSkZOUnNuSkMwVFcwbi0tDQo=
+    headers:
+      Authorization:
+      - Bearer {{access_token}}
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Content-Type:
+      - multipart/form-data; boundary=------------------------hopJFNRsnJC0TW0n
+  response:
+    status:
+      code: 202
+      message: Accepted
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '499'
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Reset:
+      - '2026-10-02T01:00:00.550212Z'
+      X-Runtime:
+      - '0.636002'
+      Server:
+      - Mastodon
+      X-Request-Id:
+      - 5f715f9c-0933-43bd-80e3-d69a5ed40e62
+      X-Ratelimit-Limit:
+      - '30'
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - DENY
+      X-Ratelimit-Remaining:
+      - '27'
+      Content-Security-Policy:
+      - default-src 'none'; frame-ancestors 'none'; form-action 'none'
+      Cache-Control:
+      - private, no-store
+      Referrer-Policy:
+      - same-origin
+      Content-Type:
+      - application/json; charset=utf-8
+      Accept-Ranges:
+      - bytes
+      Via:
+      - 1.1 varnish, 1.1 varnish
+      Date:
+      - Fri, 02 Oct 2026 00:40:57 GMT
+      X-Served-By:
+      - cache-fra-etou8220026-FRA, cache-fra-etou8220026-FRA, cache-pdk-kfty8610035-PDK
+      X-Cache:
+      - MISS, MISS, MISS
+      X-Cache-Hits:
+      - 0, 0, 0
+      X-Timer:
+      - S1790901656.449992,VS0,VE835
+      Vary:
+      - Authorization, Origin
+      Strict-Transport-Security:
+      - max-age=31557600
+      Alt-Svc:
+      - h3=":443";ma=86400,h3-29=":443";ma=86400,h3-27=":443";ma=86400
+    body:
+      encoding: UTF-8
+      string: '{"id":"117368530972773496","type":"gifv","url":null,"preview_url":"https://files.mastodon.social/media_attachments/files/117/368/530/972/773/496/small/6d1684d0261b9708.png","remote_url":null,"preview_remote_url":null,"text_url":null,"meta":{"original":{"width":240,"height":240,"frame_rate":"2/1","duration":1.5,"bitrate":9504},"small":{"width":240,"height":240,"size":"240x240","aspect":1.0}},"description":"Orange,
+        navy and paper squares in turn","blurhash":"U1M3lb],fQ],],jtfQjtjafQfQfQ],jtfQjt"}'
+  recorded_at: Fri, 02 Oct 2026 00:40:57 GMT
+- request:
+    method: get
+    uri: "{{base_url}}/api/v1/media/117368530972773496"
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Authorization:
+      - Bearer {{access_token}}
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 206
+      message: Partial Content
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '499'
+      X-Xss-Protection:
+      - '0'
+      X-Ratelimit-Limit:
+      - '300'
+      X-Frame-Options:
+      - DENY
+      Content-Security-Policy:
+      - default-src 'none'; frame-ancestors 'none'; form-action 'none'
+      Server:
+      - Mastodon
+      Content-Type:
+      - application/json; charset=utf-8
+      Referrer-Policy:
+      - same-origin
+      Cache-Control:
+      - private, no-store
+      X-Content-Type-Options:
+      - nosniff
+      X-Runtime:
+      - '0.041758'
+      X-Request-Id:
+      - 30474a68-229f-4ce5-a966-8e9418f30476
+      X-Ratelimit-Remaining:
+      - '294'
+      X-Ratelimit-Reset:
+      - '2026-10-02T00:45:00.416336Z'
+      Accept-Ranges:
+      - bytes
+      Via:
+      - 1.1 varnish, 1.1 varnish
+      Date:
+      - Fri, 02 Oct 2026 00:40:57 GMT
+      X-Served-By:
+      - cache-fra-etou8220077-FRA, cache-fra-etou8220108-FRA, cache-bos-kbos510028-BOS
+      X-Cache:
+      - MISS, MISS, MISS
+      X-Cache-Hits:
+      - 0, 0, 0
+      X-Timer:
+      - S1790901657.321550,VS0,VE164
+      Vary:
+      - Authorization, Origin
+      Strict-Transport-Security:
+      - max-age=31557600
+      Alt-Svc:
+      - h3=":443";ma=86400,h3-29=":443";ma=86400,h3-27=":443";ma=86400
+    body:
+      encoding: UTF-8
+      string: '{"id":"117368530972773496","type":"gifv","url":null,"preview_url":"https://files.mastodon.social/media_attachments/files/117/368/530/972/773/496/small/6d1684d0261b9708.png","remote_url":null,"preview_remote_url":null,"text_url":null,"meta":{"original":{"width":240,"height":240,"frame_rate":"2/1","duration":1.5,"bitrate":9504},"small":{"width":240,"height":240,"size":"240x240","aspect":1.0}},"description":"Orange,
+        navy and paper squares in turn","blurhash":"U1M3lb],fQ],],jtfQjtjafQfQfQ],jtfQjt"}'
+  recorded_at: Fri, 02 Oct 2026 00:40:57 GMT
+- request:
+    method: get
+    uri: "{{base_url}}/api/v1/media/117368530972773496"
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Authorization:
+      - Bearer {{access_token}}
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json; charset=utf-8
+      X-Xss-Protection:
+      - '0'
+      Content-Security-Policy:
+      - default-src 'none'; frame-ancestors 'none'; form-action 'none'
+      Referrer-Policy:
+      - same-origin
+      Cache-Control:
+      - private, no-store
+      Etag:
+      - W/"c4fd1c6e9aeca4bd85f1a3fcda5d868e"
+      X-Request-Id:
+      - cdbe01ee-592f-492f-938c-a1c48a00cee7
+      Server:
+      - Mastodon
+      X-Frame-Options:
+      - DENY
+      X-Ratelimit-Remaining:
+      - '293'
+      X-Ratelimit-Limit:
+      - '300'
+      X-Ratelimit-Reset:
+      - '2026-10-02T00:45:00.597311Z'
+      X-Runtime:
+      - '0.017451'
+      X-Content-Type-Options:
+      - nosniff
+      Accept-Ranges:
+      - none
+      Via:
+      - 1.1 varnish, 1.1 varnish
+      Date:
+      - Fri, 02 Oct 2026 00:41:00 GMT
+      X-Served-By:
+      - cache-fra-etou8220179-FRA, cache-fra-etou8220108-FRA, cache-bos-kbos510037-BOS
+      X-Cache:
+      - MISS, MISS, MISS
+      X-Cache-Hits:
+      - 0, 0, 0
+      X-Timer:
+      - S1790901661.511373,VS0,VE148
+      Vary:
+      - Authorization, Origin, Accept-Encoding
+      Strict-Transport-Security:
+      - max-age=31557600
+      Alt-Svc:
+      - h3=":443";ma=86400,h3-29=":443";ma=86400,h3-27=":443";ma=86400
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: '{"id":"117368530972773496","type":"gifv","url":"https://files.mastodon.social/media_attachments/files/117/368/530/972/773/496/original/6d1684d0261b9708.mp4","preview_url":"https://files.mastodon.social/media_attachments/files/117/368/530/972/773/496/small/6d1684d0261b9708.png","remote_url":null,"preview_remote_url":null,"text_url":null,"meta":{"original":{"width":240,"height":240,"frame_rate":"2/1","duration":1.5,"bitrate":9504},"small":{"width":240,"height":240,"size":"240x240","aspect":1.0}},"description":"Orange,
+        navy and paper squares in turn","blurhash":"U1M3lb],fQ],],jtfQjtjafQfQfQ],jtfQjt"}'
+  recorded_at: Fri, 02 Oct 2026 00:41:00 GMT
+- request:
+    method: post
+    uri: "{{base_url}}/api/v1/statuses"
+    body:
+      encoding: UTF-8
+      string: '{"status":"PosseParty media test (deleted after recording)\n\nhttps://example.com/social/loop/","media_ids":["117368530972773496"]}'
+    headers:
+      Authorization:
+      - Bearer {{access_token}}
+      Content-Type:
+      - application/json
+      Idempotency-Key:
+      - posse-party-crosspost-521411914-ae126735-e88b-433c-8f40-ce7bee91cee0
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json; charset=utf-8
+      X-Xss-Protection:
+      - '0'
+      Content-Security-Policy:
+      - default-src 'none'; frame-ancestors 'none'; form-action 'none'
+      Referrer-Policy:
+      - same-origin
+      Cache-Control:
+      - private, no-store
+      Etag:
+      - W/"2b34a39405ac023094220a35c1ab0f1f"
+      X-Request-Id:
+      - b184c7ba-a769-4b0b-827c-ebc7086f805f
+      Server:
+      - Mastodon
+      X-Frame-Options:
+      - DENY
+      X-Ratelimit-Remaining:
+      - '292'
+      X-Ratelimit-Limit:
+      - '300'
+      X-Ratelimit-Reset:
+      - '2026-10-02T00:45:00.805628Z'
+      X-Runtime:
+      - '0.151272'
+      X-Content-Type-Options:
+      - nosniff
+      Accept-Ranges:
+      - none
+      Via:
+      - 1.1 varnish, 1.1 varnish
+      Date:
+      - Fri, 02 Oct 2026 00:41:00 GMT
+      X-Served-By:
+      - cache-fra-eddf8230199-FRA, cache-fra-eddf8230199-FRA, cache-bos-kbos510040-BOS
+      X-Cache:
+      - MISS, MISS, MISS
+      X-Cache-Hits:
+      - 0, 0, 0
+      X-Timer:
+      - S1790901661.701286,VS0,VE293
+      Vary:
+      - Authorization, Origin, Accept-Encoding
+      Strict-Transport-Security:
+      - max-age=31557600
+      Alt-Svc:
+      - h3=":443";ma=86400,h3-29=":443";ma=86400,h3-27=":443";ma=86400
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        eyJpZCI6IjExNzM2ODUzMTI0NDcwOTY1NCIsImNyZWF0ZWRfYXQiOiIyMDI2LTEwLTAyVDAwOjQxOjAwLjg0MFoiLCJpbl9yZXBseV90b19pZCI6bnVsbCwiaW5fcmVwbHlfdG9fYWNjb3VudF9pZCI6bnVsbCwic2Vuc2l0aXZlIjpmYWxzZSwic3BvaWxlcl90ZXh0IjoiIiwidmlzaWJpbGl0eSI6InB1YmxpYyIsImxhbmd1YWdlIjoiZW4iLCJ1cmkiOiJ7e2Jhc2VfdXJsfX0vYXAvdXNlcnMvMTE2NzI3NTYwODU2MTUyMDk1L3N0YXR1c2VzLzExNzM2ODUzMTI0NDcwOTY1NCIsInVybCI6Int7YmFzZV91cmx9fS9AY2l2aWx5dGljcy8xMTczNjg1MzEyNDQ3MDk2NTQiLCJyZXBsaWVzX2NvdW50IjowLCJyZWJsb2dzX2NvdW50IjowLCJmYXZvdXJpdGVzX2NvdW50IjowLCJxdW90ZXNfY291bnQiOjAsImVkaXRlZF9hdCI6bnVsbCwiZmF2b3VyaXRlZCI6ZmFsc2UsInJlYmxvZ2dlZCI6ZmFsc2UsIm11dGVkIjpmYWxzZSwiYm9va21hcmtlZCI6ZmFsc2UsInBpbm5lZCI6ZmFsc2UsImNvbnRlbnQiOiI8cD5Qb3NzZVBhcnR5IG1lZGlhIHRlc3QgKGRlbGV0ZWQgYWZ0ZXIgcmVjb3JkaW5nKTwvcD48cD48YSBocmVmPVwiaHR0cHM6Ly9leGFtcGxlLmNvbS9zb2NpYWwvbG9vcC9cIiB0YXJnZXQ9XCJfYmxhbmtcIiByZWw9XCJub2ZvbGxvdyBub29wZW5lclwiIHRyYW5zbGF0ZT1cIm5vXCI+PHNwYW4gY2xhc3M9XCJpbnZpc2libGVcIj5odHRwczovLzwvc3Bhbj48c3BhbiBjbGFzcz1cIlwiPmV4YW1wbGUuY29tL3NvY2lhbC9sb29wLzwvc3Bhbj48c3BhbiBjbGFzcz1cImludmlzaWJsZVwiPjwvc3Bhbj48L2E+PC9wPiIsImZpbHRlcmVkIjpbXSwicmVibG9nIjpudWxsLCJhcHBsaWNhdGlvbiI6eyJuYW1lIjoiUG9zc2UgUGFydHkiLCJ3ZWJzaXRlIjpudWxsfSwiYWNjb3VudCI6eyJpZCI6IjExNjcyNzU2MDg1NjE1MjA5NSIsInVzZXJuYW1lIjoiY2l2aWx5dGljcyIsImFjY3QiOiJjaXZpbHl0aWNzIiwiZGlzcGxheV9uYW1lIjoiSmFyZWQgS25vd2xlcyIsImxvY2tlZCI6ZmFsc2UsImJvdCI6ZmFsc2UsImRpc2NvdmVyYWJsZSI6bnVsbCwiaW5kZXhhYmxlIjpmYWxzZSwiZ3JvdXAiOmZhbHNlLCJjcmVhdGVkX2F0IjoiMjAyNi0wNi0xMFQwMDowMDowMC4wMDBaIiwibm90ZSI6IjxwPkZvdW5kZXIgYW5kIFByZXNpZGVudCBvZiBDaXZpbHl0aWNzIENvbnN1bHRpbmcgfCBQb2xpdGljYWwgU2NpZW5jZSBQaC5ELiB8IFNwZWNpYWxpemluZyBpbiBkYXRhIHZpeiDwn5OKLCBwb2xpY3kgcmVzZWFyY2gsIGFuZCBkYXRhIGFuYWx5c2lzIG9mIFVTIHB1YmxpYyBkYXRhIHdpdGggYSBzaWRlIG9mIHB1YmxpYyBmaW5hbmNlIPCfkrggfCDwn464IPCfk7cg8J+Wpe+4jyBzZWxmLWhvc3RlciBhbmQgYWN0aXZlIGRlLWdvb2dsZXIgfCBCb3N0b24sIE1BPC9wPiIsInVybCI6Int7YmFzZV91cmx9fS9AY2l2aWx5dGljcyIsInVyaSI6Int7YmFzZV91cmx9fS9hcC91c2Vycy8xMTY3Mjc1NjA4NTYxNTIwOTUiLCJhdmF0YXIiOiJodHRwczovL2ZpbGVzLm1hc3RvZG9uLnNvY2lhbC9hY2NvdW50cy9hdmF0YXJzLzExNi83MjcvNTYwLzg1Ni8xNTIvMDk1L29yaWdpbmFsLzQ2MzQ2ZjQzMmMwNGMxMGYucG5nIiwiYXZhdGFyX3N0YXRpYyI6Imh0dHBzOi8vZmlsZXMubWFzdG9kb24uc29jaWFsL2FjY291bnRzL2F2YXRhcnMvMTE2LzcyNy81NjAvODU2LzE1Mi8wOTUvb3JpZ2luYWwvNDYzNDZmNDMyYzA0YzEwZi5wbmciLCJhdmF0YXJfZGVzY3JpcHRpb24iOiJNZSBpbiBzdW5nbGFzc2VzIHN0YW5kaW5nIGluIGZyb250IG9mIHRoZSBCZXJrbGV5IFBpdCBpbiBCdXR0ZSBNb250YW5hLiIsImhlYWRlciI6Int7YmFzZV91cmx9fS9oZWFkZXJzL29yaWdpbmFsL21pc3NpbmcucG5nIiwiaGVhZGVyX3N0YXRpYyI6Int7YmFzZV91cmx9fS9oZWFkZXJzL29yaWdpbmFsL21pc3NpbmcucG5nIiwiaGVhZGVyX2Rlc2NyaXB0aW9uIjoiIiwiZm9sbG93ZXJzX2NvdW50IjowLCJmb2xsb3dpbmdfY291bnQiOjAsInN0YXR1c2VzX2NvdW50Ijo5NCwibGFzdF9zdGF0dXNfYXQiOiIyMDI2LTEwLTAyIiwiaGlkZV9jb2xsZWN0aW9ucyI6bnVsbCwic2hvd19tZWRpYSI6dHJ1ZSwic2hvd19tZWRpYV9yZXBsaWVzIjp0cnVlLCJzaG93X2ZlYXR1cmVkIjp0cnVlLCJub2luZGV4IjpmYWxzZSwiZmVhdHVyZV9hcHByb3ZhbCI6eyJhdXRvbWF0aWMiOltdLCJtYW51YWwiOltdLCJjdXJyZW50X3VzZXIiOiJkZW5pZWQifSwiZW1vamlzIjpbXSwicm9sZXMiOltdLCJmaWVsZHMiOlt7Im5hbWUiOiJQZXJzb25hbCB3ZWJzaXRlIiwidmFsdWUiOiI8YSBocmVmPVwiaHR0cHM6Ly9qYXJlZGtub3dsZXMuY29tXCIgdGFyZ2V0PVwiX2JsYW5rXCIgcmVsPVwibm9mb2xsb3cgbm9vcGVuZXIgbWVcIiB0cmFuc2xhdGU9XCJub1wiPjxzcGFuIGNsYXNzPVwiaW52aXNpYmxlXCI+aHR0cHM6Ly88L3NwYW4+PHNwYW4gY2xhc3M9XCJcIj5qYXJlZGtub3dsZXMuY29tPC9zcGFuPjxzcGFuIGNsYXNzPVwiaW52aXNpYmxlXCI+PC9zcGFuPjwvYT4iLCJ2ZXJpZmllZF9hdCI6IjIwMjYtMDYtMTFUMTU6MDg6MzAuNjI3KzAwOjAwIn1dfSwibWVkaWFfYXR0YWNobWVudHMiOlt7ImlkIjoiMTE3MzY4NTMwOTcyNzczNDk2IiwidHlwZSI6ImdpZnYiLCJ1cmwiOiJodHRwczovL2ZpbGVzLm1hc3RvZG9uLnNvY2lhbC9tZWRpYV9hdHRhY2htZW50cy9maWxlcy8xMTcvMzY4LzUzMC85NzIvNzczLzQ5Ni9vcmlnaW5hbC82ZDE2ODRkMDI2MWI5NzA4Lm1wNCIsInByZXZpZXdfdXJsIjoiaHR0cHM6Ly9maWxlcy5tYXN0b2Rvbi5zb2NpYWwvbWVkaWFfYXR0YWNobWVudHMvZmlsZXMvMTE3LzM2OC81MzAvOTcyLzc3My80OTYvc21hbGwvNmQxNjg0ZDAyNjFiOTcwOC5wbmciLCJyZW1vdGVfdXJsIjpudWxsLCJwcmV2aWV3X3JlbW90ZV91cmwiOm51bGwsInRleHRfdXJsIjpudWxsLCJtZXRhIjp7Im9yaWdpbmFsIjp7IndpZHRoIjoyNDAsImhlaWdodCI6MjQwLCJmcmFtZV9yYXRlIjoiMi8xIiwiZHVyYXRpb24iOjEuNSwiYml0cmF0ZSI6OTUwNH0sInNtYWxsIjp7IndpZHRoIjoyNDAsImhlaWdodCI6MjQwLCJzaXplIjoiMjQweDI0MCIsImFzcGVjdCI6MS4wfX0sImRlc2NyaXB0aW9uIjoiT3JhbmdlLCBuYXZ5IGFuZCBwYXBlciBzcXVhcmVzIGluIHR1cm4iLCJibHVyaGFzaCI6IlUxTTNsYl0sZlFdLF0sanRmUWp0amFmUWZRZlFdLGp0ZlFqdCJ9XSwibWVudGlvbnMiOltdLCJ0YWdzIjpbXSwiZW1vamlzIjpbXSwidGFnZ2VkX2NvbGxlY3Rpb25zIjpbXSwicXVvdGUiOm51bGwsImNhcmQiOm51bGwsInBvbGwiOm51bGwsInF1b3RlX2FwcHJvdmFsIjp7ImF1dG9tYXRpYyI6WyJwdWJsaWMiXSwibWFudWFsIjpbXSwiY3VycmVudF91c2VyIjoiYXV0b21hdGljIn19
+  recorded_at: Fri, 02 Oct 2026 00:41:00 GMT
+recorded_with: VCR 6.4.0

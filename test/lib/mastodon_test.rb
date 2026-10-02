@@ -62,7 +62,8 @@ class MastodonTest < ActiveSupport::TestCase
   def test_mastodon_posts_several_images
     crosspost = mastodon_crosspost_with_media("https://example.com/social/stills/", [
       {"type" => "image", "url" => "#{MEDIA_BASE}/still.jpg", "alt" => "An orange square", "mime" => "image/jpeg"},
-      {"type" => "image", "url" => "#{MEDIA_BASE}/still.png", "alt" => "A navy square", "mime" => "image/png"}
+      # No mime: the type comes from the response, as it does for most feeds
+      {"type" => "image", "url" => "#{MEDIA_BASE}/still.png", "alt" => "A navy square"}
     ])
 
     perfect_vcr_match("mastodon_multi_image", except: [:body, :headers]) do
@@ -135,7 +136,7 @@ class MastodonTest < ActiveSupport::TestCase
     assert_match %r{\A#{Regexp.escape(BASE_URL)}/@\w+/\d+\z}o, crosspost.url
     assert_requested(:post, "#{BASE_URL}/api/v1/statuses", headers: {"Idempotency-Key" => crosspost.metadata["mastodon_idempotency_key"]}) { |request|
       body = JSON.parse(request.body)
-      body["status"] == "PosseParty media test (deleted after recording)\n\n#{post_url}" && body["media_ids"].size == media_count
+      body["status"] == "PosseParty media test (deleted after recording)\n\n#{post_url}" && body["media_ids"]&.size == media_count
     }
   end
 
