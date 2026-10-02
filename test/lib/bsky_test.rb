@@ -91,7 +91,7 @@ class BskyTest < ActiveSupport::TestCase
     assert_requested(:post, "#{Platforms::Bsky::SyndicatesBskyPost::PDS_URL}/xrpc/com.atproto.repo.createRecord") { |request|
       JSON.parse(request.body, symbolize_names: true)[:record] in {
         text: "PosseParty media test (deleted after recording)\n\n🔗",
-        facets: [{features: [{uri: "https://example.com/social/stills/"}]}],
+        facets: [{index: {byteStart: 49, byteEnd: 53}, features: [{uri: "https://example.com/social/stills/"}]}],
         embed: {"$type": "app.bsky.embed.images", images: [
           {alt: "An orange square", image: {mimeType: "image/jpeg"}, aspectRatio: {width: 240, height: 240}},
           {alt: "A navy square", image: {mimeType: "image/png"}, aspectRatio: {width: 240, height: 240}}
@@ -109,7 +109,6 @@ class BskyTest < ActiveSupport::TestCase
       "email" => ENV["BSKY_EMAIL"],
       "password" => ENV["BSKY_PASSWORD"]
     }))
-    filter_bsky_session_tokens
     posse = {
       syndicate: true,
       format_string: "{{content}}",
@@ -135,21 +134,5 @@ class BskyTest < ActiveSupport::TestCase
     XML
     FetchesFeed.new.fetch!(user.feeds.create!(url: feed_url, label: "media test"), cache: false)
     Crosspost.find_by!(post: Post.find_by!(remote_id: post_url)).tap { |crosspost| crosspost.update!(status: "wip") }
-  end
-
-  # Bluesky issues its session tokens in createSession's response, so no environment variable
-  # names them in advance. Later requests carry the access token as a Bearer header. The filters
-  # touch only Bluesky's /xrpc/ calls, so they cannot rewrite another platform's recording.
-  def filter_bsky_session_tokens
-    VCR.configure do |config|
-      config.filter_sensitive_data("ACCESS_JWT_PLACEHOLDER") { |interaction|
-        if interaction.request.uri.include?("/xrpc/")
-          interaction.response.body.to_s.b[/"accessJwt":"([^"]+)"/, 1] || interaction.request.headers["Authorization"]&.first&.delete_prefix("Bearer ")
-        end
-      }
-      config.filter_sensitive_data("REFRESH_JWT_PLACEHOLDER") { |interaction|
-        interaction.response.body.to_s.b[/"refreshJwt":"([^"]+)"/, 1] if interaction.request.uri.include?("/xrpc/")
-      }
-    end
   end
 end
