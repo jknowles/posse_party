@@ -2993,31 +2993,52 @@ that check is done before Step 1.
 `/home/jared/Nextcloud/Civilytics/Code/jknowles/posse_party/maxwell-deploy.local.md`, not in the
 checkout.
 
+**Corrected after wave 2 ran (2026-10-02).** As first written, this task's feed-row script replaced
+a whole conflict block with the `media` row. `feat/bsky-images` had also changed the `og_image` row,
+so git put `attach_link` through `media` in one block and the script deleted four rows; the merge
+was redone by hand. The date-based names would also have reused wave 1's branch and image on a
+same-day deploy, and Step 6 recomputed the tag from a date that had moved on by the time of the
+dump. The steps below carry both fixes. The run's ledger is in the data home at
+`.superpowers/sdd/media-wave-2-plan/progress.md`.
+
 **Files:**
-- Create: branch `test/deploy-YYYYMMDD` (local)
+- Create: branch `test/deploy-YYYYMMDD-wave2` (local)
 - Modify: `maxwell-deploy.local.md` (deploy log; never committed)
 
 - [ ] **Step 1: Build the deploy branch**
 
 `feat/linkedin-images`, `feat/mastodon-images` and `feat/bsky-images` each rewrote the `media` row
-of `docs/feed.md`, so each wave-2 merge conflicts on that one line. This script replaces the
-conflicted block with the row for all three platforms:
+of `docs/feed.md`, so each wave-2 merge conflicts there. This script swaps in the row for all three
+platforms and keeps every other row from the deploy side. It stops if the two sides of a conflict
+block differ in any row besides `media`: a branch that also edited a neighboring row needs that
+change merged by hand.
 
 ```bash
 cat > /tmp/posse-wave2-feed-row.py <<'EOF'
 import pathlib, re
 
 path = pathlib.Path("docs/feed.md")
-row = "| `media` | array<object> | Media attachments used by certain platforms (Instagram requires images/video; YouTube requires exactly one video; LinkedIn posts up to 20 JPEG, PNG or GIF images, Mastodon up to 4 JPEG, PNG, GIF or WebP images, and Bluesky up to 4 JPEG, PNG, WebP or GIF images, scaling any over 2 MB; none of the three posts video yet). On LinkedIn and Bluesky the images take the place of the link card: the post's URL stays in its text, and a link card that was asked for becomes the appended link. When present, `media.poster_url` is used by platforms that support custom covers/thumbnails (such as Instagram Reels and YouTube). When a platform cannot post an image, the post goes out as it would have without media, and the reason is recorded in the crosspost's metadata. |"
-text, count = re.subn(r"<<<<<<< [^\n]*\n.*?>>>>>>> [^\n]*\n", row + "\n", path.read_text(), count=1, flags=re.S)
-assert count == 1, "no conflict block in docs/feed.md"
+media = "| `media` | array<object> | Media attachments used by certain platforms (Instagram requires images/video; YouTube requires exactly one video; LinkedIn posts up to 20 JPEG, PNG or GIF images, Mastodon up to 4 JPEG, PNG, GIF or WebP images, and Bluesky up to 4 JPEG, PNG, WebP or GIF images, scaling any over 2 MB; none of the three posts video yet). On LinkedIn and Bluesky the images take the place of the link card: the post's URL stays in its text, and a link card that was asked for becomes the appended link. When present, `media.poster_url` is used by platforms that support custom covers/thumbnails (such as Instagram Reels and YouTube). When a platform cannot post an image, the post goes out as it would have without media, and the reason is recorded in the crosspost's metadata. |"
+
+def field(line):
+    return line.split("|")[1].strip() if line.startswith("|") else line
+
+def resolve(block):
+    ours, theirs = block.group(1).splitlines(), block.group(2).splitlines()
+    others = sorted({field(line) for line in set(ours) ^ set(theirs)} - {"`media`"})
+    assert not others, f"rows besides media differ: {', '.join(others)}. Resolve docs/feed.md by hand."
+    assert "`media`" in map(field, ours), "no media row on the deploy side of the conflict"
+    return "".join((media if field(line) == "`media`" else line) + "\n" for line in ours)
+
+text, count = re.subn(r"<<<<<<< [^\n]*\n(.*?)=======\n(.*?)>>>>>>> [^\n]*\n", resolve, path.read_text(), flags=re.S)
+assert count, "no conflict block in docs/feed.md"
 path.write_text(text)
 EOF
 ```
 
 ```bash
 cd /tmp/posse-wave2
-DEPLOY=test/deploy-$(date +%Y%m%d)
+DEPLOY=test/deploy-$(date +%Y%m%d)-wave2
 git switch -c "$DEPLOY" main
 git merge --no-edit origin/test/deploy-20261001
 git merge --no-edit feat/mastodon-images
@@ -3032,7 +3053,14 @@ python3 /tmp/posse-wave2-feed-row.py && git add docs/feed.md && git commit --no-
 git merge --no-edit feat/bsky-images
 ```
 
-Expected: the same single conflict in `docs/feed.md`.
+Expected: a conflict in `docs/feed.md` and nowhere else. If the script stops, it names the rows
+where the two sides disagree, without knowing which side changed them. Resolve by hand against the
+merge base: `git diff $(git merge-base HEAD MERGE_HEAD) MERGE_HEAD -- docs/feed.md` shows what the
+merging branch changed. Keep the deploy side's row where only the deploy side changed it, take the
+branch's row where only the branch changed it, and where both changed it write one row carrying both
+edits. Put in the combined `media` row, then diff the result against both parents. In wave 2 the
+script stops on `attach_link` (changed on the deploy side only) and `og_image` (changed on both; the
+`feat/bsky-images` row already contained the deploy side's sentence).
 
 ```bash
 cd /tmp/posse-wave2
@@ -3051,7 +3079,7 @@ Expected: `477 runs, ... 0 failures, 0 errors` and `24 runs, ... 0 failures, 0 e
 - [ ] **Step 3: STOP. Ask Jared to approve the deploy**
 
 > Ready to deploy wave 2 to maxwell:
-> - **Image:** `posse_party:media-YYYYMMDD`, built on maxwell from `$DEPLOY` at `<sha>`.
+> - **Image:** `posse_party:media-YYYYMMDD-wave2`, built on maxwell from `$DEPLOY` at `<sha>`.
 > - **What it contains:** wave 1's deploy plus the foundation's two fixes, Mastodon images and
 >   Bluesky images.
 > - **Migrations:** none.
@@ -3062,13 +3090,13 @@ Expected: `477 runs, ... 0 failures, 0 errors` and `24 runs, ... 0 failures, 0 e
 
 ```bash
 cd /tmp/posse-wave2
-SHA=$(git rev-parse HEAD); TAG=media-$(date +%Y%m%d)
+DEPLOY=$(git branch --show-current); SHA=$(git rev-parse HEAD); TAG=media-${DEPLOY#test/deploy-}
 ssh maxwell 'rm -rf ~/tmp/posse-build && mkdir -p ~/tmp/posse-build'
 git archive --format=tar HEAD | ssh maxwell 'tar -x -C ~/tmp/posse-build'
 ssh maxwell "cd ~/tmp/posse-build && docker build --build-arg GIT_COMMIT=$SHA -t posse_party:$TAG ."
 ```
 
-Expected: the build ends with `naming to docker.io/library/posse_party:media-YYYYMMDD`.
+Expected: the build ends with `naming to docker.io/library/posse_party:media-YYYYMMDD-wave2`.
 
 - [ ] **Step 5: Jared takes the database dump**
 
@@ -3077,7 +3105,8 @@ Jared runs the runbook's step 3 dump and confirms the file exists. Do not contin
 - [ ] **Step 6: Run the new image and confirm it**
 
 ```bash
-SHA=$(git -C /tmp/posse-wave2 rev-parse HEAD); TAG=media-$(date +%Y%m%d)
+DEPLOY=$(git -C /tmp/posse-wave2 branch --show-current); SHA=$(git -C /tmp/posse-wave2 rev-parse HEAD)
+TAG=media-${DEPLOY#test/deploy-}
 ssh maxwell "cd ~/docker-compose/posse && POSSE_IMAGE=posse_party:$TAG docker compose up -d"
 ssh maxwell 'cd ~/docker-compose/posse && docker compose ps'
 ssh maxwell 'cd ~/docker-compose/posse && docker compose logs -n 80 web worker'
@@ -3090,21 +3119,25 @@ Expected:
 - `/up` returns `200`.
 - The runner prints `$SHA`. The image tag alone does not prove which commit is running.
 
+The tag comes from the branch name, never from today's date: the dump can land on a later day than
+the build, as it did in wave 2 (built 2026-10-01, switched 2026-10-02).
+
 If any of these fails, roll back with the command in Step 3 and report.
 
 - [ ] **Step 7: Log the deploy and draft the `.env` change**
 
 Append to the runbook's deploy log, in the style of the 2026-10-01 entry:
-- the date, `posse_party:media-YYYYMMDD`, the commit and `$DEPLOY`;
+- the date, `posse_party:media-YYYYMMDD-wave2`, the commit and `$DEPLOY`;
 - the merged branches (`test/deploy-20261001`, `feat/mastodon-images`, `feat/bsky-images`, which
   carry the updated `feat/media-foundation`), and the `docs/feed.md` resolution;
 - "no migrations", the dump file, and the rollback command from Step 3.
 
 Then give Jared this to apply himself, since the file holds secrets:
 
-> On maxwell, set `POSSE_IMAGE=posse_party:media-YYYYMMDD` in `~/docker-compose/posse/.env`, run
-> `bin/secrets-seal`, and commit `posse/.env.age`. Never `git add -f` the plaintext `.env`. Until
-> then, a bare `docker compose up -d` keeps running `media-20261001`, which is pinned there now.
+> On maxwell, set `POSSE_IMAGE=posse_party:media-YYYYMMDD-wave2` in `~/docker-compose/posse/.env`,
+> run `bin/secrets-seal`, and commit `posse/.env.age`. Never `git add -f` the plaintext `.env`.
+> Until then, a bare `docker compose up -d` keeps running `media-20261001`, which is pinned there
+> now.
 
 - [ ] **Step 8: Ask about pushing**
 
@@ -3159,16 +3192,16 @@ Commit only when Jared asks. The repo's pre-commit hooks and CI apply as usual.
 
 - [ ] **Step 3: Update the fork's media plan status**
 
-On `docs/media-plan`, update the status line in `docs/planning/media.md`: steps 4 and 5 (Mastodon and
-Bluesky images) shipped in wave 2 (`posse_party:media-YYYYMMDD`); steps 6, 7 and 9 remain. Commit it
-locally.
+On `docs/media-plan`, update the status line in `docs/planning/media.md`: steps 4 and 5 (Mastodon
+and Bluesky images) shipped in wave 2 (`posse_party:media-YYYYMMDD-wave2`); steps 6, 7 and 9 remain.
+Commit it locally.
 
 - [ ] **Step 4: Draft the outward notes for Jared to approve**
 
 Show each draft and post nothing without his yes:
 
 1. A comment on jaredknowles.com #61:
-   > Mastodon and Bluesky now post images natively, as of `posse_party:media-YYYYMMDD`, up to
+   > Mastodon and Bluesky now post images natively, as of `posse_party:media-YYYYMMDD-wave2`, up to
    > four per post, each with its `alt`. On Bluesky the images replace the link card, and when an
    > entry asks for a card (Bluesky's default), its link is appended as 🔗 instead. Bluesky images
    > over 2 MB are scaled down. Video on both platforms follows in the next wave.
