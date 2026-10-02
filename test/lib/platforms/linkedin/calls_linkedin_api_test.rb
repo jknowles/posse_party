@@ -18,4 +18,11 @@ class Platforms::Linkedin::CallsLinkedinApiTest < ActiveSupport::TestCase
     assert_includes result.message, "Unexpected error calling LinkedIn API"
     assert_not_includes result.message, "SECRET-TOKEN-123"
   end
+
+  def test_an_error_building_the_request_does_not_repeat_a_token_captured_after_a_quote
+    result = Platforms::Linkedin::CallsLinkedinApi.new.call(method: :post, path: "rest/posts", access_token: %(warn "x"\nSECRET-TOKEN-123), body: {commentary: "A map"})
+
+    assert_not result.success?
+    assert_not_includes result.message, "SECRET-TOKEN-123"
+  end
 end
