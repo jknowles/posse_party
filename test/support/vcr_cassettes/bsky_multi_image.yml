@@ -1,0 +1,392 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://bsky.social/xrpc/com.atproto.server.createSession
+    body:
+      encoding: UTF-8
+      string: '{"identifier":"{{email}}","password":"{{password}}"}'
+    headers:
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 02 Oct 2026 00:54:11 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      X-Powered-By:
+      - Express
+      Access-Control-Allow-Origin:
+      - "*"
+      Ratelimit-Limit:
+      - '10'
+      Ratelimit-Reset:
+      - '1790988851'
+      Ratelimit-Remaining:
+      - '9'
+      Ratelimit-Policy:
+      - 10;w=86400
+      Access-Control-Expose-Headers:
+      - RateLimit-Limit, RateLimit-Reset, RateLimit-Remaining, RateLimit-Policy
+      Etag:
+      - W/"5c5-FoINgoHxV5VemolCglfHvt9K/oQ"
+      Vary:
+      - Accept-Encoding
+    body:
+      encoding: ASCII-8BIT
+      string: '{"did":"did:plc:erfdomqnsys3dcaweevtclxl","didDoc":{"@context":["https://www.w3.org/ns/did/v1","https://w3id.org/security/multikey/v1","https://w3id.org/security/suites/secp256k1-2019/v1"],"id":"did:plc:erfdomqnsys3dcaweevtclxl","alsoKnownAs":["at://jaredknowles.com"],"verificationMethod":[{"id":"did:plc:erfdomqnsys3dcaweevtclxl#atproto","type":"Multikey","controller":"did:plc:erfdomqnsys3dcaweevtclxl","publicKeyMultibase":"zQ3shek2J6poq4eQu3RZJyL8HdT3SRYbZsxovTVxzVswwQctW"}],"service":[{"id":"#atproto_pds","type":"AtprotoPersonalDataServer","serviceEndpoint":"https://verpa.us-west.host.bsky.network"}]},"handle":"jaredknowles.com","email":"{{email}}","emailConfirmed":true,"emailAuthFactor":true,"accessJwt":"ACCESS_JWT_PLACEHOLDER","refreshJwt":"REFRESH_JWT_PLACEHOLDER","active":true}'
+  recorded_at: Fri, 02 Oct 2026 00:54:11 GMT
+- request:
+    method: get
+    uri: https://raw.githubusercontent.com/jknowles/posse_party/914ff8332cb956c77ac45a0dd182dc8a47f862a7/test/fixtures/files/media/still.jpg
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1511'
+      Cache-Control:
+      - max-age=300
+      Content-Security-Policy:
+      - default-src 'none'; style-src 'unsafe-inline'; sandbox
+      Content-Type:
+      - image/jpeg
+      Etag:
+      - W/"9ebeb04dccd1999672d9a72ccaa1480eaec3cec6f4e7ce764395cba5020b3bf8"
+      Strict-Transport-Security:
+      - max-age=31536000
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - deny
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Github-Request-Id:
+      - 3BBE:24B82A:197645:269394:6ABEF638
+      X-Github-Edge-Region:
+      - iad
+      Accept-Ranges:
+      - bytes
+      Date:
+      - Fri, 02 Oct 2026 00:54:11 GMT
+      Via:
+      - 1.1 varnish
+      X-Served-By:
+      - cache-bos-kbos510028-BOS
+      X-Cache:
+      - HIT
+      X-Cache-Hits:
+      - '0'
+      X-Timer:
+      - S1790902452.767452,VS0,VE57
+      Vary:
+      - Authorization,Accept-Encoding
+      Access-Control-Allow-Origin:
+      - "*"
+      Cross-Origin-Resource-Policy:
+      - cross-origin
+      X-Fastly-Request-Id:
+      - 4c9c960b34dc859373e36b88e23351c515486283
+      Expires:
+      - Fri, 02 Oct 2026 00:59:11 GMT
+      Source-Age:
+      - '0'
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        /9j/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCADwAPADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDGooor4Q/RgooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAP/9k=
+  recorded_at: Fri, 02 Oct 2026 00:54:11 GMT
+- request:
+    method: post
+    uri: https://bsky.social/xrpc/com.atproto.repo.uploadBlob
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        /9j/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCADwAPADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDGooor4Q/RgooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAP/9k=
+    headers:
+      Content-Type:
+      - image/jpeg
+      Authorization:
+      - Bearer ACCESS_JWT_PLACEHOLDER
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 02 Oct 2026 00:54:12 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '139'
+      Connection:
+      - keep-alive
+      X-Powered-By:
+      - Express
+      Access-Control-Allow-Origin:
+      - "*"
+      Ratelimit-Limit:
+      - '3000'
+      Ratelimit-Reset:
+      - '1790902751'
+      Ratelimit-Remaining:
+      - '2999'
+      Ratelimit-Policy:
+      - 3000;w=300
+      Access-Control-Expose-Headers:
+      - RateLimit-Limit, RateLimit-Reset, RateLimit-Remaining, RateLimit-Policy
+      Vary:
+      - Accept-Encoding
+    body:
+      encoding: UTF-8
+      string: '{"blob":{"$type":"blob","ref":{"$link":"bafkreihew3diavp2jqyvxeirccrzevjfwotll3665htdje2kmpfjqp6zbu"},"mimeType":"image/jpeg","size":1511}}'
+  recorded_at: Fri, 02 Oct 2026 00:54:12 GMT
+- request:
+    method: get
+    uri: https://raw.githubusercontent.com/jknowles/posse_party/914ff8332cb956c77ac45a0dd182dc8a47f862a7/test/fixtures/files/media/still.png
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '742'
+      Cache-Control:
+      - max-age=300
+      Content-Security-Policy:
+      - default-src 'none'; style-src 'unsafe-inline'; sandbox
+      Content-Type:
+      - image/png
+      Etag:
+      - W/"0a94895e67bcabed02c86f4f3a52c8c06f415050f1ae2a98102a3de71692772f"
+      Strict-Transport-Security:
+      - max-age=31536000
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - deny
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Github-Request-Id:
+      - 48BA:1A20F:84667:106700:6ABEFD96
+      X-Github-Edge-Region:
+      - iad
+      Accept-Ranges:
+      - bytes
+      Date:
+      - Fri, 02 Oct 2026 00:54:12 GMT
+      Via:
+      - 1.1 varnish
+      X-Served-By:
+      - cache-bos-kbos510021-BOS
+      X-Cache:
+      - HIT
+      X-Cache-Hits:
+      - '0'
+      X-Timer:
+      - S1790902453.529930,VS0,VE65
+      Vary:
+      - Authorization,Accept-Encoding
+      Access-Control-Allow-Origin:
+      - "*"
+      Cross-Origin-Resource-Policy:
+      - cross-origin
+      X-Fastly-Request-Id:
+      - acf6075878866a7e9bf41da871347cb0ea9417a1
+      Expires:
+      - Fri, 02 Oct 2026 00:59:12 GMT
+      Source-Age:
+      - '0'
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        iVBORw0KGgoAAAANSUhEUgAAAPAAAADwCAIAAACxN37FAAAACXBIWXMAAAPoAAAD6AG1e1JrAAACmElEQVR4nO3SUQkAIBTAwJfFJOaxfwBLCMI4uAD72Kx9IGO+F8BDhibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNygVfkFZ+vXBgjQAAAABJRU5ErkJggg==
+  recorded_at: Fri, 02 Oct 2026 00:54:12 GMT
+- request:
+    method: post
+    uri: https://bsky.social/xrpc/com.atproto.repo.uploadBlob
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        iVBORw0KGgoAAAANSUhEUgAAAPAAAADwCAIAAACxN37FAAAACXBIWXMAAAPoAAAD6AG1e1JrAAACmElEQVR4nO3SUQkAIBTAwJfFJOaxfwBLCMI4uAD72Kx9IGO+F8BDhibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNiqFJMTQphibF0KQYmhRDk2JoUgxNygVfkFZ+vXBgjQAAAABJRU5ErkJggg==
+    headers:
+      Content-Type:
+      - image/png
+      Authorization:
+      - Bearer ACCESS_JWT_PLACEHOLDER
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 02 Oct 2026 00:54:13 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '137'
+      Connection:
+      - keep-alive
+      X-Powered-By:
+      - Express
+      Access-Control-Allow-Origin:
+      - "*"
+      Ratelimit-Limit:
+      - '3000'
+      Ratelimit-Reset:
+      - '1790902751'
+      Ratelimit-Remaining:
+      - '2998'
+      Ratelimit-Policy:
+      - 3000;w=300
+      Access-Control-Expose-Headers:
+      - RateLimit-Limit, RateLimit-Reset, RateLimit-Remaining, RateLimit-Policy
+      Vary:
+      - Accept-Encoding
+    body:
+      encoding: UTF-8
+      string: '{"blob":{"$type":"blob","ref":{"$link":"bafkreic55wvenabkbgkwf7nu23u4kabyc7rbb5rfkrqepzn5v2znwzghdm"},"mimeType":"image/png","size":742}}'
+  recorded_at: Fri, 02 Oct 2026 00:54:13 GMT
+- request:
+    method: post
+    uri: https://bsky.social/xrpc/com.atproto.repo.createRecord
+    body:
+      encoding: UTF-8
+      string: "{\"collection\":\"app.bsky.feed.post\",\"$type\":\"app.bsky.feed.post\",\"repo\":\"did:plc:erfdomqnsys3dcaweevtclxl\",\"record\":{\"$type\":\"app.bsky.feed.post\",\"createdAt\":\"2026-10-01T14:00:00.000Z\",\"text\":\"PosseParty
+        media test (deleted after recording)\\n\\n\U0001F517\",\"facets\":[{\"$type\":\"app.bsky.richtext.facet\",\"index\":{\"byteStart\":49,\"byteEnd\":53},\"features\":[{\"uri\":\"https://example.com/social/stills/\",\"$type\":\"app.bsky.richtext.facet#link\"}]}],\"embed\":{\"$type\":\"app.bsky.embed.images\",\"images\":[{\"alt\":\"An
+        orange square\",\"image\":{\"$type\":\"blob\",\"ref\":{\"$link\":\"bafkreihew3diavp2jqyvxeirccrzevjfwotll3665htdje2kmpfjqp6zbu\"},\"mimeType\":\"image/jpeg\",\"size\":1511},\"aspectRatio\":{\"width\":240,\"height\":240}},{\"alt\":\"A
+        navy square\",\"image\":{\"$type\":\"blob\",\"ref\":{\"$link\":\"bafkreic55wvenabkbgkwf7nu23u4kabyc7rbb5rfkrqepzn5v2znwzghdm\"},\"mimeType\":\"image/png\",\"size\":742},\"aspectRatio\":{\"width\":240,\"height\":240}}]}}}"
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer ACCESS_JWT_PLACEHOLDER
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 02 Oct 2026 00:54:14 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '276'
+      Connection:
+      - keep-alive
+      X-Powered-By:
+      - Express
+      Access-Control-Allow-Origin:
+      - "*"
+      Ratelimit-Limit:
+      - '3000'
+      Ratelimit-Reset:
+      - '1790902751'
+      Ratelimit-Remaining:
+      - '2997'
+      Ratelimit-Policy:
+      - 3000;w=300
+      Access-Control-Expose-Headers:
+      - RateLimit-Limit, RateLimit-Reset, RateLimit-Remaining, RateLimit-Policy
+      Vary:
+      - Accept-Encoding
+    body:
+      encoding: UTF-8
+      string: '{"uri":"at://did:plc:erfdomqnsys3dcaweevtclxl/app.bsky.feed.post/3mwu5wcyft52n","cid":"bafyreicnvj7rxpiktpyugx2g6vtsaxcziigzmvcer5ddv42srinvddy5k4","commit":{"cid":"bafyreicnoskf5wqe22ujraru73uxahsdktdca5e66ywkh73tiqdzflqtom","rev":"3mwu5wcywgf2n"},"validationStatus":"valid"}'
+  recorded_at: Fri, 02 Oct 2026 00:54:14 GMT
+- request:
+    method: get
+    uri: https://plc.directory/did:plc:erfdomqnsys3dcaweevtclxl
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - plc.directory
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 02 Oct 2026 00:54:14 GMT
+      Content-Type:
+      - application/did+ld+json; charset=utf-8
+      Content-Length:
+      - '559'
+      Connection:
+      - keep-alive
+      X-Powered-By:
+      - Express
+      Access-Control-Allow-Origin:
+      - "*"
+      Etag:
+      - W/"22f-VbTY5b5ulBckprEkzw0r/3FQFo8"
+    body:
+      encoding: UTF-8
+      string: '{"@context":["https://www.w3.org/ns/did/v1","https://w3id.org/security/multikey/v1","https://w3id.org/security/suites/secp256k1-2019/v1"],"id":"did:plc:erfdomqnsys3dcaweevtclxl","alsoKnownAs":["at://jaredknowles.com"],"verificationMethod":[{"id":"did:plc:erfdomqnsys3dcaweevtclxl#atproto","type":"Multikey","controller":"did:plc:erfdomqnsys3dcaweevtclxl","publicKeyMultibase":"zQ3shek2J6poq4eQu3RZJyL8HdT3SRYbZsxovTVxzVswwQctW"}],"service":[{"id":"#atproto_pds","type":"AtprotoPersonalDataServer","serviceEndpoint":"https://verpa.us-west.host.bsky.network"}]}'
+  recorded_at: Fri, 02 Oct 2026 00:54:14 GMT
+recorded_with: VCR 6.4.0
