@@ -16,7 +16,7 @@ class PublishesCrosspost
     crosspost = Crosspost.includes(:account, :post).find(crosspost_id)
     return Result.new(success?: true, message: "Not the WIP crosspost for the account") unless crosspost.wip?
     # A media fallback describes one attempt, so a new attempt starts without the last one's
-    crosspost.update!(last_attempted_at: Now.time, attempts: crosspost.attempts + 1, metadata: crosspost.metadata.except("media_fallback"))
+    crosspost.update!(last_attempted_at: Now.time, attempts: crosspost.attempts + 1, metadata: crosspost.metadata.except(RecordsMediaFallback::KEY))
     @tracks_crosspost_status.track(crosspost) do
       api = @matches_platform_api.match(crosspost.account)
       crosspost_config = @munges_config.munge(crosspost, api.default_crosspost_options)
