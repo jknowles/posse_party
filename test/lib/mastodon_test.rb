@@ -55,4 +55,94 @@ class MastodonTest < ActiveSupport::TestCase
     assert_equal "https://mastodon.social/@alharrington/113991777044908687", crosspost.url
     assert_equal "\"How hard could it possibly be to truncate a string while making sure it doesn't cut off any URLs or hashtags?\" he asked, ignorantly. https://gist.github.com/searls/9d8ee42929da99ae268477eb20818da6", crosspost.content
   end
+
+  MEDIA_BASE = "https://raw.githubusercontent.com/jknowles/posse_party/914ff8332cb956c77ac45a0dd182dc8a47f862a7/test/fixtures/files/media"
+  BASE_URL = ENV.fetch("MASTODON_BASE_URL", "https://mastodon.example")
+
+  def test_mastodon_posts_several_images
+    crosspost = mastodon_crosspost_with_media("https://example.com/social/stills/", [
+      {"type" => "image", "url" => "#{MEDIA_BASE}/still.jpg", "alt" => "An orange square", "mime" => "image/jpeg"},
+      # No mime: the type comes from the response, as it does for most feeds
+      {"type" => "image", "url" => "#{MEDIA_BASE}/still.png", "alt" => "A navy square"}
+    ])
+
+    perfect_vcr_match("mastodon_multi_image", except: [:body, :headers]) do
+      PublishesCrosspost.new.publish(crosspost.id)
+    end
+
+    assert_published_with_media crosspost, "https://example.com/social/stills/", media_count: 2
+    assert_uploaded "image/jpeg", "An orange square"
+    assert_uploaded "image/png", "A navy square"
+  end
+
+  def test_mastodon_posts_a_gif_from_its_platform_override
+    crosspost = mastodon_crosspost_with_media("https://example.com/social/loop/", [
+      {"type" => "video", "url" => "#{MEDIA_BASE}/loop.mp4", "presentation" => "gif"}
+    ], mastodon_media: [
+      {"type" => "image", "url" => "#{MEDIA_BASE}/loop.gif", "alt" => "Orange, navy and paper squares in turn", "mime" => "image/gif"}
+    ])
+
+    perfect_vcr_match("mastodon_gif", except: [:body, :headers]) do
+      PublishesCrosspost.new.publish(crosspost.id)
+    end
+
+    assert_published_with_media crosspost, "https://example.com/social/loop/", media_count: 1
+    assert_uploaded "image/gif", "Orange, navy and paper squares in turn"
+    assert_not_requested(:get, "#{MEDIA_BASE}/loop.mp4")
+  end
+
+  private
+
+  def mastodon_crosspost_with_media(post_url, media, mastodon_media: media)
+    user = New.create(User, email: "user@example.com")
+    user.accounts.create!(platform_tag: "mastodon", label: "Mastodon", credentials: vcr_secrets({
+      "base_url" => BASE_URL,
+      "access_token" => ENV["MASTODON_ACCESS_TOKEN"]
+    }))
+    posse = {
+      syndicate: true,
+      format_string: "{{content}}",
+      content: "PosseParty media test (deleted after recording)",
+      media:,
+      platform_overrides: {mastodon: {media: mastodon_media, append_url: true, append_url_spacer: "\n\n"}}
+    }
+    stub_request(:get, feed_url).to_return(status: 200, body: <<~XML)
+      <?xml version="1.0" encoding="utf-8"?>
+      <feed xmlns="http://www.w3.org/2005/Atom" xmlns:posse="https://posseparty.com/2024/Feed">
+        <title>Test Feed</title>
+        <id>#{feed_url}</id>
+        <updated>2026-10-01T00:00:00Z</updated>
+        <entry>
+          <title>Media test</title>
+          <id>#{post_url}</id>
+          <published>2026-10-01T00:00:00Z</published>
+          <updated>2026-10-01T00:00:00Z</updated>
+          <link rel="alternate" href="#{post_url}"/>
+          <posse:post><![CDATA[#{posse.to_json}]]></posse:post>
+        </entry>
+      </feed>
+    XML
+    FetchesFeed.new.fetch!(user.feeds.create!(url: feed_url, label: "media test"), cache: false)
+    Crosspost.find_by!(post: Post.find_by!(remote_id: post_url)).tap { |crosspost| crosspost.update!(status: "wip") }
+  end
+
+  # The status carries the uploaded media, the entry's URL appended to the text, and the
+  # idempotency key this publish kept
+  def assert_published_with_media(crosspost, post_url, media_count:)
+    crosspost.reload
+    assert_empty crosspost.failures
+    assert_equal "published", crosspost.status
+    assert_nil crosspost.metadata["media_fallback"]
+    assert_match %r{\A#{Regexp.escape(BASE_URL)}/@\w+/\d+\z}o, crosspost.url
+    assert_requested(:post, "#{BASE_URL}/api/v1/statuses", headers: {"Idempotency-Key" => crosspost.metadata["mastodon_idempotency_key"]}) { |request|
+      body = JSON.parse(request.body)
+      body["status"] == "PosseParty media test (deleted after recording)\n\n#{post_url}" && body["media_ids"]&.size == media_count
+    }
+  end
+
+  def assert_uploaded(content_type, description)
+    assert_requested(:post, "#{BASE_URL}/api/v2/media") { |request|
+      request.body.include?("Content-Type: #{content_type}\r\n") && request.body.include?(%(name="description"\r\n\r\n#{description}))
+    }
+  end
 end

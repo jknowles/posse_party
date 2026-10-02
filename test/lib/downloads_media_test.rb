@@ -74,6 +74,18 @@ class DownloadsMediaTest < ActiveSupport::TestCase
     assert_equal "https://example.com/big.png is over the 100-byte limit", result.error
   end
 
+  def test_gives_up_on_a_download_that_runs_past_its_deadline
+    Now.override!(Time.zone.parse("2026-10-06 10:00:00 UTC"))
+    stub_request(:get, "https://example.com/slow.png").to_return {
+      Now.override!(Time.zone.parse("2026-10-06 10:01:01 UTC"))
+      {status: 200, body: PNG}
+    }
+
+    result = @subject.download(MediaItem.new(type: "image", url: "https://example.com/slow.png"), max_bytes: 100)
+
+    assert_equal "https://example.com/slow.png took longer than 60 seconds to download", result.error
+  end
+
   def test_reports_an_http_error
     stub_request(:get, "https://example.com/gone.png").to_return(status: 404, body: "Not Found")
 
