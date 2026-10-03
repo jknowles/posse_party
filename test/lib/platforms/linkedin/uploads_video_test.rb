@@ -64,6 +64,37 @@ class Platforms::Linkedin::UploadsVideoTest < ActiveSupport::TestCase
     assert_not_requested :post, "#{API}?action=finalizeUpload"
   end
 
+  def test_reports_a_thumbnail_linkedin_refuses
+    stub_initialize(upload_thumbnail: true, instructions: [{uploadUrl: PART_1, firstByte: 0, lastByte: @bytes.bytesize - 1}], thumbnailUploadUrl: THUMBNAIL)
+    stub_part(PART_1, @bytes, etag: "etag-1")
+    stub_request(:put, THUMBNAIL).to_return(status: 400, body: "Bad thumbnail")
+
+    result = @subject.upload(@path, thumbnail: "JPG", access_token: "token", person_urn: "urn:li:person:1")
+
+    assert_equal "LinkedIn refused a video upload (HTTP 400): Bad thumbnail", result.error
+    assert_not_requested :post, "#{API}?action=finalizeUpload"
+  end
+
+  def test_reports_a_missing_thumbnail_upload_url
+    stub_initialize(upload_thumbnail: true, instructions: [{uploadUrl: PART_1, firstByte: 0, lastByte: @bytes.bytesize - 1}])
+    stub_part(PART_1, @bytes, etag: "etag-1")
+
+    result = @subject.upload(@path, thumbnail: "JPG", access_token: "token", person_urn: "urn:li:person:1")
+
+    assert_equal "LinkedIn gave no thumbnail upload URL", result.error
+    assert_not_requested :post, "#{API}?action=finalizeUpload"
+  end
+
+  def test_reports_a_part_that_comes_back_without_an_etag
+    stub_initialize(upload_thumbnail: false, instructions: [{uploadUrl: PART_1, firstByte: 0, lastByte: @bytes.bytesize - 1}])
+    stub_request(:put, PART_1).to_return(status: 200)
+
+    result = @subject.upload(@path, thumbnail: nil, access_token: "token", person_urn: "urn:li:person:1")
+
+    assert_equal "LinkedIn returned no ETag for a video part", result.error
+    assert_not_requested :post, "#{API}?action=finalizeUpload"
+  end
+
   def test_a_failed_part_does_not_repeat_the_access_token
     stub_initialize(upload_thumbnail: false, instructions: [{uploadUrl: PART_1, firstByte: 0, lastByte: @bytes.bytesize - 1}])
     stub_request(:put, PART_1).to_raise(ArgumentError.new(%(header Authorization has field value "Bearer a warning\\nSECRET-TOKEN-123", this cannot include CR/LF)))
