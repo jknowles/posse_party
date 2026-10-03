@@ -13,6 +13,7 @@ class Platforms::Linkedin
       @initiates_image_upload = InitiatesImageUpload.new
       @uploads_image = UploadsImage.new
       @records_media_fallback = RecordsMediaFallback.new
+      @redacts_bearer_token = RedactsBearerToken.new
     end
 
     def upload(crosspost, crosspost_config, access_token:, person_urn:)
@@ -25,12 +26,18 @@ class Platforms::Linkedin
         @records_media_fallback.record(crosspost, "LinkedIn takes at most #{MAX_IMAGES} images; dropped #{selection.dropped}")
       end
       uploaded
-    rescue MediaUnavailable => e
-      @records_media_fallback.record(crosspost, e.message)
-      []
+    rescue => e
+      fall_back(crosspost, e)
     end
 
     private
+
+    # Any error in the media step posts without media, never fails the post
+    def fall_back(crosspost, error)
+      reason = error.is_a?(MediaUnavailable) ? error.message : "#{error.class}: #{error.message}"
+      @records_media_fallback.record(crosspost, @redacts_bearer_token.redact(reason))
+      []
+    end
 
     def upload_image(item, access_token:, person_urn:)
       download = @downloads_media.download(item, max_bytes: MAX_IMAGE_BYTES)

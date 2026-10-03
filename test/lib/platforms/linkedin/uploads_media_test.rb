@@ -95,6 +95,18 @@ class Platforms::Linkedin::UploadsMediaTest < ActiveSupport::TestCase
     verify { @records_media_fallback.record(@crosspost, "Failed to upload image to LinkedIn. Response: Bad image") }
   end
 
+  def test_an_unexpected_error_falls_back_without_the_access_token
+    stub_download(PNG_URL, "PNG", "image/png")
+    stubs { @initiates_image_upload.initiate(access_token: "token", person_urn: "urn:li:person:1") }.with {
+      raise ArgumentError, %(header Authorization has field value "Bearer a warning\\nSECRET-TOKEN-123", this cannot include CR/LF)
+    }
+
+    uploaded = @subject.upload(@crosspost, config([{"type" => "image", "url" => PNG_URL}]), access_token: "token", person_urn: "urn:li:person:1")
+
+    assert_equal [], uploaded
+    verify { @records_media_fallback.record(@crosspost, %(ArgumentError: header Authorization has field value "Bearer [FILTERED]", this cannot include CR/LF)) }
+  end
+
   def test_images_past_twenty_are_dropped_and_recorded
     stub_download(PNG_URL, "PNG", "image/png")
     stubs { @initiates_image_upload.initiate(access_token: "token", person_urn: "urn:li:person:1") }.with {
