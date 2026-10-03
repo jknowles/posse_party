@@ -44,9 +44,76 @@ class Platforms::Linkedin::SyndicatesLinkedinPostTest < ActiveSupport::TestCase
     assert_equal "urn:li:share:2", @crosspost.reload.remote_id
   end
 
+  def test_a_video_still_processing_is_kept_to_post_later
+    media = [Platforms::Linkedin::UploadsMedia::Uploaded.new(urn: "urn:li:video:1", processing: true)]
+    stubs { @uploads_media.upload(@crosspost, @config, access_token: "linkedin-access-token", person_urn: "urn:li:person:TEST123") }.with { media }
+    stubs { @limits_to_one_url.limit_with_media(@config, "A loop (2024)\n\n#{URL}") }.with {
+      Platforms::Linkedin::LimitsToOneUrl::Post.new(content: "A loop (2024)\n\n#{URL}", card_url: nil)
+    }
+
+    result = @subject.syndicate!(@crosspost, @config, "A loop (2024)\n\n#{URL}")
+
+    assert result.success?
+    assert result.needs_to_finish?
+    assert_equal({"urn" => "urn:li:video:1", "content" => "A loop (2024)\n\n#{URL}"}, @crosspost.reload.metadata["linkedin_video"])
+    verify_never_called { @publishes_post.publish }
+  end
+
+  def test_finishing_posts_the_kept_video_once_it_is_ready
+    keep_video("A loop (2024)\n\n#{URL}")
+    media = [Platforms::Linkedin::UploadsMedia::Uploaded.new(urn: "urn:li:video:1", processing: false)]
+    stubs { @uploads_media.finish(@crosspost, "urn:li:video:1", access_token: "linkedin-access-token") }.with { media }
+    stubs {
+      @publishes_post.publish("A loop \\(2024\\)\n\n#{URL}", CrosspostConfig.new, access_token: "linkedin-access-token", person_urn: "urn:li:person:TEST123", image_urn: nil, url: nil, media:)
+    }.with { published("urn:li:share:3") }
+
+    result = @subject.finish!(@crosspost)
+
+    assert result.success?
+    assert_not result.needs_to_finish?
+    assert_equal "urn:li:share:3", @crosspost.reload.remote_id
+    assert_equal "A loop (2024)\n\n#{URL}", @crosspost.content
+  end
+
+  def test_finishing_asks_again_while_the_video_is_processing
+    keep_video("A loop")
+    stubs { @uploads_media.finish(@crosspost, "urn:li:video:1", access_token: "linkedin-access-token") }.with {
+      [Platforms::Linkedin::UploadsMedia::Uploaded.new(urn: "urn:li:video:1", processing: true)]
+    }
+
+    result = @subject.finish!(@crosspost)
+
+    assert result.needs_to_finish?
+    verify_never_called { @publishes_post.publish }
+  end
+
+  def test_finishing_posts_the_commentary_alone_when_the_video_failed
+    keep_video("A loop\n\n#{URL}")
+    stubs { @uploads_media.finish(@crosspost, "urn:li:video:1", access_token: "linkedin-access-token") }.with { [] }
+    stubs {
+      @publishes_post.publish("A loop\n\n#{URL}", CrosspostConfig.new, access_token: "linkedin-access-token", person_urn: "urn:li:person:TEST123", image_urn: nil, url: nil, media: [])
+    }.with { published("urn:li:share:4") }
+
+    result = @subject.finish!(@crosspost)
+
+    assert result.success?
+    assert_equal "urn:li:share:4", @crosspost.reload.remote_id
+  end
+
+  def test_finishing_without_a_kept_video_fails
+    result = @subject.finish!(@crosspost)
+
+    assert_not result.success?
+    assert_equal "No LinkedIn video is waiting to be posted", result.message
+  end
+
   private
 
   def published(urn)
     Platforms::Linkedin::PublishesPost::Result.new(true, urn, "https://www.linkedin.com/feed/update/#{urn}/")
+  end
+
+  def keep_video(content)
+    @crosspost.update!(metadata: {"linkedin_video" => {"urn" => "urn:li:video:1", "content" => content}})
   end
 end

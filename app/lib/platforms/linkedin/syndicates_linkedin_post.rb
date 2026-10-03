@@ -1,5 +1,7 @@
 class Platforms::Linkedin
   class SyndicatesLinkedinPost
+    KEPT_VIDEO = "linkedin_video"
+
     def initialize
       @limits_to_one_url = LimitsToOneUrl.new
       @scrapes_og_image = ScrapesOgImage.new
@@ -20,8 +22,38 @@ class Platforms::Linkedin
       else
         @limits_to_one_url.limit(crosspost_config, crosspost_content).to_a
       end
-      image_urn = card_thumbnail(url, crosspost_config, access_token:, person_urn:) if url.present?
+      return finish_later(crosspost, content, media.first.urn) if media.any?(&:processing)
 
+      image_urn = card_thumbnail(url, crosspost_config, access_token:, person_urn:) if url.present?
+      publish!(crosspost, content, crosspost_config, access_token:, person_urn:, image_urn:, url:, media:)
+    rescue => e
+      PublishesCrosspost::Result.new(success?: false, message: "An unexpected error occurred while crossposting to LinkedIn", error: e)
+    end
+
+    # Posts a video an earlier attempt left processing, once LinkedIn has it ready. A video LinkedIn
+    # cannot process posts the commentary alone, which already carries the post's link.
+    def finish!(crosspost)
+      kept = crosspost.metadata[KEPT_VIDEO]
+      return PublishesCrosspost::Result.new(success?: false, message: "No LinkedIn video is waiting to be posted") if kept.blank?
+
+      access_token = crosspost.account.credentials["access_token"]
+      media = @uploads_media.finish(crosspost, kept["urn"], access_token:)
+      return PublishesCrosspost::Result.new(success?: true, needs_to_finish?: true) if media.any?(&:processing)
+
+      publish!(crosspost, kept["content"], CrosspostConfig.new, access_token:, person_urn: crosspost.account.credentials["person_urn"], image_urn: nil, url: nil, media:)
+    rescue => e
+      PublishesCrosspost::Result.new(success?: false, message: "An unexpected error occurred while crossposting to LinkedIn", error: e)
+    end
+
+    private
+
+    # FinishCrosspostJob checks again and posts once LinkedIn has processed the video
+    def finish_later(crosspost, content, urn)
+      crosspost.update!(metadata: crosspost.metadata.merge(KEPT_VIDEO => {"urn" => urn, "content" => content}))
+      PublishesCrosspost::Result.new(success?: true, needs_to_finish?: true)
+    end
+
+    def publish!(crosspost, content, crosspost_config, access_token:, person_urn:, image_urn:, url:, media:)
       # Escape special characters that LinkedIn API has issues with
       # Based on known LinkedIn API bug where parentheses cause content truncation
       escaped_content = content.gsub(/([\\|{}@\[\]()<>#*_~])/) { "\\#{$1}" }
@@ -38,11 +70,7 @@ class Platforms::Linkedin
       else
         PublishesCrosspost::Result.new(success?: false, message: "Failed to publish LinkedIn post. Error: #{publish_result.message}")
       end
-    rescue => e
-      PublishesCrosspost::Result.new(success?: false, message: "An unexpected error occurred while crossposting to LinkedIn", error: e)
     end
-
-    private
 
     def card_thumbnail(url, crosspost_config, access_token:, person_urn:)
       og_image = (url == crosspost_config.url) ? crosspost_config.og_image : @scrapes_og_image.scrape(url)
