@@ -13,4 +13,17 @@ class RecordsMediaFallbackTest < ActiveSupport::TestCase
       "media_fallback" => {"reason" => "LinkedIn takes JPEG, PNG and GIF, not image/webp", "at" => "2026-10-06T10:00:00Z"}
     }, crosspost.reload.metadata)
   end
+
+  def test_logs_that_the_post_did_not_carry_all_its_media
+    log = StringIO.new
+    logger = ActiveSupport::Logger.new(log)
+    Rails.logger.broadcast_to(logger)
+    crosspost = crossposts(:admin_bsky_crosspost)
+
+    RecordsMediaFallback.new.record(crosspost, "Mastodon takes at most 4 images; dropped 2")
+
+    assert_includes log.string, "Crosspost #{crosspost.id} did not post all of its media: Mastodon takes at most 4 images; dropped 2"
+  ensure
+    Rails.logger.stop_broadcasting_to(logger)
+  end
 end

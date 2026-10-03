@@ -12,6 +12,7 @@ require_relative "support/new"
 require_relative "support/feed_helpers"
 require_relative "support/time_helpers"
 require_relative "support/vcr_helpers"
+require_relative "support/vcr_large_bodies"
 require_relative "support/auth_helper"
 
 module ActiveSupport
