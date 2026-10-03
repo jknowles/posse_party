@@ -22,14 +22,21 @@ class DownloadsMedia
   # extension, so a multipart upload names the file correctly. The caller deletes the file.
   def download_to_tempfile(item, max_bytes:)
     file = Tempfile.create("media", binmode: true)
+    path = file.path
     fetched = fetch(item, max_bytes:, deadline: VIDEO_DEADLINE) { |fragment| file.write(fragment) }
     file.close
-    return fetched.tap { File.delete(file.path) } if fetched.failure?
+    return fetched.tap { File.delete(path) } if fetched.failure?
 
-    content_type = content_type(item, fetched.data, Pathname.new(file.path))
-    path = "#{file.path}#{VIDEO_EXTENSIONS[content_type]}"
-    File.rename(file.path, path)
+    content_type = content_type(item, fetched.data, Pathname.new(path))
+    named_path = "#{path}#{VIDEO_EXTENSIONS[content_type]}"
+    File.rename(path, named_path)
+    path = named_path
     Result.success(DownloadedFile.new(path:, size: File.size(path), content_type:))
+  rescue Exception # standard:disable Lint/RescueException
+    # Includes Timeout::ExitException, which is not a StandardError, so no file outlives its job
+    file&.close unless file&.closed?
+    FileUtils.rm_f(path) if path
+    raise
   end
 
   private
