@@ -28,7 +28,8 @@ class Platforms::Mastodon::CallsMastodonMediaApiTest < ActiveSupport::TestCase
     upload = stub_request(:post, "https://mastodon.example/api/v2/media")
       .with(headers: {"Authorization" => "Bearer token"}) { |request|
         body = request.body.b
-        body.include?(%(name="file"; filename="loop.mp4"\r\nContent-Type: video/mp4\r\n\r\n).b) &&
+        request.headers["Content-Length"] == body.bytesize.to_s &&
+          body.include?(%(name="file"; filename="loop.mp4"\r\nContent-Type: video/mp4\r\n\r\n).b) &&
           body.include?(file_fixture("media/loop.mp4").binread) &&
           body.include?(%(name="description"\r\n\r\nA test pattern).b)
       }

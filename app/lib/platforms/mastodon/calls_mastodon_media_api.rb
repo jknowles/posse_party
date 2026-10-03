@@ -37,7 +37,8 @@ class Platforms::Mastodon
     def post_media(account, file, description)
       response = HTTParty.post("#{account.credentials["base_url"]}/api/v2/media",
         headers: authorization(account),
-        body: {file:, description: description.presence}.compact)
+        body: {file:, description: description.presence}.compact,
+        stream_body: true)
 
       if [200, 202].include?(response.code)
         Result.success(Uploaded.new(id: response["id"], ready?: response.code == 200))
