@@ -135,7 +135,9 @@ class LinkedinTest < ActiveSupport::TestCase
       JSON.parse(request.body, symbolize_names: true) in {initializeUploadRequest: {fileSizeBytes: ^(file_fixture("media/loop.mp4").size), uploadThumbnail: false}}
     }
     assert_requested(:put, /dms-uploads/) { |request| request.body.b == file_fixture("media/loop.mp4").binread }
-    assert_requested(:post, "https://api.linkedin.com/rest/videos?action=finalizeUpload")
+    assert_requested(:post, "https://api.linkedin.com/rest/videos?action=finalizeUpload") { |request|
+      JSON.parse(request.body, symbolize_names: true) in {finalizeUploadRequest: {video: /\Aurn:li:video:/, uploadedPartIds: [_, *]}}
+    }
   end
 
   def test_linkedin_posts_a_clip_with_its_poster
@@ -155,6 +157,9 @@ class LinkedinTest < ActiveSupport::TestCase
       JSON.parse(request.body, symbolize_names: true) in {initializeUploadRequest: {fileSizeBytes: ^(file_fixture("media/clip.mp4").size), uploadThumbnail: true}}
     }
     assert_requested(:put, /dms-uploads/, headers: {"media-type-family" => "STILLIMAGE"}) { |request| request.body.b == file_fixture("media/still.jpg").binread }
+    assert_requested(:post, "https://api.linkedin.com/rest/videos?action=finalizeUpload") { |request|
+      JSON.parse(request.body, symbolize_names: true) in {finalizeUploadRequest: {video: /\Aurn:li:video:/, uploadedPartIds: [_, *]}}
+    }
   end
 
   private
