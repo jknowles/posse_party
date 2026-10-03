@@ -2,8 +2,10 @@ class Platforms::Mastodon
   class UploadsMastodonMedia
     MAX_IMAGES = 4
     MAX_BYTES = 16 * 1024 * 1024
+    MAX_VIDEO_BYTES = 99 * 1024 * 1024
     MAX_DESCRIPTION_LENGTH = 1_500
     EXTENSIONS = {"image/jpeg" => ".jpg", "image/png" => ".png", "image/gif" => ".gif", "image/webp" => ".webp"}.freeze
+    VIDEO_TYPES = %w[video/mp4 video/quicktime video/webm].freeze
 
     Media = Struct.new(:ids, :ready?, keyword_init: true)
     NONE = Media.new(ids: [], ready?: true)
@@ -21,12 +23,9 @@ class Platforms::Mastodon
     def upload(crosspost, crosspost_config)
       selection = @selects_media.select(@parses_media_items.parse(crosspost_config.media), max_images: MAX_IMAGES)
       return NONE if selection.empty?
-      raise MediaUnavailable, "Mastodon video is not supported yet" if selection.video
 
-      uploaded = selection.images.map { |item| upload_image(crosspost.account, item) }
-      if selection.dropped.positive?
-        @records_media_fallback.record(crosspost, "Mastodon takes at most #{MAX_IMAGES} images; dropped #{selection.dropped}")
-      end
+      uploaded = selection.video ? [upload_video(crosspost.account, selection.video)] : selection.images.map { |item| upload_image(crosspost.account, item) }
+      record_drop(crosspost, selection) if selection.dropped.positive?
       processing = uploaded.reject(&:ready?).map(&:id)
       Media.new(ids: uploaded.map(&:id), ready?: processing.empty? || @waits_for_processing.wait { processed?(crosspost.account, processing) })
     rescue => e
@@ -55,6 +54,34 @@ class Platforms::Mastodon
       raise MediaUnavailable, upload.error if upload.failure?
 
       upload.data
+    end
+
+    # A video always goes up still processing: Mastodon transcodes it, and makes a silent one a gifv
+    def upload_video(account, item)
+      download = @downloads_media.download_to_tempfile(item, max_bytes: MAX_VIDEO_BYTES)
+      raise MediaUnavailable, download.error if download.failure?
+
+      begin
+        content_type = download.data.content_type
+        unless VIDEO_TYPES.include?(content_type)
+          raise MediaUnavailable, "Mastodon takes MP4, QuickTime and WebM video, not #{content_type} (#{item.url})"
+        end
+
+        upload = @calls_mastodon_media_api.upload_file(account, path: download.data.path, content_type:, description: item.alt.truncate(MAX_DESCRIPTION_LENGTH))
+        raise MediaUnavailable, upload.error if upload.failure?
+
+        upload.data
+      ensure
+        File.delete(download.data.path)
+      end
+    end
+
+    def record_drop(crosspost, selection)
+      @records_media_fallback.record(crosspost, if selection.video
+        "Mastodon posts a video on its own; dropped #{selection.dropped}"
+      else
+        "Mastodon takes at most #{MAX_IMAGES} images; dropped #{selection.dropped}"
+      end)
     end
 
     def processed?(account, ids)
