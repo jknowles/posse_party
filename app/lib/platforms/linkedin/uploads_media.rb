@@ -5,6 +5,7 @@ class Platforms::Linkedin
     # LinkedIn takes 75 KB to 500 MB; this instance stops at 100 MB to stay inside the job's time limit
     MIN_VIDEO_BYTES = 75 * 1024
     MAX_VIDEO_BYTES = 100 * 1024 * 1024
+    THUMBNAIL_TYPES = %w[image/jpeg image/png].freeze
     CONTENT_TYPES = %w[image/jpeg image/png image/gif].freeze
 
     # A video LinkedIn is still processing when the wait runs out is posted later, by finish
@@ -88,12 +89,12 @@ class Platforms::Linkedin
       end
     end
 
-    # A poster that cannot be downloaded leaves LinkedIn to choose a frame
+    # A poster that cannot be downloaded, or that is not a JPEG or PNG, leaves LinkedIn to choose a frame
     def thumbnail(item)
       return if item.poster_url.blank?
 
       poster = @downloads_media.download(MediaItem.new(type: "image", url: item.poster_url), max_bytes: MAX_IMAGE_BYTES)
-      poster.data.bytes if poster.success?
+      poster.data.bytes if poster.success? && THUMBNAIL_TYPES.include?(poster.data.content_type)
     end
 
     def available?(urn, access_token:)

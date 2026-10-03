@@ -84,6 +84,19 @@ class Platforms::Linkedin::UploadsMediaTest < ActiveSupport::TestCase
     assert_equal [VIDEO_URN], uploaded.map(&:urn)
   end
 
+  def test_a_poster_linkedin_may_not_take_leaves_it_to_choose_a_frame
+    path = stub_video_download("video/mp4", size: 100_000)
+    stubs { |m| @downloads_media.download(m.that { |item| item.url == POSTER_URL }, max_bytes: 20 * 1024 * 1024) }.with {
+      Result.success(DownloadsMedia::Downloaded.new(bytes: "RIFF", content_type: "image/webp"))
+    }
+    stub_video_upload(path, thumbnail: nil)
+    stubs(ignore_block: true) { @waits_for_processing.wait }.with { true }
+
+    uploaded = @subject.upload(@crosspost, config([{"type" => "video", "url" => MP4_URL, "poster_url" => POSTER_URL}]), access_token: "token", person_urn: "urn:li:person:1")
+
+    assert_equal [VIDEO_URN], uploaded.map(&:urn)
+  end
+
   def test_a_poster_that_cannot_be_downloaded_leaves_linkedin_to_choose_a_frame
     path = stub_video_download("video/mp4", size: 100_000)
     stubs { |m| @downloads_media.download(m.that { |item| item.url == POSTER_URL }, max_bytes: 20 * 1024 * 1024) }.with {
