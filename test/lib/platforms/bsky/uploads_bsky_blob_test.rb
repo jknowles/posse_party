@@ -22,6 +22,18 @@ class Platforms::Bsky::UploadsBskyBlobTest < ActiveSupport::TestCase
     assert_requested upload
   end
 
+  def test_streams_a_file_from_disk_with_its_length
+    path = file_fixture("media/loop.mp4").to_s
+    upload = stub_request(:post, UPLOAD_URL)
+      .with(body: file_fixture("media/loop.mp4").binread, headers: {"Authorization" => "Bearer jwt", "Content-Type" => "video/mp4", "Content-Length" => File.size(path).to_s})
+      .to_return(status: 200, body: {blob: BLOB}.to_json, headers: {"Content-Type" => "application/json"})
+
+    result = @subject.upload_file(path, "video/mp4", @record_manager)
+
+    assert_equal BLOB, result.data
+    assert_requested upload
+  end
+
   def test_reports_an_upload_bluesky_refuses
     stub_request(:post, UPLOAD_URL).to_return(status: 400, body: {error: "InvalidRequest", message: "Blob too large"}.to_json, headers: {"Content-Type" => "application/json"})
 

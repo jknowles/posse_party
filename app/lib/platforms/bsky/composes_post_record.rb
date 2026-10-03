@@ -9,13 +9,9 @@ class Platforms::Bsky
     end
 
     def compose(crosspost, crosspost_config, text:, facets:, record_manager:)
-      images = @uploads_bsky_media.upload(crosspost, crosspost_config, record_manager)
-      post = images.any? ? @keeps_link_with_media.keep(crosspost_config, text, facets) : KeepsLinkWithMedia::Post.new(text:, facets:)
-      embed = if images.any?
-        {"$type" => "app.bsky.embed.images", "images" => images}
-      elsif crosspost_config.attach_link
-        @attaches_web_card.attach!(crosspost_config, record_manager)
-      end
+      media = @uploads_bsky_media.upload(crosspost, crosspost_config, record_manager)
+      post = media ? @keeps_link_with_media.keep(crosspost_config, text, facets) : KeepsLinkWithMedia::Post.new(text:, facets:)
+      embed = media || (@attaches_web_card.attach!(crosspost_config, record_manager) if crosspost_config.attach_link)
 
       Composed.new(text: post.text, record: {
         "collection" => "app.bsky.feed.post",
