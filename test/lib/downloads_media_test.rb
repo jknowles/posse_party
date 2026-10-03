@@ -157,6 +157,19 @@ class DownloadsMediaTest < ActiveSupport::TestCase
     assert_empty left
   end
 
+  def test_a_video_leaves_no_file_behind_when_sniffing_its_type_raises
+    stub_request(:get, "https://example.com/odd.mp4").to_return(status: 200, body: "x", headers: {"Content-Type" => "application/octet-stream"})
+
+    Mocktail.replace(Marcel::MimeType)
+    stubs { Marcel::MimeType.for(Mocktail.matchers.any) }.with { raise "sniff failed" }
+
+    _, left = in_own_tmpdir {
+      assert_raises(RuntimeError) { @subject.download_to_tempfile(MediaItem.new(type: "video", url: "https://example.com/odd.mp4"), max_bytes: 100) }
+    }
+
+    assert_empty left
+  end
+
   private
 
   # Tests in other processes write temp files too, so this one counts only its own directory
