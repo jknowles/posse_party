@@ -4,6 +4,8 @@ class Platforms::Mastodon::UploadsMastodonMediaTest < ActiveSupport::TestCase
   GIF_URL = "https://example.com/media/loop.gif"
   PNG_URL = "https://example.com/media/still.png"
   MAX_BYTES = 16 * 1024 * 1024
+  MP4_URL = "https://example.com/media/loop.mp4"
+  MAX_VIDEO_BYTES = 99 * 1024 * 1024
 
   def setup
     @downloads_media = Mocktail.of_next(DownloadsMedia)
@@ -72,11 +74,73 @@ class Platforms::Mastodon::UploadsMastodonMediaTest < ActiveSupport::TestCase
     verify { @records_media_fallback.record(@crosspost, "Mastodon could not process media 1 (HTTP 422): {}") }
   end
 
-  def test_a_video_falls_back_until_mastodon_video_ships
-    media = @subject.upload(@crosspost, config([{"type" => "video", "url" => "https://example.com/media/loop.mp4"}]))
+  def test_uploads_a_video_and_waits_for_mastodon_to_process_it
+    path = stub_video_download(MP4_URL, "video/mp4")
+    stub_video_upload(path, "video/mp4", "A test pattern", id: "3")
+    stubs(ignore_block: true) { @waits_for_processing.wait }.with { |call| call.block.call }
+    stubs { @calls_mastodon_media_api.check(@account, "3") }.with { Result.success(true) }
+
+    media = @subject.upload(@crosspost, config([{"type" => "video", "url" => MP4_URL, "alt" => "A test pattern"}]))
+
+    assert_equal Platforms::Mastodon::UploadsMastodonMedia::Media.new(ids: ["3"], ready?: true), media
+    assert_not File.exist?(path)
+  end
+
+  def test_a_video_still_processing_when_the_wait_runs_out_is_left_to_finish
+    path = stub_video_download(MP4_URL, "video/mp4")
+    stub_video_upload(path, "video/mp4", "", id: "3")
+    stubs(ignore_block: true) { @waits_for_processing.wait }.with { false }
+
+    media = @subject.upload(@crosspost, config([{"type" => "video", "url" => MP4_URL}]))
+
+    assert_equal Platforms::Mastodon::UploadsMastodonMedia::Media.new(ids: ["3"], ready?: false), media
+    verify_never_called { @records_media_fallback.record }
+  end
+
+  def test_a_video_beside_other_media_goes_alone_and_the_drop_is_recorded
+    path = stub_video_download(MP4_URL, "video/mp4")
+    stub_video_upload(path, "video/mp4", "", id: "3")
+    stubs(ignore_block: true) { @waits_for_processing.wait }.with { true }
+
+    media = @subject.upload(@crosspost, config([{"type" => "image", "url" => PNG_URL}, {"type" => "video", "url" => MP4_URL}]))
+
+    assert_equal ["3"], media.ids
+    verify { @records_media_fallback.record(@crosspost, "Mastodon posts a video on its own; dropped 1") }
+    verify_never_called { @downloads_media.download }
+  end
+
+  def test_a_video_type_mastodon_does_not_take_falls_back_and_leaves_no_file
+    path = stub_video_download(MP4_URL, "video/x-msvideo")
+
+    media = @subject.upload(@crosspost, config([{"type" => "video", "url" => MP4_URL}]))
 
     assert_equal Platforms::Mastodon::UploadsMastodonMedia::NONE, media
-    verify { @records_media_fallback.record(@crosspost, "Mastodon video is not supported yet") }
+    verify { @records_media_fallback.record(@crosspost, "Mastodon takes MP4, QuickTime and WebM video, not video/x-msvideo (#{MP4_URL})") }
+    assert_not File.exist?(path)
+  end
+
+  def test_a_video_mastodon_refuses_falls_back_and_leaves_no_file
+    path = stub_video_download(MP4_URL, "video/mp4")
+    stubs { @calls_mastodon_media_api.upload_file(@account, path:, content_type: "video/mp4", description: "") }.with {
+      Result.failure("Mastodon refused the upload (HTTP 422): {}")
+    }
+
+    media = @subject.upload(@crosspost, config([{"type" => "video", "url" => MP4_URL}]))
+
+    assert_equal Platforms::Mastodon::UploadsMastodonMedia::NONE, media
+    verify { @records_media_fallback.record(@crosspost, "Mastodon refused the upload (HTTP 422): {}") }
+    assert_not File.exist?(path)
+  end
+
+  def test_a_video_too_large_to_download_falls_back
+    stubs { |m| @downloads_media.download_to_tempfile(m.that { |item| item.url == MP4_URL }, max_bytes: MAX_VIDEO_BYTES) }.with {
+      Result.failure("#{MP4_URL} is over the #{MAX_VIDEO_BYTES}-byte limit")
+    }
+
+    media = @subject.upload(@crosspost, config([{"type" => "video", "url" => MP4_URL}]))
+
+    assert_equal Platforms::Mastodon::UploadsMastodonMedia::NONE, media
+    verify { @records_media_fallback.record(@crosspost, "#{MP4_URL} is over the #{MAX_VIDEO_BYTES}-byte limit") }
   end
 
   def test_a_type_mastodon_does_not_take_falls_back
@@ -182,6 +246,21 @@ class Platforms::Mastodon::UploadsMastodonMediaTest < ActiveSupport::TestCase
   def stub_upload(bytes, extension, description, id:, ready:)
     stubs { @calls_mastodon_media_api.upload(@account, bytes:, extension:, description:) }.with {
       Result.success(Platforms::Mastodon::CallsMastodonMediaApi::Uploaded.new(id:, ready?: ready))
+    }
+  end
+
+  # A real file, so the test can see the uploader delete it
+  def stub_video_download(url, content_type)
+    path = Tempfile.create(["media", ".mp4"]).tap(&:close).path
+    stubs { |m| @downloads_media.download_to_tempfile(m.that { |item| item.url == url }, max_bytes: MAX_VIDEO_BYTES) }.with {
+      Result.success(DownloadsMedia::DownloadedFile.new(path:, size: 0, content_type:))
+    }
+    path
+  end
+
+  def stub_video_upload(path, content_type, description, id:)
+    stubs { @calls_mastodon_media_api.upload_file(@account, path:, content_type:, description:) }.with {
+      Result.success(Platforms::Mastodon::CallsMastodonMediaApi::Uploaded.new(id:, ready?: false))
     }
   end
 end

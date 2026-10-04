@@ -23,6 +23,24 @@ class Platforms::Mastodon::CallsMastodonMediaApiTest < ActiveSupport::TestCase
     assert_requested upload
   end
 
+  def test_uploads_a_file_from_disk_under_its_own_name
+    path = file_fixture("media/loop.mp4").to_s
+    upload = stub_request(:post, "https://mastodon.example/api/v2/media")
+      .with(headers: {"Authorization" => "Bearer token"}) { |request|
+        body = request.body.b
+        request.headers["Content-Length"] == body.bytesize.to_s &&
+          body.include?(%(name="file"; filename="loop.mp4"\r\nContent-Type: video/mp4\r\n\r\n).b) &&
+          body.include?(file_fixture("media/loop.mp4").binread) &&
+          body.include?(%(name="description"\r\n\r\nA test pattern).b)
+      }
+      .to_return(status: 202, body: {id: "113", url: nil}.to_json, headers: {"Content-Type" => "application/json"})
+
+    result = @subject.upload_file(@account, path:, content_type: "video/mp4", description: "A test pattern")
+
+    assert_equal Platforms::Mastodon::CallsMastodonMediaApi::Uploaded.new(id: "113", ready?: false), result.data
+    assert_requested upload
+  end
+
   def test_an_upload_mastodon_is_still_processing_is_not_ready
     stub_request(:post, "https://mastodon.example/api/v2/media")
       .to_return(status: 202, body: {id: "111", url: nil}.to_json, headers: {"Content-Type" => "application/json"})

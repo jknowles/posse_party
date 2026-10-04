@@ -1,0 +1,540 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: "{{base_url}}/api/v2/media"
+    body:
+      encoding: UTF-8
+      string: "[173878 bytes, not kept in the cassette]"
+    headers:
+      Authorization:
+      - Bearer {{access_token}}
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Content-Type:
+      - multipart/form-data; boundary=------------------------87IaJwzy-AspDx2l
+      Content-Length:
+      - '173878'
+  response:
+    status:
+      code: 202
+      message: Accepted
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '515'
+      X-Ratelimit-Limit:
+      - '30'
+      X-Frame-Options:
+      - DENY
+      X-Ratelimit-Remaining:
+      - '29'
+      Content-Type:
+      - application/json; charset=utf-8
+      Cache-Control:
+      - private, no-store
+      X-Xss-Protection:
+      - '0'
+      Referrer-Policy:
+      - same-origin
+      Server:
+      - Mastodon
+      X-Ratelimit-Reset:
+      - '2026-10-04T20:00:00.568990Z'
+      X-Runtime:
+      - '0.854440'
+      X-Request-Id:
+      - 2c7de47f-536b-41e4-a16e-6fd737e339dd
+      Content-Security-Policy:
+      - default-src 'none'; frame-ancestors 'none'; form-action 'none'
+      X-Content-Type-Options:
+      - nosniff
+      Accept-Ranges:
+      - bytes
+      Via:
+      - 1.1 varnish, 1.1 varnish
+      Date:
+      - Sun, 04 Oct 2026 19:58:05 GMT
+      X-Served-By:
+      - cache-fra-eddf8230215-FRA, cache-fra-eddf8230065-FRA, cache-chi-kmdw8640065-CHI
+      X-Cache:
+      - MISS, MISS, MISS
+      X-Cache-Hits:
+      - 0, 0, 0
+      X-Timer:
+      - S1791143884.107418,VS0,VE1379
+      Vary:
+      - Authorization, Origin
+      Strict-Transport-Security:
+      - max-age=31557600
+      Alt-Svc:
+      - h3=":443";ma=86400,h3-29=":443";ma=86400,h3-27=":443";ma=86400
+    body:
+      encoding: UTF-8
+      string: '{"id":"117384405625824454","type":"gifv","url":null,"preview_url":"https://files.mastodon.social/media_attachments/files/117/384/405/625/824/454/small/b61800cba1566ee7.png","remote_url":null,"preview_remote_url":null,"text_url":null,"meta":{"original":{"width":640,"height":360,"frame_rate":"24/1","duration":4.0,"bitrate":347078},"small":{"width":640,"height":360,"size":"640x360","aspect":1.7777777777777777}},"description":"A
+        test pattern, four seconds, silent","blurhash":"U~KeJ@$YjYz6bbW-ayf8X8WCX7aybYazW;WV"}'
+  recorded_at: Sun, 04 Oct 2026 19:58:05 GMT
+- request:
+    method: get
+    uri: "{{base_url}}/api/v1/media/117384405625824454"
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Authorization:
+      - Bearer {{access_token}}
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 206
+      message: Partial Content
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '515'
+      Cache-Control:
+      - private, no-store
+      Content-Security-Policy:
+      - default-src 'none'; frame-ancestors 'none'; form-action 'none'
+      Server:
+      - Mastodon
+      X-Request-Id:
+      - 6de9b250-602f-4e4b-a695-9f9d0c3d23c0
+      Content-Type:
+      - application/json; charset=utf-8
+      X-Frame-Options:
+      - DENY
+      Referrer-Policy:
+      - same-origin
+      X-Ratelimit-Remaining:
+      - '298'
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - '0'
+      X-Ratelimit-Reset:
+      - '2026-10-04T20:00:00.689479Z'
+      X-Ratelimit-Limit:
+      - '300'
+      X-Runtime:
+      - '0.068209'
+      Accept-Ranges:
+      - bytes
+      Via:
+      - 1.1 varnish, 1.1 varnish
+      Date:
+      - Sun, 04 Oct 2026 19:58:05 GMT
+      X-Served-By:
+      - cache-fra-etou8220066-FRA, cache-fra-etou8220066-FRA, cache-bos-kbos510031-BOS
+      X-Cache:
+      - MISS, MISS, MISS
+      X-Cache-Hits:
+      - 0, 0, 0
+      X-Timer:
+      - S1791143886.541263,VS0,VE234
+      Vary:
+      - Authorization, Origin
+      Strict-Transport-Security:
+      - max-age=31557600
+      Alt-Svc:
+      - h3=":443";ma=86400,h3-29=":443";ma=86400,h3-27=":443";ma=86400
+    body:
+      encoding: UTF-8
+      string: '{"id":"117384405625824454","type":"gifv","url":null,"preview_url":"https://files.mastodon.social/media_attachments/files/117/384/405/625/824/454/small/b61800cba1566ee7.png","remote_url":null,"preview_remote_url":null,"text_url":null,"meta":{"original":{"width":640,"height":360,"frame_rate":"24/1","duration":4.0,"bitrate":347078},"small":{"width":640,"height":360,"size":"640x360","aspect":1.7777777777777777}},"description":"A
+        test pattern, four seconds, silent","blurhash":"U~KeJ@$YjYz6bbW-ayf8X8WCX7aybYazW;WV"}'
+  recorded_at: Sun, 04 Oct 2026 19:58:05 GMT
+- request:
+    method: get
+    uri: "{{base_url}}/api/v1/media/117384405625824454"
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Authorization:
+      - Bearer {{access_token}}
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 206
+      message: Partial Content
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '515'
+      Referrer-Policy:
+      - same-origin
+      X-Request-Id:
+      - b06f6778-3f45-4ecb-834d-fb6b41ddd529
+      X-Content-Type-Options:
+      - nosniff
+      Content-Security-Policy:
+      - default-src 'none'; frame-ancestors 'none'; form-action 'none'
+      X-Ratelimit-Remaining:
+      - '297'
+      X-Xss-Protection:
+      - '0'
+      Cache-Control:
+      - private, no-store
+      Content-Type:
+      - application/json; charset=utf-8
+      Server:
+      - Mastodon
+      X-Ratelimit-Limit:
+      - '300'
+      X-Runtime:
+      - '0.069549'
+      X-Ratelimit-Reset:
+      - '2026-10-04T20:00:00.980832Z'
+      X-Frame-Options:
+      - DENY
+      Accept-Ranges:
+      - bytes
+      Via:
+      - 1.1 varnish, 1.1 varnish
+      Date:
+      - Sun, 04 Oct 2026 19:58:09 GMT
+      X-Served-By:
+      - cache-fra-etou8220164-FRA, cache-fra-etou8220066-FRA, cache-bos-kbos510045-BOS
+      X-Cache:
+      - MISS, MISS, MISS
+      X-Cache-Hits:
+      - 0, 0, 0
+      X-Timer:
+      - S1791143889.840718,VS0,VE204
+      Vary:
+      - Authorization, Origin
+      Strict-Transport-Security:
+      - max-age=31557600
+      Alt-Svc:
+      - h3=":443";ma=86400,h3-29=":443";ma=86400,h3-27=":443";ma=86400
+    body:
+      encoding: UTF-8
+      string: '{"id":"117384405625824454","type":"gifv","url":null,"preview_url":"https://files.mastodon.social/media_attachments/files/117/384/405/625/824/454/small/b61800cba1566ee7.png","remote_url":null,"preview_remote_url":null,"text_url":null,"meta":{"original":{"width":640,"height":360,"frame_rate":"24/1","duration":4.0,"bitrate":347078},"small":{"width":640,"height":360,"size":"640x360","aspect":1.7777777777777777}},"description":"A
+        test pattern, four seconds, silent","blurhash":"U~KeJ@$YjYz6bbW-ayf8X8WCX7aybYazW;WV"}'
+  recorded_at: Sun, 04 Oct 2026 19:58:09 GMT
+- request:
+    method: get
+    uri: "{{base_url}}/api/v1/media/117384405625824454"
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Authorization:
+      - Bearer {{access_token}}
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 206
+      message: Partial Content
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '515'
+      Content-Type:
+      - application/json; charset=utf-8
+      X-Xss-Protection:
+      - '0'
+      Content-Security-Policy:
+      - default-src 'none'; frame-ancestors 'none'; form-action 'none'
+      Referrer-Policy:
+      - same-origin
+      Cache-Control:
+      - private, no-store
+      X-Request-Id:
+      - f1d8930b-e31d-4c11-ab90-75df3c3b17ef
+      Server:
+      - Mastodon
+      X-Frame-Options:
+      - DENY
+      X-Ratelimit-Remaining:
+      - '296'
+      X-Ratelimit-Limit:
+      - '300'
+      X-Ratelimit-Reset:
+      - '2026-10-04T20:00:00.812698Z'
+      X-Runtime:
+      - '0.324337'
+      X-Content-Type-Options:
+      - nosniff
+      Accept-Ranges:
+      - bytes
+      Via:
+      - 1.1 varnish, 1.1 varnish
+      Date:
+      - Sun, 04 Oct 2026 19:58:12 GMT
+      X-Served-By:
+      - cache-fra-etou8220126-FRA, cache-fra-etou8220066-FRA, cache-chi-kmdw8640080-CHI
+      X-Cache:
+      - MISS, MISS, MISS
+      X-Cache-Hits:
+      - 0, 0, 0
+      X-Timer:
+      - S1791143892.156014,VS0,VE766
+      Vary:
+      - Authorization, Origin
+      Strict-Transport-Security:
+      - max-age=31557600
+      Alt-Svc:
+      - h3=":443";ma=86400,h3-29=":443";ma=86400,h3-27=":443";ma=86400
+    body:
+      encoding: UTF-8
+      string: '{"id":"117384405625824454","type":"gifv","url":null,"preview_url":"https://files.mastodon.social/media_attachments/files/117/384/405/625/824/454/small/b61800cba1566ee7.png","remote_url":null,"preview_remote_url":null,"text_url":null,"meta":{"original":{"width":640,"height":360,"frame_rate":"24/1","duration":4.0,"bitrate":347078},"small":{"width":640,"height":360,"size":"640x360","aspect":1.7777777777777777}},"description":"A
+        test pattern, four seconds, silent","blurhash":"U~KeJ@$YjYz6bbW-ayf8X8WCX7aybYazW;WV"}'
+  recorded_at: Sun, 04 Oct 2026 19:58:12 GMT
+- request:
+    method: get
+    uri: "{{base_url}}/api/v1/media/117384405625824454"
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Authorization:
+      - Bearer {{access_token}}
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 206
+      message: Partial Content
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '515'
+      X-Ratelimit-Remaining:
+      - '295'
+      X-Frame-Options:
+      - DENY
+      Referrer-Policy:
+      - same-origin
+      Content-Type:
+      - application/json; charset=utf-8
+      X-Request-Id:
+      - c6b663d6-f368-477e-8a14-939e836125c1
+      X-Xss-Protection:
+      - '0'
+      X-Ratelimit-Reset:
+      - '2026-10-04T20:00:00.090098Z'
+      X-Ratelimit-Limit:
+      - '300'
+      Server:
+      - Mastodon
+      X-Content-Type-Options:
+      - nosniff
+      Content-Security-Policy:
+      - default-src 'none'; frame-ancestors 'none'; form-action 'none'
+      Cache-Control:
+      - private, no-store
+      X-Runtime:
+      - '0.021700'
+      Accept-Ranges:
+      - bytes
+      Via:
+      - 1.1 varnish, 1.1 varnish
+      Date:
+      - Sun, 04 Oct 2026 19:58:16 GMT
+      X-Served-By:
+      - cache-fra-etou8220156-FRA, cache-fra-etou8220066-FRA, cache-bos-kbos510025-BOS
+      X-Cache:
+      - MISS, MISS, MISS
+      X-Cache-Hits:
+      - 0, 0, 0
+      X-Timer:
+      - S1791143896.985058,VS0,VE188
+      Vary:
+      - Authorization, Origin
+      Strict-Transport-Security:
+      - max-age=31557600
+      Alt-Svc:
+      - h3=":443";ma=86400,h3-29=":443";ma=86400,h3-27=":443";ma=86400
+    body:
+      encoding: UTF-8
+      string: '{"id":"117384405625824454","type":"gifv","url":null,"preview_url":"https://files.mastodon.social/media_attachments/files/117/384/405/625/824/454/small/b61800cba1566ee7.png","remote_url":null,"preview_remote_url":null,"text_url":null,"meta":{"original":{"width":640,"height":360,"frame_rate":"24/1","duration":4.0,"bitrate":347078},"small":{"width":640,"height":360,"size":"640x360","aspect":1.7777777777777777}},"description":"A
+        test pattern, four seconds, silent","blurhash":"U~KeJ@$YjYz6bbW-ayf8X8WCX7aybYazW;WV"}'
+  recorded_at: Sun, 04 Oct 2026 19:58:16 GMT
+- request:
+    method: get
+    uri: "{{base_url}}/api/v1/media/117384405625824454"
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Authorization:
+      - Bearer {{access_token}}
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json; charset=utf-8
+      X-Xss-Protection:
+      - '0'
+      Content-Security-Policy:
+      - default-src 'none'; frame-ancestors 'none'; form-action 'none'
+      Referrer-Policy:
+      - same-origin
+      Cache-Control:
+      - private, no-store
+      Etag:
+      - W/"3f3daf27dfd22ddf8013d2e08c15beea"
+      X-Request-Id:
+      - 9ac75026-4521-40b2-be83-679be87f5baa
+      Server:
+      - Mastodon
+      X-Frame-Options:
+      - DENY
+      X-Ratelimit-Remaining:
+      - '294'
+      X-Ratelimit-Limit:
+      - '300'
+      X-Ratelimit-Reset:
+      - '2026-10-04T20:00:00.371140Z'
+      X-Runtime:
+      - '0.015592'
+      X-Content-Type-Options:
+      - nosniff
+      Accept-Ranges:
+      - none
+      Via:
+      - 1.1 varnish, 1.1 varnish
+      Date:
+      - Sun, 04 Oct 2026 19:58:19 GMT
+      X-Served-By:
+      - cache-fra-etou8220066-FRA, cache-fra-etou8220066-FRA, cache-bos-kbos510028-BOS
+      X-Cache:
+      - MISS, MISS, MISS
+      X-Cache-Hits:
+      - 0, 0, 0
+      X-Timer:
+      - S1791143899.226135,VS0,VE219
+      Vary:
+      - Authorization, Origin, Accept-Encoding
+      Strict-Transport-Security:
+      - max-age=31557600
+      Alt-Svc:
+      - h3=":443";ma=86400,h3-29=":443";ma=86400,h3-27=":443";ma=86400
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: '{"id":"117384405625824454","type":"gifv","url":"https://files.mastodon.social/media_attachments/files/117/384/405/625/824/454/original/b61800cba1566ee7.mp4","preview_url":"https://files.mastodon.social/media_attachments/files/117/384/405/625/824/454/small/b61800cba1566ee7.png","remote_url":null,"preview_remote_url":null,"text_url":null,"meta":{"original":{"width":640,"height":360,"frame_rate":"24/1","duration":4.0,"bitrate":347076},"small":{"width":640,"height":360,"size":"640x360","aspect":1.7777777777777777}},"description":"A
+        test pattern, four seconds, silent","blurhash":"U~KeJ@$YjYz6bbW-ayf8X8WCX7aybYazW;WV"}'
+  recorded_at: Sun, 04 Oct 2026 19:58:19 GMT
+- request:
+    method: post
+    uri: "{{base_url}}/api/v1/statuses"
+    body:
+      encoding: UTF-8
+      string: '{"status":"PosseParty media test (deleted after recording)\n\nhttps://example.com/social/video-loop/","media_ids":["117384405625824454"]}'
+    headers:
+      Authorization:
+      - Bearer {{access_token}}
+      Content-Type:
+      - application/json
+      Idempotency-Key:
+      - posse-party-crosspost-521411913-090062a1-819b-493b-b4b3-6f8bb0cd7a69
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Connection:
+      - keep-alive
+      X-Frame-Options:
+      - DENY
+      Etag:
+      - W/"14dc7c7e7bd7b3fe277118e24bb55f04"
+      X-Runtime:
+      - '0.674602'
+      Content-Security-Policy:
+      - default-src 'none'; frame-ancestors 'none'; form-action 'none'
+      X-Ratelimit-Remaining:
+      - '293'
+      X-Xss-Protection:
+      - '0'
+      X-Request-Id:
+      - 89118a1e-6d13-4800-8bef-333f162bec10
+      X-Content-Type-Options:
+      - nosniff
+      Cache-Control:
+      - private, no-store
+      X-Ratelimit-Limit:
+      - '300'
+      X-Ratelimit-Reset:
+      - '2026-10-04T20:00:00.653181Z'
+      Content-Type:
+      - application/json; charset=utf-8
+      Referrer-Policy:
+      - same-origin
+      Server:
+      - Mastodon
+      Accept-Ranges:
+      - none
+      Via:
+      - 1.1 varnish, 1.1 varnish
+      Date:
+      - Sun, 04 Oct 2026 19:58:20 GMT
+      X-Served-By:
+      - cache-fra-eddf8230155-FRA, cache-fra-eddf8230054-FRA, cache-chi-kmdw8640065-CHI
+      X-Cache:
+      - MISS, MISS, MISS
+      X-Cache-Hits:
+      - 0, 0, 0
+      X-Timer:
+      - S1791143900.541152,VS0,VE858
+      Vary:
+      - Authorization, Origin, Accept-Encoding
+      Strict-Transport-Security:
+      - max-age=31557600
+      Alt-Svc:
+      - h3=":443";ma=86400,h3-29=":443";ma=86400,h3-27=":443";ma=86400
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        eyJpZCI6IjExNzM4NDQwNjYxMDU3OTU4NCIsImNyZWF0ZWRfYXQiOiIyMDI2LTEwLTA0VDE5OjU4OjE5LjcwMFoiLCJpbl9yZXBseV90b19pZCI6bnVsbCwiaW5fcmVwbHlfdG9fYWNjb3VudF9pZCI6bnVsbCwic2Vuc2l0aXZlIjpmYWxzZSwic3BvaWxlcl90ZXh0IjoiIiwidmlzaWJpbGl0eSI6InB1YmxpYyIsImxhbmd1YWdlIjoiZW4iLCJ1cmkiOiJ7e2Jhc2VfdXJsfX0vYXAvdXNlcnMvMTE2NzI3NTYwODU2MTUyMDk1L3N0YXR1c2VzLzExNzM4NDQwNjYxMDU3OTU4NCIsInVybCI6Int7YmFzZV91cmx9fS9AY2l2aWx5dGljcy8xMTczODQ0MDY2MTA1Nzk1ODQiLCJyZXBsaWVzX2NvdW50IjowLCJyZWJsb2dzX2NvdW50IjowLCJmYXZvdXJpdGVzX2NvdW50IjowLCJxdW90ZXNfY291bnQiOjAsImVkaXRlZF9hdCI6bnVsbCwiZmF2b3VyaXRlZCI6ZmFsc2UsInJlYmxvZ2dlZCI6ZmFsc2UsIm11dGVkIjpmYWxzZSwiYm9va21hcmtlZCI6ZmFsc2UsInBpbm5lZCI6ZmFsc2UsImNvbnRlbnQiOiI8cD5Qb3NzZVBhcnR5IG1lZGlhIHRlc3QgKGRlbGV0ZWQgYWZ0ZXIgcmVjb3JkaW5nKTwvcD48cD48YSBocmVmPVwiaHR0cHM6Ly9leGFtcGxlLmNvbS9zb2NpYWwvdmlkZW8tbG9vcC9cIiB0YXJnZXQ9XCJfYmxhbmtcIiByZWw9XCJub2ZvbGxvdyBub29wZW5lclwiIHRyYW5zbGF0ZT1cIm5vXCI+PHNwYW4gY2xhc3M9XCJpbnZpc2libGVcIj5odHRwczovLzwvc3Bhbj48c3BhbiBjbGFzcz1cIlwiPmV4YW1wbGUuY29tL3NvY2lhbC92aWRlby1sb29wLzwvc3Bhbj48c3BhbiBjbGFzcz1cImludmlzaWJsZVwiPjwvc3Bhbj48L2E+PC9wPiIsImZpbHRlcmVkIjpbXSwicmVibG9nIjpudWxsLCJhcHBsaWNhdGlvbiI6eyJuYW1lIjoiUG9zc2UgUGFydHkiLCJ3ZWJzaXRlIjpudWxsfSwiYWNjb3VudCI6eyJpZCI6IjExNjcyNzU2MDg1NjE1MjA5NSIsInVzZXJuYW1lIjoiY2l2aWx5dGljcyIsImFjY3QiOiJjaXZpbHl0aWNzIiwiZGlzcGxheV9uYW1lIjoiSmFyZWQgS25vd2xlcyIsImxvY2tlZCI6ZmFsc2UsImJvdCI6ZmFsc2UsImRpc2NvdmVyYWJsZSI6bnVsbCwiaW5kZXhhYmxlIjpmYWxzZSwiZ3JvdXAiOmZhbHNlLCJjcmVhdGVkX2F0IjoiMjAyNi0wNi0xMFQwMDowMDowMC4wMDBaIiwibm90ZSI6IjxwPkZvdW5kZXIgYW5kIFByZXNpZGVudCBvZiBDaXZpbHl0aWNzIENvbnN1bHRpbmcgfCBQb2xpdGljYWwgU2NpZW5jZSBQaC5ELiB8IFNwZWNpYWxpemluZyBpbiBkYXRhIHZpeiDwn5OKLCBwb2xpY3kgcmVzZWFyY2gsIGFuZCBkYXRhIGFuYWx5c2lzIG9mIFVTIHB1YmxpYyBkYXRhIHdpdGggYSBzaWRlIG9mIHB1YmxpYyBmaW5hbmNlIPCfkrggfCDwn464IPCfk7cg8J+Wpe+4jyBzZWxmLWhvc3RlciBhbmQgYWN0aXZlIGRlLWdvb2dsZXIgfCBCb3N0b24sIE1BPC9wPiIsInVybCI6Int7YmFzZV91cmx9fS9AY2l2aWx5dGljcyIsInVyaSI6Int7YmFzZV91cmx9fS9hcC91c2Vycy8xMTY3Mjc1NjA4NTYxNTIwOTUiLCJhdmF0YXIiOiJodHRwczovL2ZpbGVzLm1hc3RvZG9uLnNvY2lhbC9hY2NvdW50cy9hdmF0YXJzLzExNi83MjcvNTYwLzg1Ni8xNTIvMDk1L29yaWdpbmFsLzQ2MzQ2ZjQzMmMwNGMxMGYucG5nIiwiYXZhdGFyX3N0YXRpYyI6Imh0dHBzOi8vZmlsZXMubWFzdG9kb24uc29jaWFsL2FjY291bnRzL2F2YXRhcnMvMTE2LzcyNy81NjAvODU2LzE1Mi8wOTUvb3JpZ2luYWwvNDYzNDZmNDMyYzA0YzEwZi5wbmciLCJhdmF0YXJfZGVzY3JpcHRpb24iOiJNZSBpbiBzdW5nbGFzc2VzIHN0YW5kaW5nIGluIGZyb250IG9mIHRoZSBCZXJrbGV5IFBpdCBpbiBCdXR0ZSBNb250YW5hLiIsImhlYWRlciI6Int7YmFzZV91cmx9fS9oZWFkZXJzL29yaWdpbmFsL21pc3NpbmcucG5nIiwiaGVhZGVyX3N0YXRpYyI6Int7YmFzZV91cmx9fS9oZWFkZXJzL29yaWdpbmFsL21pc3NpbmcucG5nIiwiaGVhZGVyX2Rlc2NyaXB0aW9uIjoiIiwiZm9sbG93ZXJzX2NvdW50IjowLCJmb2xsb3dpbmdfY291bnQiOjAsInN0YXR1c2VzX2NvdW50Ijo5NSwibGFzdF9zdGF0dXNfYXQiOiIyMDI2LTEwLTA0IiwiaGlkZV9jb2xsZWN0aW9ucyI6bnVsbCwic2hvd19tZWRpYSI6dHJ1ZSwic2hvd19tZWRpYV9yZXBsaWVzIjp0cnVlLCJzaG93X2ZlYXR1cmVkIjp0cnVlLCJub2luZGV4IjpmYWxzZSwiZmVhdHVyZV9hcHByb3ZhbCI6eyJhdXRvbWF0aWMiOltdLCJtYW51YWwiOltdLCJjdXJyZW50X3VzZXIiOiJkZW5pZWQifSwiZW1vamlzIjpbXSwicm9sZXMiOltdLCJmaWVsZHMiOlt7Im5hbWUiOiJQZXJzb25hbCB3ZWJzaXRlIiwidmFsdWUiOiI8YSBocmVmPVwiaHR0cHM6Ly9qYXJlZGtub3dsZXMuY29tXCIgdGFyZ2V0PVwiX2JsYW5rXCIgcmVsPVwibm9mb2xsb3cgbm9vcGVuZXIgbWVcIiB0cmFuc2xhdGU9XCJub1wiPjxzcGFuIGNsYXNzPVwiaW52aXNpYmxlXCI+aHR0cHM6Ly88L3NwYW4+PHNwYW4gY2xhc3M9XCJcIj5qYXJlZGtub3dsZXMuY29tPC9zcGFuPjxzcGFuIGNsYXNzPVwiaW52aXNpYmxlXCI+PC9zcGFuPjwvYT4iLCJ2ZXJpZmllZF9hdCI6IjIwMjYtMDYtMTFUMTU6MDg6MzAuNjI3KzAwOjAwIn1dfSwibWVkaWFfYXR0YWNobWVudHMiOlt7ImlkIjoiMTE3Mzg0NDA1NjI1ODI0NDU0IiwidHlwZSI6ImdpZnYiLCJ1cmwiOiJodHRwczovL2ZpbGVzLm1hc3RvZG9uLnNvY2lhbC9tZWRpYV9hdHRhY2htZW50cy9maWxlcy8xMTcvMzg0LzQwNS82MjUvODI0LzQ1NC9vcmlnaW5hbC9iNjE4MDBjYmExNTY2ZWU3Lm1wNCIsInByZXZpZXdfdXJsIjoiaHR0cHM6Ly9maWxlcy5tYXN0b2Rvbi5zb2NpYWwvbWVkaWFfYXR0YWNobWVudHMvZmlsZXMvMTE3LzM4NC80MDUvNjI1LzgyNC80NTQvc21hbGwvYjYxODAwY2JhMTU2NmVlNy5wbmciLCJyZW1vdGVfdXJsIjpudWxsLCJwcmV2aWV3X3JlbW90ZV91cmwiOm51bGwsInRleHRfdXJsIjpudWxsLCJtZXRhIjp7Im9yaWdpbmFsIjp7IndpZHRoIjo2NDAsImhlaWdodCI6MzYwLCJmcmFtZV9yYXRlIjoiMjQvMSIsImR1cmF0aW9uIjo0LjAsImJpdHJhdGUiOjM0NzA3Nn0sInNtYWxsIjp7IndpZHRoIjo2NDAsImhlaWdodCI6MzYwLCJzaXplIjoiNjQweDM2MCIsImFzcGVjdCI6MS43Nzc3Nzc3Nzc3Nzc3Nzc3fX0sImRlc2NyaXB0aW9uIjoiQSB0ZXN0IHBhdHRlcm4sIGZvdXIgc2Vjb25kcywgc2lsZW50IiwiYmx1cmhhc2giOiJVfktlSkAkWWpZejZiYlctYXlmOFg4V0NYN2F5Yllhelc7V1YifV0sIm1lbnRpb25zIjpbXSwidGFncyI6W10sImVtb2ppcyI6W10sInRhZ2dlZF9jb2xsZWN0aW9ucyI6W10sInF1b3RlIjpudWxsLCJjYXJkIjpudWxsLCJwb2xsIjpudWxsLCJxdW90ZV9hcHByb3ZhbCI6eyJhdXRvbWF0aWMiOlsicHVibGljIl0sIm1hbnVhbCI6W10sImN1cnJlbnRfdXNlciI6ImF1dG9tYXRpYyJ9fQ==
+  recorded_at: Sun, 04 Oct 2026 19:58:20 GMT
+recorded_with: VCR 6.4.0

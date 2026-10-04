@@ -59,6 +59,10 @@ class MastodonTest < ActiveSupport::TestCase
   MEDIA_BASE = "https://raw.githubusercontent.com/jknowles/posse_party/914ff8332cb956c77ac45a0dd182dc8a47f862a7/test/fixtures/files/media"
   BASE_URL = ENV.fetch("MASTODON_BASE_URL", "https://mastodon.example")
 
+  # Served from test/fixtures by WebMock, which VCR leaves out of the cassette, so a recording
+  # needs nothing pushed first
+  VIDEO_BASE = "https://media.example/posse-party"
+
   def test_mastodon_posts_several_images
     crosspost = mastodon_crosspost_with_media("https://example.com/social/stills/", [
       {"type" => "image", "url" => "#{MEDIA_BASE}/still.jpg", "alt" => "An orange square", "mime" => "image/jpeg"},
@@ -89,6 +93,34 @@ class MastodonTest < ActiveSupport::TestCase
     assert_published_with_media crosspost, "https://example.com/social/loop/", media_count: 1
     assert_uploaded "image/gif", "Orange, navy and paper squares in turn"
     assert_not_requested(:get, "#{MEDIA_BASE}/loop.mp4")
+  end
+
+  def test_mastodon_posts_a_silent_loop
+    stub_video("loop.mp4")
+    crosspost = mastodon_crosspost_with_media("https://example.com/social/video-loop/", [
+      {"type" => "video", "url" => "#{VIDEO_BASE}/loop.mp4", "alt" => "A test pattern, four seconds, silent", "mime" => "video/mp4", "presentation" => "gif"}
+    ])
+
+    perfect_vcr_match("mastodon_video_loop", except: [:body, :headers]) do
+      PublishesCrosspost.new.publish(crosspost.id)
+    end
+
+    assert_published_with_media crosspost, "https://example.com/social/video-loop/", media_count: 1
+    assert_uploaded "video/mp4", "A test pattern, four seconds, silent"
+  end
+
+  def test_mastodon_posts_a_clip_with_sound
+    stub_video("clip.mp4")
+    crosspost = mastodon_crosspost_with_media("https://example.com/social/video-clip/", [
+      {"type" => "video", "url" => "#{VIDEO_BASE}/clip.mp4", "alt" => "A test pattern with a tone", "mime" => "video/mp4"}
+    ])
+
+    perfect_vcr_match("mastodon_video_clip", except: [:body, :headers]) do
+      PublishesCrosspost.new.publish(crosspost.id)
+    end
+
+    assert_published_with_media crosspost, "https://example.com/social/video-clip/", media_count: 1
+    assert_uploaded "video/mp4", "A test pattern with a tone"
   end
 
   private
@@ -142,7 +174,11 @@ class MastodonTest < ActiveSupport::TestCase
 
   def assert_uploaded(content_type, description)
     assert_requested(:post, "#{BASE_URL}/api/v2/media") { |request|
-      request.body.include?("Content-Type: #{content_type}\r\n") && request.body.include?(%(name="description"\r\n\r\n#{description}))
+      request.body.b.include?("Content-Type: #{content_type}\r\n".b) && request.body.b.include?(%(name="description"\r\n\r\n#{description}).b)
     }
+  end
+
+  def stub_video(name)
+    stub_request(:get, "#{VIDEO_BASE}/#{name}").to_return(status: 200, body: file_fixture("media/#{name}").binread, headers: {"Content-Type" => "video/mp4"})
   end
 end

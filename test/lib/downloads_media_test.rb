@@ -101,4 +101,85 @@ class DownloadsMediaTest < ActiveSupport::TestCase
 
     assert_match %r{\ACould not download https://example.com/a.png: }, result.error
   end
+
+  def test_streams_a_video_to_a_file_named_with_its_type
+    stub_request(:get, "https://example.com/loop").to_return(status: 200, body: file_fixture("media/loop.mp4").binread)
+
+    result = @subject.download_to_tempfile(MediaItem.new(type: "video", url: "https://example.com/loop"), max_bytes: 200_000)
+
+    assert result.success?
+    assert_equal "video/mp4", result.data.content_type
+    assert_equal file_fixture("media/loop.mp4").size, result.data.size
+    assert_equal file_fixture("media/loop.mp4").binread, File.binread(result.data.path)
+    assert_equal ".mp4", File.extname(result.data.path)
+  ensure
+    File.delete(result.data.path) if result&.success?
+  end
+
+  def test_a_video_takes_the_items_mime
+    stub_request(:get, "https://example.com/loop.mov").to_return(status: 200, body: "not sniffable", headers: {"Content-Type" => "application/octet-stream"})
+
+    result = @subject.download_to_tempfile(MediaItem.new(type: "video", url: "https://example.com/loop.mov", mime: "video/quicktime"), max_bytes: 100)
+
+    assert_equal "video/quicktime", result.data.content_type
+    assert_equal ".mov", File.extname(result.data.path)
+  ensure
+    File.delete(result.data.path) if result&.success?
+  end
+
+  def test_a_video_over_the_limit_leaves_no_file_behind
+    stub_request(:get, "https://example.com/big.mp4").to_return(status: 200, body: "x" * 101)
+
+    result, left = in_own_tmpdir { @subject.download_to_tempfile(MediaItem.new(type: "video", url: "https://example.com/big.mp4"), max_bytes: 100) }
+
+    assert_equal "https://example.com/big.mp4 is over the 100-byte limit", result.error
+    assert_empty left
+  end
+
+  def test_a_video_has_three_minutes_to_download
+    Now.override!(Time.zone.parse("2026-10-06 10:00:00 UTC"))
+    stub_request(:get, "https://example.com/slow.mp4").to_return {
+      Now.override!(Time.zone.parse("2026-10-06 10:03:01 UTC"))
+      {status: 200, body: "x"}
+    }
+
+    result = @subject.download_to_tempfile(MediaItem.new(type: "video", url: "https://example.com/slow.mp4"), max_bytes: 100)
+
+    assert_equal "https://example.com/slow.mp4 took longer than 180 seconds to download", result.error
+  end
+
+  def test_a_video_that_fails_to_download_leaves_no_file_behind
+    stub_request(:get, "https://example.com/gone.mp4").to_return(status: 404, body: "Not Found")
+
+    result, left = in_own_tmpdir { @subject.download_to_tempfile(MediaItem.new(type: "video", url: "https://example.com/gone.mp4"), max_bytes: 100) }
+
+    assert_equal "Could not download https://example.com/gone.mp4: HTTP 404", result.error
+    assert_empty left
+  end
+
+  def test_a_video_leaves_no_file_behind_when_sniffing_its_type_raises
+    stub_request(:get, "https://example.com/odd.mp4").to_return(status: 200, body: "x", headers: {"Content-Type" => "application/octet-stream"})
+
+    Mocktail.replace(Marcel::MimeType)
+    stubs { Marcel::MimeType.for(Mocktail.matchers.any) }.with { raise "sniff failed" }
+
+    _, left = in_own_tmpdir {
+      assert_raises(RuntimeError) { @subject.download_to_tempfile(MediaItem.new(type: "video", url: "https://example.com/odd.mp4"), max_bytes: 100) }
+    }
+
+    assert_empty left
+  end
+
+  private
+
+  # Tests in other processes write temp files too, so this one counts only its own directory
+  def in_own_tmpdir
+    Dir.mktmpdir do |dir|
+      previous = ENV["TMPDIR"]
+      ENV["TMPDIR"] = dir
+      [yield, Dir.children(dir)]
+    ensure
+      ENV["TMPDIR"] = previous
+    end
+  end
 end
