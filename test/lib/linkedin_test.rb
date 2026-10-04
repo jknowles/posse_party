@@ -114,6 +114,54 @@ class LinkedinTest < ActiveSupport::TestCase
     assert_not_requested(:get, "#{MEDIA_BASE}/loop.mp4")
   end
 
+  # Served from test/fixtures by WebMock, which VCR leaves out of the cassette, so a recording
+  # needs nothing pushed first
+  VIDEO_BASE = "https://media.example/posse-party"
+
+  def test_linkedin_posts_a_silent_loop_as_a_video
+    stub_fixture("loop.mp4", "video/mp4")
+    crosspost = linkedin_crosspost_with_media("https://example.com/social/video-loop/", [
+      {"type" => "video", "url" => "#{VIDEO_BASE}/loop.mp4", "alt" => "A test pattern, four seconds, silent", "mime" => "video/mp4", "presentation" => "gif"}
+    ])
+
+    # The part's body is the fixture, which the cassette does not keep; WebMock checks it below
+    perfect_vcr_match("linkedin_video_loop", except: [:body]) do
+      PublishesCrosspost.new.publish(crosspost.id)
+    end
+
+    assert_published_with_media crosspost
+    assert_linkedin_post("https://example.com/social/video-loop/") { |content| content in {media: {id: /\Aurn:li:video:/}} }
+    assert_requested(:post, "https://api.linkedin.com/rest/videos?action=initializeUpload") { |request|
+      JSON.parse(request.body, symbolize_names: true) in {initializeUploadRequest: {fileSizeBytes: ^(file_fixture("media/loop.mp4").size), uploadThumbnail: false}}
+    }
+    assert_requested(:put, /dms-uploads/) { |request| request.body.b == file_fixture("media/loop.mp4").binread }
+    assert_requested(:post, "https://api.linkedin.com/rest/videos?action=finalizeUpload") { |request|
+      JSON.parse(request.body, symbolize_names: true) in {finalizeUploadRequest: {video: /\Aurn:li:video:/, uploadedPartIds: [_, *]}}
+    }
+  end
+
+  def test_linkedin_posts_a_clip_with_its_poster
+    stub_fixture("clip.mp4", "video/mp4")
+    stub_fixture("still.jpg", "image/jpeg")
+    crosspost = linkedin_crosspost_with_media("https://example.com/social/video-clip/", [
+      {"type" => "video", "url" => "#{VIDEO_BASE}/clip.mp4", "poster_url" => "#{VIDEO_BASE}/still.jpg", "alt" => "A test pattern with a tone", "mime" => "video/mp4"}
+    ])
+
+    perfect_vcr_match("linkedin_video_clip", except: [:body]) do
+      PublishesCrosspost.new.publish(crosspost.id)
+    end
+
+    assert_published_with_media crosspost
+    assert_linkedin_post("https://example.com/social/video-clip/") { |content| content in {media: {id: /\Aurn:li:video:/}} }
+    assert_requested(:post, "https://api.linkedin.com/rest/videos?action=initializeUpload") { |request|
+      JSON.parse(request.body, symbolize_names: true) in {initializeUploadRequest: {fileSizeBytes: ^(file_fixture("media/clip.mp4").size), uploadThumbnail: true}}
+    }
+    assert_requested(:put, /dms-uploads/, headers: {"media-type-family" => "STILLIMAGE"}) { |request| request.body.b == file_fixture("media/still.jpg").binread }
+    assert_requested(:post, "https://api.linkedin.com/rest/videos?action=finalizeUpload") { |request|
+      JSON.parse(request.body, symbolize_names: true) in {finalizeUploadRequest: {video: /\Aurn:li:video:/, uploadedPartIds: [_, *]}}
+    }
+  end
+
   private
 
   def linkedin_crosspost_with_media(post_url, media, linkedin_media: media)
@@ -165,5 +213,9 @@ class LinkedinTest < ActiveSupport::TestCase
       body = JSON.parse(request.body, symbolize_names: true)
       body[:commentary] == "PosseParty media test \\(deleted after recording\\)\n\n#{post_url}" && content_matches.call(body[:content])
     }
+  end
+
+  def stub_fixture(name, content_type)
+    stub_request(:get, "#{VIDEO_BASE}/#{name}").to_return(status: 200, body: file_fixture("media/#{name}").binread, headers: {"Content-Type" => content_type})
   end
 end
