@@ -7,7 +7,7 @@ class Platforms::Bsky
       @assembles_rich_text_facets = AssemblesRichTextFacets.new
     end
 
-    # Images take the place of the link card, so the card's link is appended to the text instead,
+    # Media takes the place of the link card, so the card's link is appended to the text instead,
     # as PublishesCrosspost::RecoversFromInvalidLinkAttachment does when a card is refused
     def keep(crosspost_config, text, facets)
       if crosspost_config.attach_link && crosspost_config.url.present? && !links_to?(facets, crosspost_config.url)
@@ -17,8 +17,8 @@ class Platforms::Bsky
         Post.new(text:, facets:)
       end
     rescue PublishesCrosspost::UnretriableError => e
-      # The feed turned truncation off and the text has no room for the link, so the images go without it
-      Rails.logger.warn("Posting Bsky images without the card's link #{crosspost_config.url}: #{e.message}")
+      # The feed turned truncation off and the text has no room for the link, so the media goes without it
+      Rails.logger.warn("Posting Bsky media without the card's link #{crosspost_config.url}: #{e.message}")
       Post.new(text:, facets:)
     end
 

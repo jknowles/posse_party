@@ -100,6 +100,39 @@ class BskyTest < ActiveSupport::TestCase
     }
   end
 
+  # Served from test/fixtures by WebMock, which VCR leaves out of the cassette, so a recording
+  # needs nothing pushed first
+  VIDEO_BASE = "https://media.example/posse-party"
+
+  def test_bsky_posts_a_silent_loop_as_a_gif_video
+    stub_request(:get, "#{VIDEO_BASE}/loop.mp4").to_return(status: 200, body: file_fixture("media/loop.mp4").binread, headers: {"Content-Type" => "video/mp4"})
+    crosspost = bsky_crosspost_with_media("https://example.com/social/video-loop/", [
+      {"type" => "video", "url" => "#{VIDEO_BASE}/loop.mp4", "alt" => "A test pattern, four seconds, silent", "mime" => "video/mp4", "width" => 640, "height" => 360, "presentation" => "gif"}
+    ])
+
+    # The upload's body is the fixture, which the cassette does not keep; WebMock checks it below
+    perfect_vcr_match("bsky_video_loop", time: "2026-10-02T14:00:00.000Z", except: [:body, :headers]) do
+      PublishesCrosspost.new.publish(crosspost.id)
+    end
+
+    crosspost.reload
+    assert_empty crosspost.failures
+    assert_equal "published", crosspost.status
+    assert_nil crosspost.metadata["media_fallback"]
+    assert_match %r{\Aat://did:plc:[a-z0-9]+/app\.bsky\.feed\.post/[a-z0-9]+\z}, crosspost.remote_id
+    assert_equal "PosseParty media test (deleted after recording)\n\n🔗", crosspost.content
+    assert_requested(:post, "#{Platforms::Bsky::SyndicatesBskyPost::PDS_URL}/xrpc/com.atproto.repo.uploadBlob",
+      headers: {"Content-Type" => "video/mp4"}, body: file_fixture("media/loop.mp4").binread)
+    assert_requested(:post, "#{Platforms::Bsky::SyndicatesBskyPost::PDS_URL}/xrpc/com.atproto.repo.createRecord") { |request|
+      JSON.parse(request.body, symbolize_names: true)[:record] in {
+        text: "PosseParty media test (deleted after recording)\n\n🔗",
+        facets: [{index: {byteStart: 49, byteEnd: 53}, features: [{uri: "https://example.com/social/video-loop/"}]}],
+        embed: {"$type": "app.bsky.embed.video", video: {mimeType: "video/mp4"}, alt: "A test pattern, four seconds, silent",
+                aspectRatio: {width: 640, height: 360}, presentation: "gif"}
+      }
+    }
+  end
+
   private
 
   # attach_link stays at Bluesky's default, true, so the recording shows the card's link appended

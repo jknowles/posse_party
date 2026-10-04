@@ -1,0 +1,195 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://bsky.social/xrpc/com.atproto.server.createSession
+    body:
+      encoding: UTF-8
+      string: '{"identifier":"{{email}}","password":"{{password}}"}'
+    headers:
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sun, 04 Oct 2026 19:50:29 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      X-Powered-By:
+      - Express
+      Access-Control-Allow-Origin:
+      - "*"
+      Ratelimit-Limit:
+      - '10'
+      Ratelimit-Reset:
+      - '1791229829'
+      Ratelimit-Remaining:
+      - '9'
+      Ratelimit-Policy:
+      - 10;w=86400
+      Access-Control-Expose-Headers:
+      - RateLimit-Limit, RateLimit-Reset, RateLimit-Remaining, RateLimit-Policy
+      Etag:
+      - W/"5c5-C+j6yjDEqaDBea/nr9si0T2GExY"
+      Vary:
+      - Accept-Encoding
+    body:
+      encoding: ASCII-8BIT
+      string: '{"did":"did:plc:erfdomqnsys3dcaweevtclxl","didDoc":{"@context":["https://www.w3.org/ns/did/v1","https://w3id.org/security/multikey/v1","https://w3id.org/security/suites/secp256k1-2019/v1"],"id":"did:plc:erfdomqnsys3dcaweevtclxl","alsoKnownAs":["at://jaredknowles.com"],"verificationMethod":[{"id":"did:plc:erfdomqnsys3dcaweevtclxl#atproto","type":"Multikey","controller":"did:plc:erfdomqnsys3dcaweevtclxl","publicKeyMultibase":"zQ3shek2J6poq4eQu3RZJyL8HdT3SRYbZsxovTVxzVswwQctW"}],"service":[{"id":"#atproto_pds","type":"AtprotoPersonalDataServer","serviceEndpoint":"https://verpa.us-west.host.bsky.network"}]},"handle":"jaredknowles.com","email":"{{email}}","emailConfirmed":true,"emailAuthFactor":true,"accessJwt":"ACCESS_JWT_PLACEHOLDER","refreshJwt":"REFRESH_JWT_PLACEHOLDER","active":true}'
+  recorded_at: Sun, 04 Oct 2026 19:50:29 GMT
+- request:
+    method: post
+    uri: https://bsky.social/xrpc/com.atproto.repo.uploadBlob
+    body:
+      encoding: UTF-8
+      string: "[173539 bytes, not kept in the cassette]"
+    headers:
+      Content-Type:
+      - video/mp4
+      Authorization:
+      - Bearer ACCESS_JWT_PLACEHOLDER
+      Content-Length:
+      - '173539'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sun, 04 Oct 2026 19:50:30 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '140'
+      Connection:
+      - keep-alive
+      X-Powered-By:
+      - Express
+      Access-Control-Allow-Origin:
+      - "*"
+      Ratelimit-Limit:
+      - '3000'
+      Ratelimit-Reset:
+      - '1791143729'
+      Ratelimit-Remaining:
+      - '2999'
+      Ratelimit-Policy:
+      - 3000;w=300
+      Access-Control-Expose-Headers:
+      - RateLimit-Limit, RateLimit-Reset, RateLimit-Remaining, RateLimit-Policy
+      Vary:
+      - Accept-Encoding
+    body:
+      encoding: UTF-8
+      string: '{"blob":{"$type":"blob","ref":{"$link":"bafkreifdegklbjb2zr3orzzs65ardufotagelt6qxls3b2vo5bqm2jmooa"},"mimeType":"video/mp4","size":173539}}'
+  recorded_at: Sun, 04 Oct 2026 19:50:30 GMT
+- request:
+    method: post
+    uri: https://bsky.social/xrpc/com.atproto.repo.createRecord
+    body:
+      encoding: UTF-8
+      string: "{\"collection\":\"app.bsky.feed.post\",\"$type\":\"app.bsky.feed.post\",\"repo\":\"did:plc:erfdomqnsys3dcaweevtclxl\",\"record\":{\"$type\":\"app.bsky.feed.post\",\"createdAt\":\"2026-10-02T14:00:00.000Z\",\"text\":\"PosseParty
+        media test (deleted after recording)\\n\\n\U0001F517\",\"facets\":[{\"$type\":\"app.bsky.richtext.facet\",\"index\":{\"byteStart\":49,\"byteEnd\":53},\"features\":[{\"uri\":\"https://example.com/social/video-loop/\",\"$type\":\"app.bsky.richtext.facet#link\"}]}],\"embed\":{\"$type\":\"app.bsky.embed.video\",\"video\":{\"$type\":\"blob\",\"ref\":{\"$link\":\"bafkreifdegklbjb2zr3orzzs65ardufotagelt6qxls3b2vo5bqm2jmooa\"},\"mimeType\":\"video/mp4\",\"size\":173539},\"alt\":\"A
+        test pattern, four seconds, silent\",\"aspectRatio\":{\"width\":640,\"height\":360},\"presentation\":\"gif\"}}}"
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer ACCESS_JWT_PLACEHOLDER
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sun, 04 Oct 2026 19:50:31 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '276'
+      Connection:
+      - keep-alive
+      X-Powered-By:
+      - Express
+      Access-Control-Allow-Origin:
+      - "*"
+      Ratelimit-Limit:
+      - '3000'
+      Ratelimit-Reset:
+      - '1791143729'
+      Ratelimit-Remaining:
+      - '2998'
+      Ratelimit-Policy:
+      - 3000;w=300
+      Access-Control-Expose-Headers:
+      - RateLimit-Limit, RateLimit-Reset, RateLimit-Remaining, RateLimit-Policy
+      Vary:
+      - Accept-Encoding
+    body:
+      encoding: UTF-8
+      string: '{"uri":"at://did:plc:erfdomqnsys3dcaweevtclxl/app.bsky.feed.post/3mx36dyoopk2u","cid":"bafyreicq7u6cz3s6ug244zwbxfe6ebos35palwavtg75v3yymulw6z4xx4","commit":{"cid":"bafyreih22j6uixbwcd7m55qt3qwkbmwjaz25o3ub2cqyot3aklzb4hpq5u","rev":"3mx36dyoul22u"},"validationStatus":"valid"}'
+  recorded_at: Sun, 04 Oct 2026 19:50:31 GMT
+- request:
+    method: get
+    uri: https://plc.directory/did:plc:erfdomqnsys3dcaweevtclxl
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - plc.directory
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sun, 04 Oct 2026 19:50:31 GMT
+      Content-Type:
+      - application/did+ld+json; charset=utf-8
+      Content-Length:
+      - '559'
+      Connection:
+      - keep-alive
+      X-Powered-By:
+      - Express
+      Access-Control-Allow-Origin:
+      - "*"
+      Etag:
+      - W/"22f-VbTY5b5ulBckprEkzw0r/3FQFo8"
+    body:
+      encoding: UTF-8
+      string: '{"@context":["https://www.w3.org/ns/did/v1","https://w3id.org/security/multikey/v1","https://w3id.org/security/suites/secp256k1-2019/v1"],"id":"did:plc:erfdomqnsys3dcaweevtclxl","alsoKnownAs":["at://jaredknowles.com"],"verificationMethod":[{"id":"did:plc:erfdomqnsys3dcaweevtclxl#atproto","type":"Multikey","controller":"did:plc:erfdomqnsys3dcaweevtclxl","publicKeyMultibase":"zQ3shek2J6poq4eQu3RZJyL8HdT3SRYbZsxovTVxzVswwQctW"}],"service":[{"id":"#atproto_pds","type":"AtprotoPersonalDataServer","serviceEndpoint":"https://verpa.us-west.host.bsky.network"}]}'
+  recorded_at: Sun, 04 Oct 2026 19:50:31 GMT
+recorded_with: VCR 6.4.0

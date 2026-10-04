@@ -4,7 +4,8 @@ class Platforms::Bsky::ComposesPostRecordTest < ActiveSupport::TestCase
   Session = Struct.new(:pds, :access_token, :did, keyword_init: true)
   URL = "https://example.com/social/map/"
   CARD = {"$type" => "app.bsky.embed.external", "external" => {"uri" => URL, "title" => "A map", "description" => ""}}
-  IMAGES = [{"alt" => "An orange square", "image" => "blob-1"}]
+  IMAGES = {"$type" => "app.bsky.embed.images", "images" => [{"alt" => "An orange square", "image" => "blob-1"}]}
+  VIDEO = {"$type" => "app.bsky.embed.video", "video" => "blob-3", "presentation" => "gif"}
 
   def setup
     @uploads_bsky_media = Mocktail.of_next(Platforms::Bsky::UploadsBskyMedia)
@@ -24,13 +25,24 @@ class Platforms::Bsky::ComposesPostRecordTest < ActiveSupport::TestCase
     composed = @subject.compose(@crosspost, config, text: "A map", facets: [], record_manager: @record_manager)
 
     assert_equal "A map 🔗", composed.text
-    assert_equal record("A map 🔗", ["link facet"], {"$type" => "app.bsky.embed.images", "images" => IMAGES}), composed.record
+    assert_equal record("A map 🔗", ["link facet"], IMAGES), composed.record
+    verify_never_called { @attaches_web_card.attach! }
+  end
+
+  def test_posts_an_uploaded_video_in_place_of_the_card_and_keeps_the_link
+    config = CrosspostConfig.new(url: URL, attach_link: true)
+    stubs { @uploads_bsky_media.upload(@crosspost, config, @record_manager) }.with { VIDEO }
+    stubs { @keeps_link_with_media.keep(config, "A map", []) }.with { Platforms::Bsky::KeepsLinkWithMedia::Post.new(text: "A map 🔗", facets: ["link facet"]) }
+
+    composed = @subject.compose(@crosspost, config, text: "A map", facets: [], record_manager: @record_manager)
+
+    assert_equal record("A map 🔗", ["link facet"], VIDEO), composed.record
     verify_never_called { @attaches_web_card.attach! }
   end
 
   def test_without_media_attaches_the_card_as_before
     config = CrosspostConfig.new(url: URL, attach_link: true)
-    stubs { @uploads_bsky_media.upload(@crosspost, config, @record_manager) }.with { [] }
+    stubs { @uploads_bsky_media.upload(@crosspost, config, @record_manager) }.with { nil }
     stubs { @attaches_web_card.attach!(config, @record_manager) }.with { CARD }
 
     composed = @subject.compose(@crosspost, config, text: "A map", facets: [], record_manager: @record_manager)
@@ -42,7 +54,7 @@ class Platforms::Bsky::ComposesPostRecordTest < ActiveSupport::TestCase
 
   def test_without_media_or_a_card_posts_the_text_alone
     config = CrosspostConfig.new(url: URL, attach_link: false)
-    stubs { @uploads_bsky_media.upload(@crosspost, config, @record_manager) }.with { [] }
+    stubs { @uploads_bsky_media.upload(@crosspost, config, @record_manager) }.with { nil }
 
     composed = @subject.compose(@crosspost, config, text: "A map", facets: [], record_manager: @record_manager)
 
