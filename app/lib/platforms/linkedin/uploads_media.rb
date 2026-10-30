@@ -23,14 +23,14 @@ class Platforms::Linkedin
       @redacts_bearer_token = RedactsBearerToken.new
     end
 
-    def upload(crosspost, crosspost_config, access_token:, person_urn:)
+    def upload(crosspost, crosspost_config, access_token:, author_urn:)
       selection = @selects_media.select(@parses_media_items.parse(crosspost_config.media), max_images: MAX_IMAGES)
       return [] if selection.empty?
 
       uploaded = if selection.video
-        [upload_video(selection.video, access_token:, person_urn:)]
+        [upload_video(selection.video, access_token:, author_urn:)]
       else
-        selection.images.map { |item| upload_image(item, access_token:, person_urn:) }
+        selection.images.map { |item| upload_image(item, access_token:, author_urn:) }
       end
       record_drop(crosspost, selection) if selection.dropped.positive?
       uploaded
@@ -47,7 +47,7 @@ class Platforms::Linkedin
 
     private
 
-    def upload_image(item, access_token:, person_urn:)
+    def upload_image(item, access_token:, author_urn:)
       download = @downloads_media.download(item, max_bytes: MAX_IMAGE_BYTES)
       raise MediaUnavailable, download.error if download.failure?
 
@@ -56,7 +56,7 @@ class Platforms::Linkedin
         raise MediaUnavailable, "LinkedIn takes JPEG, PNG and GIF, not #{content_type} (#{item.url})"
       end
 
-      upload_init = @initiates_image_upload.initiate(access_token:, person_urn:)
+      upload_init = @initiates_image_upload.initiate(access_token:, author_urn:)
       raise MediaUnavailable, upload_init.message unless upload_init.success?
 
       upload = @uploads_image.upload_bytes(download.data.bytes, content_type:, upload_url: upload_init.upload_url, access_token:)
@@ -66,12 +66,12 @@ class Platforms::Linkedin
     end
 
     # LinkedIn processes a video before it can be posted, so this waits for it a while
-    def upload_video(item, access_token:, person_urn:)
-      urn = upload_video_file(item, access_token:, person_urn:)
+    def upload_video(item, access_token:, author_urn:)
+      urn = upload_video_file(item, access_token:, author_urn:)
       Uploaded.new(urn:, processing: !@waits_for_processing.wait { available?(urn, access_token:) })
     end
 
-    def upload_video_file(item, access_token:, person_urn:)
+    def upload_video_file(item, access_token:, author_urn:)
       download = @downloads_media.download_to_tempfile(item, max_bytes: MAX_VIDEO_BYTES)
       raise MediaUnavailable, download.error if download.failure?
 
@@ -80,7 +80,7 @@ class Platforms::Linkedin
         raise MediaUnavailable, "LinkedIn takes MP4 video, not #{video.content_type} (#{item.url})" unless video.content_type == "video/mp4"
         raise MediaUnavailable, "LinkedIn takes video of at least #{MIN_VIDEO_BYTES} bytes, and #{item.url} is #{video.size}" if video.size < MIN_VIDEO_BYTES
 
-        upload = @uploads_video.upload(video.path, thumbnail: thumbnail(item), access_token:, person_urn:)
+        upload = @uploads_video.upload(video.path, thumbnail: thumbnail(item), access_token:, author_urn:)
         raise MediaUnavailable, upload.error if upload.failure?
 
         upload.data

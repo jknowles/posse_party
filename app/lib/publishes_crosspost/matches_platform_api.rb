@@ -9,6 +9,7 @@ class PublishesCrosspost
       Platforms::Instagram,
       Platforms::Facebook,
       Platforms::Linkedin,
+      Platforms::LinkedinPage,
       Platforms::Youtube
     ].freeze
 

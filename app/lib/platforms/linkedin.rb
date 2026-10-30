@@ -24,6 +24,7 @@ module Platforms
     def initialize
       @syndicates_linkedin_post = SyndicatesLinkedinPost.new
       @potentially_tells_user_to_renew_linkedin_access_token = PotentiallyTellsUserToRenewLinkedinAccessToken.new
+      @builds_authorization_url = BuildsAuthorizationUrl.new
     end
 
     def setup_docs_available?
@@ -31,7 +32,7 @@ module Platforms
     end
 
     def publish!(crosspost, crosspost_config, crosspost_content)
-      @syndicates_linkedin_post.syndicate!(crosspost, crosspost_config, crosspost_content.string)
+      @syndicates_linkedin_post.syndicate!(crosspost:, crosspost_config:, crosspost_content: crosspost_content.string, author_credential: "person_urn")
     end
 
     def finishable?
@@ -39,7 +40,7 @@ module Platforms
     end
 
     def finish!(crosspost)
-      @syndicates_linkedin_post.finish!(crosspost)
+      @syndicates_linkedin_post.finish!(crosspost, author_credential: "person_urn")
     end
 
     def renew!(account)
@@ -47,15 +48,7 @@ module Platforms
     end
 
     def renewal_url(account, state)
-      oauth_params = {
-        response_type: "code",
-        client_id: account.credentials["client_id"],
-        redirect_uri: Rails.application.routes.url_helpers.credential_renewals_linkedin_url,
-        scope: "openid profile w_member_social",
-        state: state
-      }
-
-      "https://www.linkedin.com/oauth/v2/authorization?#{oauth_params.to_query}"
+      @builds_authorization_url.build(account, state, scope: "openid profile w_member_social")
     end
   end
 end

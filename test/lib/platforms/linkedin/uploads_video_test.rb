@@ -22,7 +22,7 @@ class Platforms::Linkedin::UploadsVideoTest < ActiveSupport::TestCase
     part_2 = stub_part(PART_2, @bytes.byteslice(100_000..), etag: %("etag-2"))
     finalize = stub_finalize(["etag-1", "etag-2"])
 
-    result = @subject.upload(@path, thumbnail: nil, access_token: "token", person_urn: "urn:li:person:1")
+    result = @subject.upload(@path, thumbnail: nil, access_token: "token", author_urn: "urn:li:person:1")
 
     assert result.success?
     assert_equal VIDEO_URN, result.data
@@ -39,7 +39,7 @@ class Platforms::Linkedin::UploadsVideoTest < ActiveSupport::TestCase
       .to_return(status: 201)
     stub_finalize(["etag-1"])
 
-    result = @subject.upload(@path, thumbnail: "JPG", access_token: "token", person_urn: "urn:li:person:1")
+    result = @subject.upload(@path, thumbnail: "JPG", access_token: "token", author_urn: "urn:li:person:1")
 
     assert_equal VIDEO_URN, result.data
     assert_requested thumbnail
@@ -48,7 +48,7 @@ class Platforms::Linkedin::UploadsVideoTest < ActiveSupport::TestCase
   def test_reports_an_upload_linkedin_will_not_start
     stub_request(:post, "#{API}?action=initializeUpload").to_return(status: 422, body: {message: "Video too short"}.to_json, headers: {"Content-Type" => "application/json"})
 
-    result = @subject.upload(@path, thumbnail: nil, access_token: "token", person_urn: "urn:li:person:1")
+    result = @subject.upload(@path, thumbnail: nil, access_token: "token", author_urn: "urn:li:person:1")
 
     assert result.failure?
     assert_match(/\ALinkedIn would not start the video upload\. Error calling LinkedIn API\..*Video too short/m, result.error)
@@ -58,7 +58,7 @@ class Platforms::Linkedin::UploadsVideoTest < ActiveSupport::TestCase
     stub_initialize(upload_thumbnail: false, instructions: [{uploadUrl: PART_1, firstByte: 0, lastByte: @bytes.bytesize - 1}])
     stub_request(:put, PART_1).to_return(status: 400, body: "Bad part")
 
-    result = @subject.upload(@path, thumbnail: nil, access_token: "token", person_urn: "urn:li:person:1")
+    result = @subject.upload(@path, thumbnail: nil, access_token: "token", author_urn: "urn:li:person:1")
 
     assert_equal "LinkedIn refused a video upload (HTTP 400): Bad part", result.error
     assert_not_requested :post, "#{API}?action=finalizeUpload"
@@ -69,7 +69,7 @@ class Platforms::Linkedin::UploadsVideoTest < ActiveSupport::TestCase
     stub_part(PART_1, @bytes, etag: "etag-1")
     stub_request(:put, THUMBNAIL).to_return(status: 400, body: "Bad thumbnail")
 
-    result = @subject.upload(@path, thumbnail: "JPG", access_token: "token", person_urn: "urn:li:person:1")
+    result = @subject.upload(@path, thumbnail: "JPG", access_token: "token", author_urn: "urn:li:person:1")
 
     assert_equal "LinkedIn refused a video upload (HTTP 400): Bad thumbnail", result.error
     assert_not_requested :post, "#{API}?action=finalizeUpload"
@@ -79,7 +79,7 @@ class Platforms::Linkedin::UploadsVideoTest < ActiveSupport::TestCase
     stub_initialize(upload_thumbnail: true, instructions: [{uploadUrl: PART_1, firstByte: 0, lastByte: @bytes.bytesize - 1}])
     stub_part(PART_1, @bytes, etag: "etag-1")
 
-    result = @subject.upload(@path, thumbnail: "JPG", access_token: "token", person_urn: "urn:li:person:1")
+    result = @subject.upload(@path, thumbnail: "JPG", access_token: "token", author_urn: "urn:li:person:1")
 
     assert_equal "LinkedIn gave no thumbnail upload URL", result.error
     assert_not_requested :post, "#{API}?action=finalizeUpload"
@@ -89,7 +89,7 @@ class Platforms::Linkedin::UploadsVideoTest < ActiveSupport::TestCase
     stub_initialize(upload_thumbnail: false, instructions: [{uploadUrl: PART_1, firstByte: 0, lastByte: @bytes.bytesize - 1}])
     stub_request(:put, PART_1).to_return(status: 200)
 
-    result = @subject.upload(@path, thumbnail: nil, access_token: "token", person_urn: "urn:li:person:1")
+    result = @subject.upload(@path, thumbnail: nil, access_token: "token", author_urn: "urn:li:person:1")
 
     assert_equal "LinkedIn returned no ETag for a video part", result.error
     assert_not_requested :post, "#{API}?action=finalizeUpload"
@@ -99,7 +99,7 @@ class Platforms::Linkedin::UploadsVideoTest < ActiveSupport::TestCase
     stub_initialize(upload_thumbnail: false, instructions: [{uploadUrl: PART_1, firstByte: 0, lastByte: @bytes.bytesize - 1}])
     stub_request(:put, PART_1).to_raise(ArgumentError.new(%(header Authorization has field value "Bearer a warning\\nSECRET-TOKEN-123", this cannot include CR/LF)))
 
-    result = @subject.upload(@path, thumbnail: nil, access_token: "token", person_urn: "urn:li:person:1")
+    result = @subject.upload(@path, thumbnail: nil, access_token: "token", author_urn: "urn:li:person:1")
 
     assert_equal %(Could not upload video to LinkedIn: header Authorization has field value "Bearer [FILTERED]", this cannot include CR/LF), result.error
   end

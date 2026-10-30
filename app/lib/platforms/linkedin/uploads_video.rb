@@ -7,9 +7,9 @@ class Platforms::Linkedin
 
     # LinkedIn's Videos API: initialize, PUT each part LinkedIn asks for and keep its ETag, PUT the
     # thumbnail if there is one, then finalize with the ETags in order. Returns the video's URN.
-    def upload(path, thumbnail:, access_token:, person_urn:)
+    def upload(path, thumbnail:, access_token:, author_urn:)
       started = @calls_linkedin_api.call(method: :post, path: "rest/videos?action=initializeUpload", access_token:, body: {
-        initializeUploadRequest: {owner: person_urn, fileSizeBytes: File.size(path), uploadCaptions: false, uploadThumbnail: thumbnail.present?}
+        initializeUploadRequest: {owner: author_urn, fileSizeBytes: File.size(path), uploadCaptions: false, uploadThumbnail: thumbnail.present?}
       })
       return Result.failure("LinkedIn would not start the video upload. #{started.message}") unless started.success?
 

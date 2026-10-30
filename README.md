@@ -2,7 +2,7 @@
 
 [![Certified Shovelware](https://justin.searls.co/img/shovelware.svg)](https://justin.searls.co/shovelware/)
 
-POSSE Party is a web application for crossposting content from your site to a variety of social media platforms. It currently supports X, Bluesky, Mastodon, Pixelfed, Threads, Instagram, Facebook, LinkedIn, and Youtube.
+POSSE Party is a web application for crossposting content from your site to a variety of social media platforms. It currently supports X, Bluesky, Mastodon, Pixelfed, Threads, Instagram, Facebook, LinkedIn (profiles and Company Pages), and Youtube.
 
 Why? To help you quit using social media in favor of a personal blog… _without_ abandoning your audience in the process. Thanks to POSSE Party, literally everything I do is posted to [justin.searls.co](https://justin.searls.co) first and then automatically syndicated to all nine supported platforms. I'm not logged into any of these apps on my phone. I don't scroll any of their feeds. I'm calmer and better-looking than I used to be. I'm also writing more meaningful stuff and reaching more people than ever.
 

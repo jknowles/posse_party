@@ -14,15 +14,15 @@ class Platforms::Linkedin::SyndicatesLinkedinPostTest < ActiveSupport::TestCase
 
   def test_posts_uploaded_images_with_one_url_in_the_text_and_no_card
     media = [Platforms::Linkedin::UploadsMedia::Uploaded.new(urn: "urn:li:image:1", alt: "A loop")]
-    stubs { @uploads_media.upload(@crosspost, @config, access_token: "linkedin-access-token", person_urn: "urn:li:person:TEST123") }.with { media }
+    stubs { @uploads_media.upload(@crosspost, @config, access_token: "linkedin-access-token", author_urn: "urn:li:person:TEST123") }.with { media }
     stubs { @limits_to_one_url.limit_with_media(@config, "A map at https://maps.example.com/ (2024)\n\n#{URL}") }.with {
       Platforms::Linkedin::LimitsToOneUrl::Post.new(content: "A map at https://maps.example.com/ (2024)", card_url: nil)
     }
     stubs {
-      @publishes_post.publish("A map at https://maps.example.com/ \\(2024\\)", @config, access_token: "linkedin-access-token", person_urn: "urn:li:person:TEST123", image_urn: nil, url: nil, media:)
+      @publishes_post.publish("A map at https://maps.example.com/ \\(2024\\)", @config, access_token: "linkedin-access-token", author_urn: "urn:li:person:TEST123", image_urn: nil, url: nil, media:)
     }.with { published("urn:li:share:1") }
 
-    result = @subject.syndicate!(@crosspost, @config, "A map at https://maps.example.com/ (2024)\n\n#{URL}")
+    result = @subject.syndicate!(crosspost: @crosspost, crosspost_config: @config, crosspost_content: "A map at https://maps.example.com/ (2024)\n\n#{URL}", author_credential: "person_urn")
 
     assert result.success?
     assert_equal "published", @crosspost.reload.status
@@ -32,13 +32,13 @@ class Platforms::Linkedin::SyndicatesLinkedinPostTest < ActiveSupport::TestCase
   end
 
   def test_without_media_posts_the_link_card_as_before
-    stubs { @uploads_media.upload(@crosspost, @config, access_token: "linkedin-access-token", person_urn: "urn:li:person:TEST123") }.with { [] }
+    stubs { @uploads_media.upload(@crosspost, @config, access_token: "linkedin-access-token", author_urn: "urn:li:person:TEST123") }.with { [] }
     stubs { @limits_to_one_url.limit(@config, "A map") }.with { Platforms::Linkedin::LimitsToOneUrl::Post.new(content: "A map", card_url: URL) }
     stubs {
-      @publishes_post.publish("A map", @config, access_token: "linkedin-access-token", person_urn: "urn:li:person:TEST123", image_urn: nil, url: URL, media: [])
+      @publishes_post.publish("A map", @config, access_token: "linkedin-access-token", author_urn: "urn:li:person:TEST123", image_urn: nil, url: URL, media: [])
     }.with { published("urn:li:share:2") }
 
-    result = @subject.syndicate!(@crosspost, @config, "A map")
+    result = @subject.syndicate!(crosspost: @crosspost, crosspost_config: @config, crosspost_content: "A map", author_credential: "person_urn")
 
     assert result.success?
     assert_equal "urn:li:share:2", @crosspost.reload.remote_id
@@ -46,12 +46,12 @@ class Platforms::Linkedin::SyndicatesLinkedinPostTest < ActiveSupport::TestCase
 
   def test_a_video_still_processing_is_kept_to_post_later
     media = [Platforms::Linkedin::UploadsMedia::Uploaded.new(urn: "urn:li:video:1", processing: true)]
-    stubs { @uploads_media.upload(@crosspost, @config, access_token: "linkedin-access-token", person_urn: "urn:li:person:TEST123") }.with { media }
+    stubs { @uploads_media.upload(@crosspost, @config, access_token: "linkedin-access-token", author_urn: "urn:li:person:TEST123") }.with { media }
     stubs { @limits_to_one_url.limit_with_media(@config, "A loop (2024)\n\n#{URL}") }.with {
       Platforms::Linkedin::LimitsToOneUrl::Post.new(content: "A loop (2024)\n\n#{URL}", card_url: nil)
     }
 
-    result = @subject.syndicate!(@crosspost, @config, "A loop (2024)\n\n#{URL}")
+    result = @subject.syndicate!(crosspost: @crosspost, crosspost_config: @config, crosspost_content: "A loop (2024)\n\n#{URL}", author_credential: "person_urn")
 
     assert result.success?
     assert result.needs_to_finish?
@@ -64,10 +64,10 @@ class Platforms::Linkedin::SyndicatesLinkedinPostTest < ActiveSupport::TestCase
     media = [Platforms::Linkedin::UploadsMedia::Uploaded.new(urn: "urn:li:video:1", processing: false)]
     stubs { @uploads_media.finish(@crosspost, "urn:li:video:1", access_token: "linkedin-access-token") }.with { media }
     stubs {
-      @publishes_post.publish("A loop \\(2024\\)\n\n#{URL}", CrosspostConfig.new, access_token: "linkedin-access-token", person_urn: "urn:li:person:TEST123", image_urn: nil, url: nil, media:)
+      @publishes_post.publish("A loop \\(2024\\)\n\n#{URL}", CrosspostConfig.new, access_token: "linkedin-access-token", author_urn: "urn:li:person:TEST123", image_urn: nil, url: nil, media:)
     }.with { published("urn:li:share:3") }
 
-    result = @subject.finish!(@crosspost)
+    result = @subject.finish!(@crosspost, author_credential: "person_urn")
 
     assert result.success?
     assert_not result.needs_to_finish?
@@ -81,7 +81,7 @@ class Platforms::Linkedin::SyndicatesLinkedinPostTest < ActiveSupport::TestCase
       [Platforms::Linkedin::UploadsMedia::Uploaded.new(urn: "urn:li:video:1", processing: true)]
     }
 
-    result = @subject.finish!(@crosspost)
+    result = @subject.finish!(@crosspost, author_credential: "person_urn")
 
     assert result.needs_to_finish?
     verify_never_called { @publishes_post.publish }
@@ -91,20 +91,43 @@ class Platforms::Linkedin::SyndicatesLinkedinPostTest < ActiveSupport::TestCase
     keep_video("A loop\n\n#{URL}")
     stubs { @uploads_media.finish(@crosspost, "urn:li:video:1", access_token: "linkedin-access-token") }.with { [] }
     stubs {
-      @publishes_post.publish("A loop\n\n#{URL}", CrosspostConfig.new, access_token: "linkedin-access-token", person_urn: "urn:li:person:TEST123", image_urn: nil, url: nil, media: [])
+      @publishes_post.publish("A loop\n\n#{URL}", CrosspostConfig.new, access_token: "linkedin-access-token", author_urn: "urn:li:person:TEST123", image_urn: nil, url: nil, media: [])
     }.with { published("urn:li:share:4") }
 
-    result = @subject.finish!(@crosspost)
+    result = @subject.finish!(@crosspost, author_credential: "person_urn")
 
     assert result.success?
     assert_equal "urn:li:share:4", @crosspost.reload.remote_id
   end
 
   def test_finishing_without_a_kept_video_fails
-    result = @subject.finish!(@crosspost)
+    result = @subject.finish!(@crosspost, author_credential: "person_urn")
 
     assert_not result.success?
     assert_equal "No LinkedIn video is waiting to be posted", result.message
+  end
+
+  def test_posts_and_uploads_as_the_author_named_by_the_given_credential
+    crosspost = Crosspost.create!(post: posts(:user_post), account: accounts(:user_linkedin_page_account), status: "wip")
+    media = [Platforms::Linkedin::UploadsMedia::Uploaded.new(urn: "urn:li:image:1", alt: "A map")]
+    stubs { @uploads_media.upload(crosspost, @config, access_token: "linkedin-page-access-token", author_urn: "urn:li:organization:TEST456") }.with { media }
+    stubs { @limits_to_one_url.limit_with_media(@config, "A map") }.with { Platforms::Linkedin::LimitsToOneUrl::Post.new(content: "A map", card_url: nil) }
+    stubs {
+      @publishes_post.publish("A map", @config, access_token: "linkedin-page-access-token", author_urn: "urn:li:organization:TEST456", image_urn: nil, url: nil, media:)
+    }.with { published("urn:li:share:5") }
+
+    result = @subject.syndicate!(crosspost:, crosspost_config: @config, crosspost_content: "A map", author_credential: "organization_urn")
+
+    assert result.success?
+    assert_equal "urn:li:share:5", crosspost.reload.remote_id
+  end
+
+  def test_fails_when_the_author_credential_is_missing
+    result = @subject.syndicate!(crosspost: @crosspost, crosspost_config: @config, crosspost_content: "A map", author_credential: "organization_urn")
+
+    assert_not result.success?
+    assert_equal "Missing organization_urn credential", result.message
+    verify_never_called { @uploads_media.upload }
   end
 
   private

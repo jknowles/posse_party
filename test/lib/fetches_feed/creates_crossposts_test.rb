@@ -6,6 +6,7 @@ class FetchesFeedCreatesCrosspostsTest < ActiveSupport::TestCase
     account1 = accounts(:user_x_account)
     account2 = accounts(:user_linkedin_account)
     accounts(:user_youtube_account).update!(manually_create_crossposts: true)
+    accounts(:user_linkedin_page_account).update!(manually_create_crossposts: true)
 
     feed.update!(automatically_create_crossposts: true)
     account1.update!(manually_create_crossposts: false)
@@ -34,6 +35,7 @@ class FetchesFeedCreatesCrosspostsTest < ActiveSupport::TestCase
     account1 = accounts(:user_x_account)
     account2 = accounts(:user_linkedin_account)
     accounts(:user_youtube_account).update!(manually_create_crossposts: true) # exclude from auto-create
+    accounts(:user_linkedin_page_account).update!(manually_create_crossposts: true)
 
     feed.update!(automatically_create_crossposts: true)
     account1.update!(manually_create_crossposts: false)
@@ -89,6 +91,7 @@ class FetchesFeedCreatesCrosspostsTest < ActiveSupport::TestCase
     account1 = accounts(:user_x_account)
     account2 = accounts(:user_linkedin_account)
     accounts(:user_youtube_account).update!(manually_create_crossposts: true)
+    accounts(:user_linkedin_page_account).update!(manually_create_crossposts: true)
 
     feed.update!(automatically_create_crossposts: true)
     account1.update!(manually_create_crossposts: false)
@@ -116,6 +119,7 @@ class FetchesFeedCreatesCrosspostsTest < ActiveSupport::TestCase
     account1 = accounts(:user_x_account)
     account2 = accounts(:user_linkedin_account)
     accounts(:user_youtube_account).update!(manually_create_crossposts: true)
+    accounts(:user_linkedin_page_account).update!(manually_create_crossposts: true)
 
     feed.update!(automatically_create_crossposts: true)
     account1.update!(manually_create_crossposts: false)
@@ -144,6 +148,7 @@ class FetchesFeedCreatesCrosspostsTest < ActiveSupport::TestCase
     account1 = accounts(:user_x_account)
     account2 = accounts(:user_linkedin_account)
     accounts(:user_youtube_account).update!(manually_create_crossposts: true)
+    accounts(:user_linkedin_page_account).update!(manually_create_crossposts: true)
 
     feed.update!(automatically_create_crossposts: true)
     account1.update!(manually_create_crossposts: false)

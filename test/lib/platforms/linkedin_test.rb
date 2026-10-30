@@ -8,7 +8,7 @@ class Platforms::LinkedinTest < ActiveSupport::TestCase
   end
 
   def test_finishes_a_post_left_waiting_on_a_video
-    stubs { @syndicates_linkedin_post.finish!(@crosspost) }.with { PublishesCrosspost::Result.new(success?: true) }
+    stubs { @syndicates_linkedin_post.finish!(@crosspost, author_credential: "person_urn") }.with { PublishesCrosspost::Result.new(success?: true) }
 
     assert @subject.finishable?
     assert @subject.finish!(@crosspost).success?

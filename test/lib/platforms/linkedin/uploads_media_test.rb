@@ -22,7 +22,7 @@ class Platforms::Linkedin::UploadsMediaTest < ActiveSupport::TestCase
   def test_uploads_each_image_and_returns_its_urn_and_alt
     stub_download(GIF_URL, "GIF89a", "image/gif")
     stub_download(PNG_URL, "PNG", "image/png")
-    stubs { @initiates_image_upload.initiate(access_token: "token", person_urn: "urn:li:person:1") }.with {
+    stubs { @initiates_image_upload.initiate(access_token: "token", author_urn: "urn:li:person:1") }.with {
       Platforms::Linkedin::InitiatesImageUpload::Result.new(success?: true, upload_url: "https://upload.example.com/1", image_urn: "urn:li:image:1")
     }
     stubs { @uploads_image.upload_bytes("GIF89a", content_type: "image/gif", upload_url: "https://upload.example.com/1", access_token: "token") }.with { Outcome.success }
@@ -31,7 +31,7 @@ class Platforms::Linkedin::UploadsMediaTest < ActiveSupport::TestCase
     uploaded = @subject.upload(@crosspost, config([
       {"type" => "image", "url" => GIF_URL, "alt" => "A loop"},
       {"type" => "image", "url" => PNG_URL}
-    ]), access_token: "token", person_urn: "urn:li:person:1")
+    ]), access_token: "token", author_urn: "urn:li:person:1")
 
     assert_equal [
       Platforms::Linkedin::UploadsMedia::Uploaded.new(urn: "urn:li:image:1", alt: "A loop"),
@@ -41,7 +41,7 @@ class Platforms::Linkedin::UploadsMediaTest < ActiveSupport::TestCase
   end
 
   def test_no_media_uploads_nothing
-    uploaded = @subject.upload(@crosspost, config(nil), access_token: "token", person_urn: "urn:li:person:1")
+    uploaded = @subject.upload(@crosspost, config(nil), access_token: "token", author_urn: "urn:li:person:1")
 
     assert_equal [], uploaded
     verify_never_called { @downloads_media.download }
@@ -53,7 +53,7 @@ class Platforms::Linkedin::UploadsMediaTest < ActiveSupport::TestCase
     stubs(ignore_block: true) { @waits_for_processing.wait }.with { |call| call.block.call }
     stubs { @uploads_video.status(VIDEO_URN, access_token: "token") }.with { Result.success("AVAILABLE") }
 
-    uploaded = @subject.upload(@crosspost, config([{"type" => "video", "url" => MP4_URL, "alt" => "A loop"}]), access_token: "token", person_urn: "urn:li:person:1")
+    uploaded = @subject.upload(@crosspost, config([{"type" => "video", "url" => MP4_URL, "alt" => "A loop"}]), access_token: "token", author_urn: "urn:li:person:1")
 
     assert_equal [Platforms::Linkedin::UploadsMedia::Uploaded.new(urn: VIDEO_URN, processing: false)], uploaded
     assert_not File.exist?(path)
@@ -65,7 +65,7 @@ class Platforms::Linkedin::UploadsMediaTest < ActiveSupport::TestCase
     stub_video_upload(path, thumbnail: nil)
     stubs(ignore_block: true) { @waits_for_processing.wait }.with { false }
 
-    uploaded = @subject.upload(@crosspost, config([{"type" => "video", "url" => MP4_URL}]), access_token: "token", person_urn: "urn:li:person:1")
+    uploaded = @subject.upload(@crosspost, config([{"type" => "video", "url" => MP4_URL}]), access_token: "token", author_urn: "urn:li:person:1")
 
     assert_equal [Platforms::Linkedin::UploadsMedia::Uploaded.new(urn: VIDEO_URN, processing: true)], uploaded
     verify_never_called { @records_media_fallback.record }
@@ -79,7 +79,7 @@ class Platforms::Linkedin::UploadsMediaTest < ActiveSupport::TestCase
     stub_video_upload(path, thumbnail: "JPG")
     stubs(ignore_block: true) { @waits_for_processing.wait }.with { true }
 
-    uploaded = @subject.upload(@crosspost, config([{"type" => "video", "url" => MP4_URL, "poster_url" => POSTER_URL}]), access_token: "token", person_urn: "urn:li:person:1")
+    uploaded = @subject.upload(@crosspost, config([{"type" => "video", "url" => MP4_URL, "poster_url" => POSTER_URL}]), access_token: "token", author_urn: "urn:li:person:1")
 
     assert_equal [VIDEO_URN], uploaded.map(&:urn)
   end
@@ -92,7 +92,7 @@ class Platforms::Linkedin::UploadsMediaTest < ActiveSupport::TestCase
     stub_video_upload(path, thumbnail: nil)
     stubs(ignore_block: true) { @waits_for_processing.wait }.with { true }
 
-    uploaded = @subject.upload(@crosspost, config([{"type" => "video", "url" => MP4_URL, "poster_url" => POSTER_URL}]), access_token: "token", person_urn: "urn:li:person:1")
+    uploaded = @subject.upload(@crosspost, config([{"type" => "video", "url" => MP4_URL, "poster_url" => POSTER_URL}]), access_token: "token", author_urn: "urn:li:person:1")
 
     assert_equal [VIDEO_URN], uploaded.map(&:urn)
   end
@@ -105,7 +105,7 @@ class Platforms::Linkedin::UploadsMediaTest < ActiveSupport::TestCase
     stub_video_upload(path, thumbnail: nil)
     stubs(ignore_block: true) { @waits_for_processing.wait }.with { true }
 
-    uploaded = @subject.upload(@crosspost, config([{"type" => "video", "url" => MP4_URL, "poster_url" => POSTER_URL}]), access_token: "token", person_urn: "urn:li:person:1")
+    uploaded = @subject.upload(@crosspost, config([{"type" => "video", "url" => MP4_URL, "poster_url" => POSTER_URL}]), access_token: "token", author_urn: "urn:li:person:1")
 
     assert_equal [VIDEO_URN], uploaded.map(&:urn)
     verify_never_called { @records_media_fallback.record }
@@ -117,7 +117,7 @@ class Platforms::Linkedin::UploadsMediaTest < ActiveSupport::TestCase
     stubs(ignore_block: true) { @waits_for_processing.wait }.with { |call| call.block.call }
     stubs { @uploads_video.status(VIDEO_URN, access_token: "token") }.with { Result.success("PROCESSING_FAILED") }
 
-    uploaded = @subject.upload(@crosspost, config([{"type" => "video", "url" => MP4_URL}]), access_token: "token", person_urn: "urn:li:person:1")
+    uploaded = @subject.upload(@crosspost, config([{"type" => "video", "url" => MP4_URL}]), access_token: "token", author_urn: "urn:li:person:1")
 
     assert_equal [], uploaded
     verify { @records_media_fallback.record(@crosspost, "LinkedIn could not process video #{VIDEO_URN}") }
@@ -126,7 +126,7 @@ class Platforms::Linkedin::UploadsMediaTest < ActiveSupport::TestCase
   def test_a_video_under_linkedins_minimum_falls_back_and_leaves_no_file
     path = stub_video_download("video/mp4", size: 1_000)
 
-    uploaded = @subject.upload(@crosspost, config([{"type" => "video", "url" => MP4_URL}]), access_token: "token", person_urn: "urn:li:person:1")
+    uploaded = @subject.upload(@crosspost, config([{"type" => "video", "url" => MP4_URL}]), access_token: "token", author_urn: "urn:li:person:1")
 
     assert_equal [], uploaded
     verify { @records_media_fallback.record(@crosspost, "LinkedIn takes video of at least 76800 bytes, and #{MP4_URL} is 1000") }
@@ -137,7 +137,7 @@ class Platforms::Linkedin::UploadsMediaTest < ActiveSupport::TestCase
   def test_a_video_that_is_not_mp4_falls_back
     stub_video_download("video/quicktime", size: 100_000)
 
-    uploaded = @subject.upload(@crosspost, config([{"type" => "video", "url" => MP4_URL}]), access_token: "token", person_urn: "urn:li:person:1")
+    uploaded = @subject.upload(@crosspost, config([{"type" => "video", "url" => MP4_URL}]), access_token: "token", author_urn: "urn:li:person:1")
 
     assert_equal [], uploaded
     verify { @records_media_fallback.record(@crosspost, "LinkedIn takes MP4 video, not video/quicktime (#{MP4_URL})") }
@@ -145,11 +145,11 @@ class Platforms::Linkedin::UploadsMediaTest < ActiveSupport::TestCase
 
   def test_a_video_linkedin_will_not_take_falls_back_and_leaves_no_file
     path = stub_video_download("video/mp4", size: 100_000)
-    stubs { @uploads_video.upload(path, thumbnail: nil, access_token: "token", person_urn: "urn:li:person:1") }.with {
+    stubs { @uploads_video.upload(path, thumbnail: nil, access_token: "token", author_urn: "urn:li:person:1") }.with {
       Result.failure("LinkedIn refused a video upload (HTTP 400): Bad part")
     }
 
-    uploaded = @subject.upload(@crosspost, config([{"type" => "video", "url" => MP4_URL}]), access_token: "token", person_urn: "urn:li:person:1")
+    uploaded = @subject.upload(@crosspost, config([{"type" => "video", "url" => MP4_URL}]), access_token: "token", author_urn: "urn:li:person:1")
 
     assert_equal [], uploaded
     verify { @records_media_fallback.record(@crosspost, "LinkedIn refused a video upload (HTTP 400): Bad part") }
@@ -161,7 +161,7 @@ class Platforms::Linkedin::UploadsMediaTest < ActiveSupport::TestCase
     stub_video_upload(path, thumbnail: nil)
     stubs(ignore_block: true) { @waits_for_processing.wait }.with { true }
 
-    uploaded = @subject.upload(@crosspost, config([{"type" => "image", "url" => PNG_URL}, {"type" => "video", "url" => MP4_URL}]), access_token: "token", person_urn: "urn:li:person:1")
+    uploaded = @subject.upload(@crosspost, config([{"type" => "image", "url" => PNG_URL}, {"type" => "video", "url" => MP4_URL}]), access_token: "token", author_urn: "urn:li:person:1")
 
     assert_equal [VIDEO_URN], uploaded.map(&:urn)
     verify { @records_media_fallback.record(@crosspost, "LinkedIn posts a video on its own; dropped 1") }
@@ -189,7 +189,7 @@ class Platforms::Linkedin::UploadsMediaTest < ActiveSupport::TestCase
   def test_a_type_linkedin_does_not_take_falls_back
     stub_download(PNG_URL, "RIFF", "image/webp")
 
-    uploaded = @subject.upload(@crosspost, config([{"type" => "image", "url" => PNG_URL}]), access_token: "token", person_urn: "urn:li:person:1")
+    uploaded = @subject.upload(@crosspost, config([{"type" => "image", "url" => PNG_URL}]), access_token: "token", author_urn: "urn:li:person:1")
 
     assert_equal [], uploaded
     verify { @records_media_fallback.record(@crosspost, "LinkedIn takes JPEG, PNG and GIF, not image/webp (#{PNG_URL})") }
@@ -200,7 +200,7 @@ class Platforms::Linkedin::UploadsMediaTest < ActiveSupport::TestCase
       Result.failure("Could not download #{PNG_URL}: HTTP 404")
     }
 
-    uploaded = @subject.upload(@crosspost, config([{"type" => "image", "url" => PNG_URL}]), access_token: "token", person_urn: "urn:li:person:1")
+    uploaded = @subject.upload(@crosspost, config([{"type" => "image", "url" => PNG_URL}]), access_token: "token", author_urn: "urn:li:person:1")
 
     assert_equal [], uploaded
     verify { @records_media_fallback.record(@crosspost, "Could not download #{PNG_URL}: HTTP 404") }
@@ -208,11 +208,11 @@ class Platforms::Linkedin::UploadsMediaTest < ActiveSupport::TestCase
 
   def test_an_upload_linkedin_will_not_start_falls_back
     stub_download(PNG_URL, "PNG", "image/png")
-    stubs { @initiates_image_upload.initiate(access_token: "token", person_urn: "urn:li:person:1") }.with {
+    stubs { @initiates_image_upload.initiate(access_token: "token", author_urn: "urn:li:person:1") }.with {
       Platforms::Linkedin::InitiatesImageUpload::Result.new(success?: false, message: "Failed to initiate LinkedIn image upload.")
     }
 
-    uploaded = @subject.upload(@crosspost, config([{"type" => "image", "url" => PNG_URL}]), access_token: "token", person_urn: "urn:li:person:1")
+    uploaded = @subject.upload(@crosspost, config([{"type" => "image", "url" => PNG_URL}]), access_token: "token", author_urn: "urn:li:person:1")
 
     assert_equal [], uploaded
     verify { @records_media_fallback.record(@crosspost, "Failed to initiate LinkedIn image upload.") }
@@ -220,14 +220,14 @@ class Platforms::Linkedin::UploadsMediaTest < ActiveSupport::TestCase
 
   def test_a_rejected_upload_falls_back
     stub_download(PNG_URL, "PNG", "image/png")
-    stubs { @initiates_image_upload.initiate(access_token: "token", person_urn: "urn:li:person:1") }.with {
+    stubs { @initiates_image_upload.initiate(access_token: "token", author_urn: "urn:li:person:1") }.with {
       Platforms::Linkedin::InitiatesImageUpload::Result.new(success?: true, upload_url: "https://upload.example.com/1", image_urn: "urn:li:image:1")
     }
     stubs { @uploads_image.upload_bytes("PNG", content_type: "image/png", upload_url: "https://upload.example.com/1", access_token: "token") }.with {
       Outcome.failure("Failed to upload image to LinkedIn. Response: Bad image")
     }
 
-    uploaded = @subject.upload(@crosspost, config([{"type" => "image", "url" => PNG_URL}]), access_token: "token", person_urn: "urn:li:person:1")
+    uploaded = @subject.upload(@crosspost, config([{"type" => "image", "url" => PNG_URL}]), access_token: "token", author_urn: "urn:li:person:1")
 
     assert_equal [], uploaded
     verify { @records_media_fallback.record(@crosspost, "Failed to upload image to LinkedIn. Response: Bad image") }
@@ -235,11 +235,11 @@ class Platforms::Linkedin::UploadsMediaTest < ActiveSupport::TestCase
 
   def test_an_unexpected_error_falls_back_without_the_access_token
     stub_download(PNG_URL, "PNG", "image/png")
-    stubs { @initiates_image_upload.initiate(access_token: "token", person_urn: "urn:li:person:1") }.with {
+    stubs { @initiates_image_upload.initiate(access_token: "token", author_urn: "urn:li:person:1") }.with {
       raise ArgumentError, %(header Authorization has field value "Bearer a warning\\nSECRET-TOKEN-123", this cannot include CR/LF)
     }
 
-    uploaded = @subject.upload(@crosspost, config([{"type" => "image", "url" => PNG_URL}]), access_token: "token", person_urn: "urn:li:person:1")
+    uploaded = @subject.upload(@crosspost, config([{"type" => "image", "url" => PNG_URL}]), access_token: "token", author_urn: "urn:li:person:1")
 
     assert_equal [], uploaded
     verify { @records_media_fallback.record(@crosspost, %(ArgumentError: header Authorization has field value "Bearer [FILTERED]", this cannot include CR/LF)) }
@@ -247,12 +247,12 @@ class Platforms::Linkedin::UploadsMediaTest < ActiveSupport::TestCase
 
   def test_images_past_twenty_are_dropped_and_recorded
     stub_download(PNG_URL, "PNG", "image/png")
-    stubs { @initiates_image_upload.initiate(access_token: "token", person_urn: "urn:li:person:1") }.with {
+    stubs { @initiates_image_upload.initiate(access_token: "token", author_urn: "urn:li:person:1") }.with {
       Platforms::Linkedin::InitiatesImageUpload::Result.new(success?: true, upload_url: "https://upload.example.com/1", image_urn: "urn:li:image:1")
     }
     stubs { @uploads_image.upload_bytes("PNG", content_type: "image/png", upload_url: "https://upload.example.com/1", access_token: "token") }.with { Outcome.success }
 
-    uploaded = @subject.upload(@crosspost, config([{"type" => "image", "url" => PNG_URL}] * 22), access_token: "token", person_urn: "urn:li:person:1")
+    uploaded = @subject.upload(@crosspost, config([{"type" => "image", "url" => PNG_URL}] * 22), access_token: "token", author_urn: "urn:li:person:1")
 
     assert_equal 20, uploaded.size
     verify { @records_media_fallback.record(@crosspost, "LinkedIn takes at most 20 images; dropped 2") }
@@ -280,6 +280,6 @@ class Platforms::Linkedin::UploadsMediaTest < ActiveSupport::TestCase
   end
 
   def stub_video_upload(path, thumbnail:)
-    stubs { @uploads_video.upload(path, thumbnail:, access_token: "token", person_urn: "urn:li:person:1") }.with { Result.success(VIDEO_URN) }
+    stubs { @uploads_video.upload(path, thumbnail:, access_token: "token", author_urn: "urn:li:person:1") }.with { Result.success(VIDEO_URN) }
   end
 end

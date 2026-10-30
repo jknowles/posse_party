@@ -124,6 +124,17 @@ class AccountTest < ApplicationSystemTestCase
     assert_field "Access Token"
     assert_field "Client Secret"
     assert_field "Person URN"
+    assert_no_field "Organization URN"
+
+    select "LinkedIn Page", from: "Platform"
+    assert_text "Credentials for LinkedIn Page"
+    wait_for_turbo_frames
+    assert_link "Setup instructions"
+    assert_field "Client ID"
+    assert_field "Access Token"
+    assert_field "Client Secret"
+    assert_field "Organization URN"
+    assert_no_field "Person URN"
     # Verify X fields are gone
     assert_no_field "API Key"
     assert_no_field "API Key Secret"

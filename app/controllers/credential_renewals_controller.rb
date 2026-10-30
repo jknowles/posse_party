@@ -13,7 +13,7 @@ class CredentialRenewalsController < ApplicationController
           user: notification_user,
           title: "#{result.account.notification_label} credentials renewed",
           severity: "info",
-          text: "Credentials for account #{result.account.label} (linkedin) were renewed.",
+          text: "Credentials for account #{result.account.label} (#{result.account.platform_tag}) were renewed.",
           refs: [{"model" => "Account", "id" => result.account.id}]
         )
       end
