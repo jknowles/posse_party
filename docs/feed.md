@@ -120,6 +120,7 @@ POSSE Party reads per-entry syndication settings from a namespaced Atom element.
 - Instagram (`instagram`)
 - Facebook (`facebook`)
 - LinkedIn (`linkedin`)
+- LinkedIn Page (`linkedin_page`)
 - YouTube (`youtube`)
 
 ## Properties
