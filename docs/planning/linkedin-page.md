@@ -90,9 +90,10 @@ and <https://learn.microsoft.com/en-us/linkedin/marketing/community-management-a
   `Platforms::Linkedin::BuildsAuthorizationUrl` with a `scope:` keyword. The Page target shares the
   `/credential_renewals/linkedin` callback: `FindsAccountByOauthState` ignores platform and the
   token exchange uses each account's own client ID and secret, so no new route or controller
-  action is needed. The Page scope is `w_organization_social` alone (unverified against a live
-  call until step 6; a 403 at publish more likely means the authorizing member lacks a Page
-  admin role). The original plan, for the record:
+  action is needed. The Page scope is `w_organization_social` alone, confirmed 2026-10-30: the
+  recording session posted, and uploaded images and video, as the organization with only that scope.
+  The token came from the in-app renewal flow on maxwell; the developer portal's OAuth 2.0 tools
+  froze at sign-in in both Chrome and Firefox. The original plan, for the record:
 - ~~The implementation is largely a **clone of `app/lib/platforms/linkedin/`**.~~ Only behavioral changes:
   - OAuth scope adds `w_organization_social` (keep `openid profile` if needed for the connect flow).
   - Post/image `author` / `owner` = the organization URN instead of the person URN.
@@ -128,7 +129,9 @@ Docs:
 
 Tests / fixtures:
 - [x] `test/fixtures/accounts.yml` (crossposts.yml not needed) — add a `linkedin_page` fixture.
-- [ ] `test/lib/linkedin_page_test.rb` — VCR integration test, recorded in the step-6 session.
+- [x] `test/lib/linkedin_page_test.rb` — six VCR scenarios (link card, image, multi-image, GIF override,
+      silent loop, clip with poster), recorded against the real Page 2026-10-30; posts deleted, cassettes
+      checked for the token and the organization ID.
 - [x] `test/lib/platforms/linkedin_page_test.rb`, `linkedin/syndicates_linkedin_post_test.rb`, `linkedin/builds_authorization_url_test.rb`.
 - [x] `test/lib/platforms/required_credentials_test.rb` — add the class + a dedicated credential test.
 - [x] `test/system/account_test.rb` — assert the new platform appears with correct credential fields.
