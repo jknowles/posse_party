@@ -5,6 +5,7 @@ class DocsController < ApplicationController
     "bsky-account-setup" => "account_setup/bsky",
     "x-account-setup" => "account_setup/x",
     "linkedin-account-setup" => "account_setup/linkedin",
+    "linkedin_page-account-setup" => "account_setup/linkedin_page",
     "youtube-account-setup" => "account_setup/youtube",
     "threads-account-setup" => "account_setup/threads",
     "instagram-account-setup" => "account_setup/instagram",

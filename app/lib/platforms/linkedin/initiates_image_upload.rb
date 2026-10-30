@@ -6,13 +6,13 @@ class Platforms::Linkedin
       @api = CallsLinkedinApi.new
     end
 
-    def initiate(access_token:, person_urn:)
+    def initiate(access_token:, author_urn:)
       response = @api.call(
         method: :post,
         path: "rest/images?action=initializeUpload",
         body: {
           initializeUploadRequest: {
-            owner: person_urn
+            owner: author_urn
           }
         },
         access_token: access_token

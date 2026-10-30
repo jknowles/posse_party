@@ -18,7 +18,7 @@ class Platforms::Linkedin::PublishesPostTest < ActiveSupport::TestCase
       :build_post_data,
       "Post body",
       crosspost_config,
-      person_urn: "urn:li:person:abc123",
+      author_urn: "urn:li:person:abc123",
       image_urn: nil,
       url: crosspost_config.url
     )
@@ -43,7 +43,7 @@ class Platforms::Linkedin::PublishesPostTest < ActiveSupport::TestCase
       "Post body",
       crosspost_config,
       access_token: "token",
-      person_urn: "urn:li:person:abc123",
+      author_urn: "urn:li:person:abc123",
       image_urn: nil,
       url: crosspost_config.url
     )
@@ -78,7 +78,7 @@ class Platforms::Linkedin::PublishesPostTest < ActiveSupport::TestCase
       :build_post_data,
       content,
       crosspost_config,
-      person_urn: "urn:li:person:def456",
+      author_urn: "urn:li:person:def456",
       image_urn: nil,
       url: crosspost_config.url
     )
@@ -103,7 +103,7 @@ class Platforms::Linkedin::PublishesPostTest < ActiveSupport::TestCase
       content,
       crosspost_config,
       access_token: "token",
-      person_urn: "urn:li:person:def456",
+      author_urn: "urn:li:person:def456",
       image_urn: nil,
       url: crosspost_config.url
     )
@@ -137,7 +137,7 @@ class Platforms::Linkedin::PublishesPostTest < ActiveSupport::TestCase
       :build_post_data,
       "Post body",
       crosspost_config,
-      person_urn: "urn:li:person:ghi789",
+      author_urn: "urn:li:person:ghi789",
       image_urn: nil,
       url: crosspost_config.url
     )
@@ -161,7 +161,7 @@ class Platforms::Linkedin::PublishesPostTest < ActiveSupport::TestCase
       "Post body",
       crosspost_config,
       access_token: "token",
-      person_urn: "urn:li:person:ghi789",
+      author_urn: "urn:li:person:ghi789",
       image_urn: nil,
       url: crosspost_config.url
     )

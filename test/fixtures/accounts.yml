@@ -49,6 +49,17 @@ user_linkedin_account:
     client_secret: "linkedin-client-secret"
     person_urn: "urn:li:person:TEST123"
 
+user_linkedin_page_account:
+  user: user
+  platform_tag: linkedin_page
+  active: true
+  label: "LinkedIn Page Test"
+  credentials:
+    client_id: "linkedin-page-client-id"
+    access_token: "linkedin-page-access-token"
+    client_secret: "linkedin-page-client-secret"
+    organization_urn: "urn:li:organization:TEST456"
+
 user_youtube_account:
   user: user
   platform_tag: youtube

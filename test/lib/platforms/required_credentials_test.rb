@@ -10,6 +10,7 @@ class RequiredCredentialsTest < ActiveSupport::TestCase
       Platforms::Instagram,
       Platforms::Facebook,
       Platforms::Linkedin,
+      Platforms::LinkedinPage,
       Platforms::Youtube
     ]
 
@@ -57,6 +58,11 @@ class RequiredCredentialsTest < ActiveSupport::TestCase
   test "linkedin required credentials" do
     platform = Platforms::Linkedin.new
     assert_equal %w[client_id access_token client_secret person_urn], platform.required_credentials
+  end
+
+  test "linkedin page required credentials" do
+    platform = Platforms::LinkedinPage.new
+    assert_equal %w[client_id access_token client_secret organization_urn], platform.required_credentials
   end
 
   test "youtube required credentials" do
