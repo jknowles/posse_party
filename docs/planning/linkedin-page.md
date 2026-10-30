@@ -2,7 +2,8 @@
 
 **Status:** Done 2026-10-30 — deployed to maxwell as `posse_party:media-20261030` and verified
 with a real post on the Civilytics Company Page. Open: setup-guide screenshots, and whether this
-goes upstream (it would follow the LinkedIn media branches it is stacked on).
+goes upstream (it would follow the LinkedIn media branches it is stacked on; parked with the
+fork-vs-upstream decision in `2026-10-30-fork-vs-upstream-parked.md`).
 **Branch:** `feat/linkedin-page` (build the feature here on top of this plan).
 **Decided:** 2026-06-21.
 
