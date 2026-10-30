@@ -1,6 +1,8 @@
 require "test_helper"
 
 class LinkedinTest < ActiveSupport::TestCase
+  include LinkedinMediaHelpers
+
   def test_linkedin_syndication
     user = New.create(User, email: "user@example.com")
     feed = fake_feed_from(user, "2025-06-18-justin.searls.co.atom.xml")
@@ -62,11 +64,8 @@ class LinkedinTest < ActiveSupport::TestCase
     assert_equal "Anybody else have a recent MacBook Pro (M4 Pro in my case) for which the keyboard suddenly became really squeaky? Every time I hit the space bar, it's like nails on a chalkboard.", crosspost.content
   end
 
-  # A commit, not a branch, so a re-recording fetches the same bytes these cassettes hold
-  MEDIA_BASE = "https://raw.githubusercontent.com/jknowles/posse_party/914ff8332cb956c77ac45a0dd182dc8a47f862a7/test/fixtures/files/media"
-
   def test_linkedin_posts_one_image_with_its_alt_text
-    crosspost = linkedin_crosspost_with_media("https://example.com/social/still/", [
+    crosspost = linkedin_crosspost("https://example.com/social/still/", [
       {"type" => "image", "url" => "#{MEDIA_BASE}/still.jpg", "alt" => "An orange square", "mime" => "image/jpeg"}
     ])
 
@@ -75,12 +74,12 @@ class LinkedinTest < ActiveSupport::TestCase
     end
 
     assert_published_with_media crosspost
-    assert_linkedin_post("https://example.com/social/still/") { |content| content in {media: {id: /\Aurn:li:image:/, altText: "An orange square"}} }
+    assert_linkedin_post(author: crosspost.account.credentials["person_urn"], post_url: "https://example.com/social/still/") { |content| content in {media: {id: /\Aurn:li:image:/, altText: "An orange square"}} }
     assert_requested(:put, /dms-uploads/, headers: {"Content-Type" => "image/jpeg"})
   end
 
   def test_linkedin_posts_several_images_as_a_multi_image
-    crosspost = linkedin_crosspost_with_media("https://example.com/social/stills/", [
+    crosspost = linkedin_crosspost("https://example.com/social/stills/", [
       {"type" => "image", "url" => "#{MEDIA_BASE}/still.jpg", "alt" => "An orange square", "mime" => "image/jpeg"},
       {"type" => "image", "url" => "#{MEDIA_BASE}/still.png", "alt" => "A navy square", "mime" => "image/png"}
     ])
@@ -90,7 +89,7 @@ class LinkedinTest < ActiveSupport::TestCase
     end
 
     assert_published_with_media crosspost
-    assert_linkedin_post("https://example.com/social/stills/") { |content|
+    assert_linkedin_post(author: crosspost.account.credentials["person_urn"], post_url: "https://example.com/social/stills/") { |content|
       content in {multiImage: {images: [{id: /\Aurn:li:image:/, altText: "An orange square"}, {id: /\Aurn:li:image:/, altText: "A navy square"}]}}
     }
     assert_requested(:put, /dms-uploads/, headers: {"Content-Type" => "image/jpeg"})
@@ -98,9 +97,9 @@ class LinkedinTest < ActiveSupport::TestCase
   end
 
   def test_linkedin_posts_a_gif_from_its_platform_override
-    crosspost = linkedin_crosspost_with_media("https://example.com/social/loop/", [
+    crosspost = linkedin_crosspost("https://example.com/social/loop/", [
       {"type" => "video", "url" => "#{MEDIA_BASE}/loop.mp4", "presentation" => "gif"}
-    ], linkedin_media: [
+    ], platform_media: [
       {"type" => "image", "url" => "#{MEDIA_BASE}/loop.gif", "alt" => "Orange, navy and paper squares in turn", "mime" => "image/gif"}
     ])
 
@@ -109,18 +108,14 @@ class LinkedinTest < ActiveSupport::TestCase
     end
 
     assert_published_with_media crosspost
-    assert_linkedin_post("https://example.com/social/loop/") { |content| content in {media: {id: /\Aurn:li:image:/, altText: "Orange, navy and paper squares in turn"}} }
+    assert_linkedin_post(author: crosspost.account.credentials["person_urn"], post_url: "https://example.com/social/loop/") { |content| content in {media: {id: /\Aurn:li:image:/, altText: "Orange, navy and paper squares in turn"}} }
     assert_requested(:put, /dms-uploads/, headers: {"Content-Type" => "image/gif"})
     assert_not_requested(:get, "#{MEDIA_BASE}/loop.mp4")
   end
 
-  # Served from test/fixtures by WebMock, which VCR leaves out of the cassette, so a recording
-  # needs nothing pushed first
-  VIDEO_BASE = "https://media.example/posse-party"
-
   def test_linkedin_posts_a_silent_loop_as_a_video
     stub_fixture("loop.mp4", "video/mp4")
-    crosspost = linkedin_crosspost_with_media("https://example.com/social/video-loop/", [
+    crosspost = linkedin_crosspost("https://example.com/social/video-loop/", [
       {"type" => "video", "url" => "#{VIDEO_BASE}/loop.mp4", "alt" => "A test pattern, four seconds, silent", "mime" => "video/mp4", "presentation" => "gif"}
     ])
 
@@ -130,7 +125,7 @@ class LinkedinTest < ActiveSupport::TestCase
     end
 
     assert_published_with_media crosspost
-    assert_linkedin_post("https://example.com/social/video-loop/") { |content| content in {media: {id: /\Aurn:li:video:/}} }
+    assert_linkedin_post(author: crosspost.account.credentials["person_urn"], post_url: "https://example.com/social/video-loop/") { |content| content in {media: {id: /\Aurn:li:video:/}} }
     assert_requested(:post, "https://api.linkedin.com/rest/videos?action=initializeUpload") { |request|
       JSON.parse(request.body, symbolize_names: true) in {initializeUploadRequest: {fileSizeBytes: ^(file_fixture("media/loop.mp4").size), uploadThumbnail: false}}
     }
@@ -143,7 +138,7 @@ class LinkedinTest < ActiveSupport::TestCase
   def test_linkedin_posts_a_clip_with_its_poster
     stub_fixture("clip.mp4", "video/mp4")
     stub_fixture("still.jpg", "image/jpeg")
-    crosspost = linkedin_crosspost_with_media("https://example.com/social/video-clip/", [
+    crosspost = linkedin_crosspost("https://example.com/social/video-clip/", [
       {"type" => "video", "url" => "#{VIDEO_BASE}/clip.mp4", "poster_url" => "#{VIDEO_BASE}/still.jpg", "alt" => "A test pattern with a tone", "mime" => "video/mp4"}
     ])
 
@@ -152,7 +147,7 @@ class LinkedinTest < ActiveSupport::TestCase
     end
 
     assert_published_with_media crosspost
-    assert_linkedin_post("https://example.com/social/video-clip/") { |content| content in {media: {id: /\Aurn:li:video:/}} }
+    assert_linkedin_post(author: crosspost.account.credentials["person_urn"], post_url: "https://example.com/social/video-clip/") { |content| content in {media: {id: /\Aurn:li:video:/}} }
     assert_requested(:post, "https://api.linkedin.com/rest/videos?action=initializeUpload") { |request|
       JSON.parse(request.body, symbolize_names: true) in {initializeUploadRequest: {fileSizeBytes: ^(file_fixture("media/clip.mp4").size), uploadThumbnail: true}}
     }
@@ -164,58 +159,12 @@ class LinkedinTest < ActiveSupport::TestCase
 
   private
 
-  def linkedin_crosspost_with_media(post_url, media, linkedin_media: media)
-    user = New.create(User, email: "user@example.com")
-    user.accounts.create!(platform_tag: "linkedin", label: "LinkedIn", credentials: vcr_secrets({
+  def linkedin_crosspost(post_url, media, **)
+    linkedin_crosspost_with_media(post_url, media, platform_tag: "linkedin", credentials: {
       "client_id" => nil,
       "client_secret" => nil,
       "access_token" => ENV["LINKEDIN_ACCESS_TOKEN"],
       "person_urn" => ENV["LINKEDIN_PERSON_URN"]
-    }))
-    posse = {
-      syndicate: true,
-      format_string: "{{content}}",
-      content: "PosseParty media test (deleted after recording)",
-      media:,
-      platform_overrides: {linkedin: {media: linkedin_media, append_url: true, append_url_spacer: "\n\n", attach_link: false}}
-    }
-    stub_request(:get, feed_url).to_return(status: 200, body: <<~XML)
-      <?xml version="1.0" encoding="utf-8"?>
-      <feed xmlns="http://www.w3.org/2005/Atom" xmlns:posse="https://posseparty.com/2024/Feed">
-        <title>Test Feed</title>
-        <id>#{feed_url}</id>
-        <updated>2026-10-01T00:00:00Z</updated>
-        <entry>
-          <title>Media test</title>
-          <id>#{post_url}</id>
-          <published>2026-10-01T00:00:00Z</published>
-          <updated>2026-10-01T00:00:00Z</updated>
-          <link rel="alternate" href="#{post_url}"/>
-          <posse:post><![CDATA[#{posse.to_json}]]></posse:post>
-        </entry>
-      </feed>
-    XML
-    FetchesFeed.new.fetch!(user.feeds.create!(url: feed_url, label: "media test"), cache: false)
-    Crosspost.find_by!(post: Post.find_by!(remote_id: post_url)).tap { |crosspost| crosspost.update!(status: "wip") }
-  end
-
-  def assert_published_with_media(crosspost)
-    crosspost.reload
-    assert_empty crosspost.failures
-    assert_equal "published", crosspost.status
-    assert_match(/\Aurn:li:(share|ugcPost):/, crosspost.remote_id)
-    assert_nil crosspost.metadata["media_fallback"]
-  end
-
-  # The post carries its media and, as its only link, the entry's URL appended to the text
-  def assert_linkedin_post(post_url, &content_matches)
-    assert_requested(:post, "https://api.linkedin.com/rest/posts") { |request|
-      body = JSON.parse(request.body, symbolize_names: true)
-      body[:commentary] == "PosseParty media test \\(deleted after recording\\)\n\n#{post_url}" && content_matches.call(body[:content])
-    }
-  end
-
-  def stub_fixture(name, content_type)
-    stub_request(:get, "#{VIDEO_BASE}/#{name}").to_return(status: 200, body: file_fixture("media/#{name}").binread, headers: {"Content-Type" => content_type})
+    }, **)
   end
 end
