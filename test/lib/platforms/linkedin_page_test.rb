@@ -11,6 +11,15 @@ class Platforms::LinkedinPageTest < ActiveSupport::TestCase
     assert_equal :some_result, subject.publish!(:some_crosspost, :some_config, PublishesCrosspost::IdentifiesPatternRanges::Result.new("Hello", []))
   end
 
+  def test_finishes_a_processing_video_as_the_organization
+    syndicates_linkedin_post = Mocktail.of_next(Platforms::Linkedin::SyndicatesLinkedinPost)
+    subject = Platforms::LinkedinPage.new
+    stubs { syndicates_linkedin_post.finish!(:some_crosspost, author_credential: "organization_urn") }.with { :some_result }
+
+    assert subject.finishable?
+    assert_equal :some_result, subject.finish!(:some_crosspost)
+  end
+
   def test_renewal_url_requests_the_organization_posting_scope
     builds_authorization_url = Mocktail.of_next(Platforms::Linkedin::BuildsAuthorizationUrl)
     subject = Platforms::LinkedinPage.new

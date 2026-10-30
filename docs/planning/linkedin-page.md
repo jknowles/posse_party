@@ -133,12 +133,17 @@ Tests / fixtures:
 - [x] `test/lib/platforms/required_credentials_test.rb` — add the class + a dedicated credential test.
 - [x] `test/system/account_test.rb` — assert the new platform appears with correct credential fields.
 
-## Known risk for the step-6 session
+## Stacked on the LinkedIn media branches (2026-10-30)
 
-`CallsLinkedinApi` writes the request headers, including `Authorization: Bearer <token>`, into
-its error message, and a failed publish stores that message in `crossposts.failures` and the user
-notification. A failed call during live verification would leave the Page token in maxwell's
-database. Left as-is by decision on 2026-10-30; check failures for `Bearer` after the session.
+`feat/linkedin-page` merges `origin/feat/linkedin-video` (which carries `feat/linkedin-images` and
+`feat/media-foundation`), because production runs that LinkedIn code and it threads the author
+through `UploadsMedia`, `UploadsVideo`, the card thumbnail, and the video `finish!` path. The
+author rename covers all of them, and `LinkedinPage` is `finishable?` like `Linkedin`. An upstream
+PR would therefore follow the media branches, not precede them.
+
+`CallsLinkedinApi` on `main` writes the `Authorization` header into its error message.
+`feat/linkedin-images` already strips it and redacts bearer tokens from exceptions, so the
+deployed build and this branch do not leak the token. Only `main` (upstream) still does.
 
 ## How to resume
 

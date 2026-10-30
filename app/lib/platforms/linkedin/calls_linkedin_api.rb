@@ -2,6 +2,10 @@ class Platforms::Linkedin
   class CallsLinkedinApi
     Result = Struct.new(:success?, :data, :headers, :message)
 
+    def initialize
+      @redacts_bearer_token = RedactsBearerToken.new
+    end
+
     def call(method:, path:, access_token:, body: nil)
       url = Platforms::Linkedin::API_BASE_URL + path
       options = {
@@ -31,11 +35,11 @@ class Platforms::Linkedin
           Request:
           URL: #{url}
           Method: #{method.upcase}
-          Headers: #{options[:headers].inspect}
+          Headers: #{options[:headers].except("Authorization").inspect}
         MSG
       end
     rescue => e
-      Result.new(success?: false, message: "Unexpected error calling LinkedIn API: #{e.message}")
+      Result.new(success?: false, message: "Unexpected error calling LinkedIn API: #{@redacts_bearer_token.redact(e.message)}")
     end
   end
 end

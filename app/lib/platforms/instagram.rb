@@ -33,7 +33,7 @@ module Platforms
     end
 
     def publish!(crosspost, crosspost_config, crosspost_content)
-      if crosspost.post.media.present?
+      if crosspost_config.media.present?
         @publishes_instagram_post.publish(
           crosspost: crosspost,
           mode: :syndicate,

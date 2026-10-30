@@ -1,7 +1,7 @@
 class Platforms::Instagram::TranslatesInstagramPost
-  def from_crosspost(crosspost, channel: "feed")
+  def from_crosspost(crosspost, media, channel: "feed")
     post = crosspost.post
-    medias = post.media
+    medias = media
       .take((channel == "story") ? 1 : 10)
       .map { |m| instagram_media_from_post_media(m) }
 

@@ -1,0 +1,2 @@
+class MediaUnavailable < StandardError
+end

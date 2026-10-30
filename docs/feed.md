@@ -147,11 +147,11 @@ POSSE Party reads per-entry syndication settings from a namespaced Atom element.
 | `append_url_if_truncated` | boolean | Append only when truncation occurs and `append_url` is false. |
 | `append_url_spacer` | string | Spacer inserted before appended URL/label (e.g., `" "`, `"\n\n"`). |
 | `append_url_label` | string | Label used when platforms support hyperlink labels (e.g., `"🔗"`). Supported on Bluesky. |
-| `attach_link` | boolean | Attach an OpenGraph/website card when supported (Bluesky, Threads, Facebook, LinkedIn). |
+| `attach_link` | boolean | Attach an OpenGraph/website card when supported (Bluesky, Threads, Facebook, LinkedIn). A LinkedIn post carries at most one URL: when its text contains an `http(s)://` link, nothing is appended and the card points at that link. |
 | `og_image` | string (URL) | Card image URL (supported on Bluesky). |
 | `og_title` | string | Card title override (Bluesky). Defaults to `title` if omitted. |
 | `og_description` | string | Card description override (Bluesky). Defaults to `summary` if omitted. |
-| `media` | array<object> | Media attachments used by certain platforms (Instagram requires images/video; YouTube requires exactly one video). When present, `media.poster_url` is used by platforms that support custom covers/thumbnails (such as Instagram Reels and YouTube). |
+| `media` | array<object> | Media attachments used by certain platforms (Instagram requires images/video; YouTube requires exactly one video; LinkedIn posts up to 20 JPEG, PNG or GIF images, or one MP4 video of 75 KB to 100 MB, in place of the link card; the post's one URL then stays in its text, and a link card that was asked for becomes the appended URL). When present, `media.poster_url` is used by platforms that support custom covers/thumbnails (such as Instagram Reels, YouTube and LinkedIn video). When LinkedIn cannot post the media, the post goes out as it would have without it, and the reason is recorded in the crosspost's metadata. |
 | `platform_overrides` | object | Map of platform tag → object of overrides for any properties in this table. Unknown tags are ignored. |
 | `channel` | string | Global destination channel. Supported values: `"feed"` (default) or `"story"` (Instagram only). |
 
@@ -162,6 +162,13 @@ POSSE Party reads per-entry syndication settings from a namespaced Atom element.
 | `type` | string | `"image"` or `"video"`. |
 | `url` | string (URL) | Direct URL to the media asset. |
 | `poster_url` | string (URL) | Optional cover/thumbnail image used by platforms that support custom posters (for example Instagram Reels covers and YouTube thumbnails). |
+| `alt` | string | Alt text describing the image or video. |
+| `presentation` | string | `"gif"` marks a short silent video meant to loop like a GIF. |
+| `mime` | string | The file's media type, such as `image/gif` or `video/mp4`. Used in place of the `Content-Type` the file's server sends. |
+| `width`, `height` | integer | Pixel dimensions, for platforms that need an aspect ratio. Optional. |
+| `bytes` | integer | File size, so a platform can skip a file over its limit without downloading it. |
+
+`media` can also be set inside `platform_overrides.<tag>`. The override replaces the top-level list on that platform, so one entry can send Instagram a JPEG still and LinkedIn the animated GIF. YouTube reads only the top-level list.
 
 ## Precedence
 

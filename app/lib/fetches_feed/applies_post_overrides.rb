@@ -13,6 +13,9 @@ class FetchesFeed
       # Guard against junk data in the platform_overrides/media fields (the only that aren't one-level deep)
       syndication_config[:media] = [] unless syndication_config[:media].is_a?(Array)
       syndication_config[:platform_overrides] = {} unless syndication_config[:platform_overrides].is_a?(Hash)
+      syndication_config[:platform_overrides].each_value do |overrides|
+        overrides[:media] = [] if overrides.is_a?(Hash) && overrides.key?(:media) && !overrides[:media].is_a?(Array)
+      end
 
       if syndication_config[:summary].present?
         syndication_config[:summary] = @converts_html_to_plaintext.convert(syndication_config[:summary])

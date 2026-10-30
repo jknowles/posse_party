@@ -59,7 +59,7 @@ class Platforms::Instagram
       when :syndicate
         crosspost.update!(content: crosspost_content.string)
         channel = crosspost_config.channel
-        instagram_post = @translates_instagram_post.from_crosspost(crosspost, channel:)
+        instagram_post = @translates_instagram_post.from_crosspost(crosspost, crosspost_config.media, channel:)
         media = instagram_post.medias.first
         if channel == "story" && media.present? && !media.video?
           media.url = @generates_story_image_url.generate(crosspost, media.url)

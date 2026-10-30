@@ -35,6 +35,14 @@ module Platforms
       @syndicates_linkedin_post.syndicate!(crosspost:, crosspost_config:, crosspost_content: crosspost_content.string, author_credential: "person_urn")
     end
 
+    def finishable?
+      true
+    end
+
+    def finish!(crosspost)
+      @syndicates_linkedin_post.finish!(crosspost, author_credential: "person_urn")
+    end
+
     def renew!(account)
       @potentially_tells_user_to_renew_linkedin_access_token.potentially_tell(account)
     end
