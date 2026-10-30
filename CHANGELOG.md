@@ -2,6 +2,10 @@
 
 This file lists user-visible changes (including potentially breaking changes). The app is not versioned; entries are reverse-chronological by date.
 
+## 2026-10-30
+
+- New platform: **LinkedIn Page** (`linkedin_page`) posts to a LinkedIn Company Page as the organization, alongside the existing LinkedIn platform, which posts to your personal profile. It needs a developer app with LinkedIn's Community Management API, which LinkedIn grants on request to registered organizations, plus the Page's Organization URN. Link cards, images, GIFs and video post the same way they do on a profile, and both platforms use the same `/credential_renewals/linkedin` callback. Setup: `docs/account_setup/linkedin_page.md`.
+
 ## 2026-09-14
 
 - Credential renewal reminders for LinkedIn and YouTube now link to POSSE Party instead of straight to the platform's authorization page. The OAuth state is created when you click the link, so a reminder no longer goes stale the moment the next one is sent, and renewals that failed with "Invalid state parameter" now succeed. A reminder link may ask you to sign in to POSSE Party first.

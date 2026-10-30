@@ -1,8 +1,8 @@
 # Plan: LinkedIn Company Page as a syndication target
 
-**Status:** In progress — Community Management API **approved** on the new app (reported
-2026-10-30). Code and tests done 2026-10-30 (TODO step 5); live verification (step 6) and ship
-(step 7) open.
+**Status:** Done 2026-10-30 — deployed to maxwell as `posse_party:media-20261030` and verified
+with a real post on the Civilytics Company Page. Open: setup-guide screenshots, and whether this
+goes upstream (it would follow the LinkedIn media branches it is stacked on).
 **Branch:** `feat/linkedin-page` (build the feature here on top of this plan).
 **Decided:** 2026-06-21.
 
@@ -72,6 +72,8 @@ client ID, or the new app can simply be used for the Page target.
    post with an image, confirm it lands on the Company Page and not the personal feed.
 7. **Ship.** CHANGELOG entry, account-setup doc with screenshots, then decide fork-only vs.
    upstream PR.
+   *2026-10-30: steps 2–6 done; CHANGELOG entry and setup guide text written. Screenshots and
+   the upstream decision remain.*
 
 Reference: <https://learn.microsoft.com/en-us/linkedin/marketing/community-management/community-management-overview>
 and <https://learn.microsoft.com/en-us/linkedin/marketing/community-management-app-review>.
